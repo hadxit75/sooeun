@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import { APIService } from "../util/APIService";
+import APIService from "../util/APIService";
 
 export default {
   name: "obj",
@@ -72,7 +72,7 @@ export default {
   },
   created() {
     var self = this;
-    APIService.getObject().then(data => {
+    APIService.getObjectList().then(data => {
       this.listData = data;
       this.displayData = this.listData;
 

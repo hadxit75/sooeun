@@ -1,9 +1,10 @@
 import { baseURL } from "./variables";
+import axios from "axios";
 
 export default {
   getObjectList() {
     const url = `${baseURL}/api/object/list`;
-    return this.$http
+    return axios
       .get(url, {
         headers: {
           Accept: "application/json",
