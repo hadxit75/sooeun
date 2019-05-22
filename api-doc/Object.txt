@@ -1,0 +1,99 @@
+
+------------------------------
+Object (객체)
+------------------------------
+객체 리스트 가져오기
+
+BASE URL: dabin02272.cafe24.com:8090
+FULL URL: dabin02272.cafe24.com:8090/api/object/list 
+URL: /api/object/list 
+ 
+METHOD: GET
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":[
+	{"objectId":2,"objectTypeId":1,"objectName":"MENU-1","legacyId":40,"objectComment":null},},
+	{"objectId":3,"objectTypeId":2,"objectName":"SCREEN-1","legacyId":40,"objectComment":null},},
+	...
+	]
+}
+원천시스템별 객체 리스트 가져오기 (원천시스템별에 해당하는 항목들 가져오기)
+
+URL: /api/object/legacy/{legacy-id}  
+METHOD: GET
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":[ 
+		{objectId":0,"objectTypeId":1,"objectName":null,"legacyId":0,"objectTypeName":"MENU","objectComment":null},
+		{"objectId":0,"objectTypeId":2,"objectName":null,"legacyId":0,"objectTypeName":"SCREEN","objectComment":null}
+	]
+	"result":null,
+	"error":null}
+}
++++++
+원천시스템/객체종류별 객체 리스트 가져오기 (원천시스템/객체종류별에 해당하는 항목들 가져오기)
+
+URL: /api/object/object-type/{legacy-id}/{object-type-id}  
+METHOD: GET
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":[ 
+		{"prmssnId":4,"prmssnName":"3","legacyName":"CRM","objectName":"SCREEN-1","objectTypeName":"SCREEN","oprtnName":"READ","objectId":3,"oprtnId":1,"groupId":7,"orders":0,"objectTypeId":2,"legacyId":0,"objectComment":"test 1"},
+		{"prmssnId":8,"prmssnName":"4","legacyName":"CRM","objectName":"SCREEN-2","objectTypeName":"SCREEN","oprtnName":"DELETE","objectId":5,"oprtnId":3,"groupId":9,"orders":2,"objectTypeId":2,"legacyId":0,"objectComment":"test3"}
+	],
+	"result":null,
+	"error":null}
+}
+객체 하나 생성하기 
+URL: /api/object
+METHOD: POST
+REQUESTBODY: {
+	 "objectTypeId" : 1,
+	 "objectName" : "MENU-3",
+	 "objectComment":"COMMENT",
+	 "legacyId":40
+}
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
+ 
+
+객체 하나 수정하기 
+URL: /api/object
+METHOD: PUT
+REQUESTBODY: { 
+	 "objectId" : 40,
+	 "objectTypeId" : 2,
+	 "objectName" : "SCN-22",
+	 "legacyId":40,
+	 "objectComment":"COMMENT"
+}
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
+
+객체 하나 지우기 
+URL: /api/object
+METHOD: DELETE
+REQUESTBODY: {
+	 "objectId" : 1
+}
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
+

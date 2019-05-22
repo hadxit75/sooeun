@@ -1,0 +1,139 @@
+
+------------------------------
+Role 그룹 (역할그룹)
+------------------------------
+역할 그룹 리스트 가져오기(모든 항목 가져오기)
+
+BASE URL: dabin02272.cafe24.com:8090
+FULL URL: dabin02272.cafe24.com:8090/api/role-group/list 
+
+URL: /api/role-group/list 
+METHOD: GET
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":[
+		{"roleGroupId":7,"roleId":3,"groupId":5,"orders":1,"roleGroupName":"마케팅팀장","roleGroupComment":"test 1","roleName":"마케팅팀장1팀","roleComment":"마케팅팀장1팀 role","legacyId":40,"legacyName":"CRM","roleTypeId":1,"roleTypeName":"직책"},
+		{"roleGroupId":8,"roleId":4,"groupId":5,"orders":2,"roleGroupName":"마케팅팀장","roleGroupComment":"test 1","roleName":"마케팅팀장2팀","roleComment":"마케팅팀장2팀 role","legacyId":40,"legacyName":"CRM","roleTypeId":1,"roleTypeName":"직책"},
+		{"roleGroupId":9,"roleId":5,"groupId":6,"orders":1,"roleGroupName":"role group 2","roleGroupComment":"test 1","roleName":"마케팅팀장","roleComment":"마케팅팀장 role","legacyId":40,"legacyName":"CRM","roleTypeId":1,"roleTypeName":"직책"},
+	]
+	"result":null,
+	"error":null}
+}
+
++++++
+역할  그룹 리스트 가져오기 (group-id 에 해당하는 항목들 가져오기)
+METHOD: GET
+URL: /api/role-group/{group-id}  
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":[
+		{"roleGroupId":17,"roleId":3,"groupId":10,"orders":3,"roleGroupName":"role group 2","roleGroupComment":"test 1","roleName":"마케팅팀장","roleComment":"마케팅팀장 role","legacyId":40,"legacyName":"CRM","roleTypeId":1,"roleTypeName":"직책"}
+		],
+	"result":null,
+	"error":null}
+}
+
++++++
+원천시스템별 역할  그룹 리스트 가져오기 (원천시스템 legacy-id 에 해당하는 항목들 가져오기)
+METHOD: GET
+URL: /api/role-group/legacy/{legacy-id}  
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":[
+		{"roleGroupId":7,"roleId":3,"groupId":5,"orders":1,"roleGroupName":"마케팅팀장","roleGroupComment":"test 1","roleName":"마케팅팀장1팀","roleComment":"마케팅팀장1팀 role","legacyId":40,"legacyName":"CRM","roleTypeId":1,"roleTypeName":"직책"},
+		{"roleGroupId":8,"roleId":4,"groupId":5,"orders":2,"roleGroupName":"마케팅팀장","roleGroupComment":"test 1","roleName":"마케팅팀장2팀","roleComment":"마케팅팀장2팀 role","legacyId":40,"legacyName":"CRM","roleTypeId":1,"roleTypeName":"직책"},
+		{"roleGroupId":9,"roleId":5,"groupId":6,"orders":1,"roleGroupName":"role group 2","roleGroupComment":"test 1","roleName":"마케팅팀장","roleComment":"마케팅팀장 role","legacyId":40,"legacyName":"CRM","roleTypeId":1,"roleTypeName":"직책"},
+	]
+	"result":null,
+	"error":null}
+}
+
++++++
+역할 그룹 생성하기 (역할 추가 메뉴)
+URL: /api/role-group
+METHOD: POST
+REQUESTBODY: [
+	{"roleId": 3,"roleGroupName": "role group 2", "orders" : 3, "roleGroupComment": "test 1"},
+	{"roleId": 4,"roleGroupName": "role group 2", "orders" : 4,"roleGroupComment": "test 2"}
+]
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
+ +++++
+--------------------------------------------------------------------------
+역할 그룹 상세에서 수정 버튼 눌렀을 때 처리:
+
+1. 행변화 없이 내용만 수정했을 경우 
+	- group-id를 포함하여 PUT /api/role-group
+2. 행 추가후 내용 수정했을 경우 
+   - 추가한 행은 group-id를 포함하여 POST /api/role-group/put-add
+   - 나머지 내용 수정한 행은  group-id를  포함하여 PUT /api/role-group
+3. 행 삭제후 내용 수정 했을 경우
+	- 삭제한 행은 roleGroupId(entry id이고 그룹은 아님)를 포함한 DELETE /api/role-group/role-group-id
+	- 나머지 내용 수정한 행은  group-id를 포함하여 PUT /api/role-group
+--------------------------------------------------------------------------
+역할 그룹 수정하기 (역할 상세)
+URL: /api/role-group
+METHOD: PUT
+-- 참고: REQUESTBODY에서 [ {},{} ] 와 같이 [{}] 순서 주의
+REQUESTBODY: {
+	"roleGroupName": "role group 2-1",  "roleGroupComment": "test 1 1", "groupId": 3
+}
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
+
++++++
+역할 그룹 생성하기 (역할 상세 리스트에서 + 버튼으로 추가한 항목)
+URL: /api/role-group/put-add
+METHOD: POST
+-- 참고: REQUESTBODY에서 [ {},{} ] 와 같이 [{}] 순서 주의
+REQUESTBODY: [
+		{"roleId": 5,"roleGroupName": "role group 2", "orders" : 1, "roleGroupComment": "test 1", "groupId": 11},
+		{"roleId": 6,"roleGroupName": "role group 2", "orders" : 2,"roleGroupComment": "test 2", "groupId": 11}
+] 
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
++++++
+역할  지우기 (역할 그룹 상세 리스트에서 - 버튼, roleGroupId 해당하는 항목 지우기)
+URL: /api/role-group/role-group-id
+METHOD: DELETE
+REQUESTBODY: [
+	{ "roleGroupId": 11},
+	{ "roleGroupId": 12}
+]
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
++++++
+역할  그룹 지우기 (역할 그룹 상세에서 삭제 메뉴, groupId에 해당하는 항목 지우기)
+URL: /api/role-group/group-id
+METHOD: DELETE
+REQUESTBODY: [
+	{ "groupId": 12},
+	{ "groupId": 11}
+]
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
+

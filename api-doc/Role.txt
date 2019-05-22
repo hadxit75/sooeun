@@ -1,0 +1,124 @@
+
+------------------------------
+Role (역할)
+------------------------------
+역할 리스트 가져오기
+
+BASE URL: dabin02272.cafe24.com:8090
+FULL URL: dabin02272.cafe24.com:8090/api/role/list 
+URL: /api/role/list 
+ 
+METHOD: GET
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":":[
+		{"roleId":1,"roleTypeId":1,"roleName":"마케팅팀장 1","legacyId":40,"legacyName":"CRM","roleTypeName":"직책","roleComment":"마케팅팀장 role"},
+		{"roleId":2,"roleTypeId":1,"roleName":"마케팅팀장 2","legacyId":40,"legacyName":"CRM","roleTypeName":"직책","roleComment":"마케팅팀장 role"},
+		{"roleId":3,"roleTypeId":1,"roleName":"마케팅팀장 3","legacyId":40,"legacyName":"CRM","roleTypeName":"직책","roleComment":"마케팅팀장 role"},
+	{"roleId":5,"roleTypeId":1,"roleName":"마케팅팀장 4 ","legacyId":40,"legacyName":"CRM","roleTypeName":"직책","roleComment":"마케팅팀장 role 1"}
+	],
+	"result":null,
+	"error":null}
+
+}
+
++++++
+원천시스템별 역할   리스트 가져오기 (원천시스템 legacy-id 에 해당하는 항목들 가져오기)
+METHOD: GET
+URL: /api/role/legacy/{legacy-id}  
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":[
+		{"roleGroupId":7,"roleId":3,"groupId":5,"orders":1,"roleGroupName":"마케팅팀장","roleGroupComment":"test 1","roleName":"마케팅팀장1팀","roleComment":"마케팅팀장1팀 role","legacyId":40,"legacyName":"CRM","roleTypeId":1,"roleTypeName":"직책"},
+		{"roleGroupId":8,"roleId":4,"groupId":5,"orders":2,"roleGroupName":"마케팅팀장","roleGroupComment":"test 1","roleName":"마케팅팀장2팀","roleComment":"마케팅팀장2팀 role","legacyId":40,"legacyName":"CRM","roleTypeId":1,"roleTypeName":"직책"},
+		{"roleGroupId":9,"roleId":5,"groupId":6,"orders":1,"roleGroupName":"role group 2","roleGroupComment":"test 1","roleName":"마케팅팀장","roleComment":"마케팅팀장 role","legacyId":40,"legacyName":"CRM","roleTypeId":1,"roleTypeName":"직책"},
+	]
+	"result":null,
+	"error":null}
+}
+
+
++++++
+원천시스템/Role유형별 역할   리스트 가져오기 (원천시스템/Role유형별  항목들 가져오기)
+METHOD: GET
+URL: /api/role/role-type/legacy/{legacy-id}/{role-type-id}  
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":[
+		{"roleGroupId":7,"roleId":3,"groupId":5,"orders":1,"roleGroupName":"마케팅팀장","roleGroupComment":"test 1","roleName":"마케팅팀장1팀","roleComment":"마케팅팀장1팀 role","legacyId":40,"legacyName":"CRM","roleTypeId":1,"roleTypeName":"직책"},
+		{"roleGroupId":8,"roleId":4,"groupId":5,"orders":2,"roleGroupName":"마케팅팀장","roleGroupComment":"test 1","roleName":"마케팅팀장2팀","roleComment":"마케팅팀장2팀 role","legacyId":40,"legacyName":"CRM","roleTypeId":1,"roleTypeName":"직책"},
+		{"roleGroupId":9,"roleId":5,"groupId":6,"orders":1,"roleGroupName":"role group 2","roleGroupComment":"test 1","roleName":"마케팅팀장","roleComment":"마케팅팀장 role","legacyId":40,"legacyName":"CRM","roleTypeId":1,"roleTypeName":"직책"},
+	]
+	"result":null,
+	"error":null}
+}
+
++++++
+원천시스템별 Role유형 리스트 가져오기 (원천시스템 유형별  항목들 가져오기)
+- roleTypeName, roleTypeId 만 의미 있고 나머지는 무시
+METHOD: GET
+URL: /api/role/role-type/{legacy-id} 
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":[
+		{"roleId":0,"roleTypeId":1,"roleName":null,"legacyId":0,"legacyName":null,"roleTypeName":"직책","roleComment":null},
+		{"roleId":0,"roleTypeId":2,"roleName":null,"legacyId":0,"legacyName":null,"roleTypeName":"직무","roleComment":null}
+	"result":null,
+	"error":null}
+}
+
+
+역할 하나 생성하기 
+URL: /api/role
+METHOD: POST
+REQUESTBODY: {
+	 "roleTypeId" : 1,
+	 "roleName" : "마케팅1",
+	 "roleComment":"마케팅1",
+	 "legacyId":40
+}
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
+ 
+
+역할 하나 수정하기 
+URL: /api/role
+METHOD: PUT
+REQUESTBODY: { 
+	 "roleId" : 40, 
+	 "roleName" : "마케팅1-22", 
+	 "roleComment":"마케팅1"
+}
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
+
+역할 하나 지우기 
+URL: /api/role
+METHOD: DELETE
+REQUESTBODY: {
+	 "roleId" : 1
+}
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
+

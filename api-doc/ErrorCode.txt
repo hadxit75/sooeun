@@ -1,0 +1,8 @@
+
+------------------------------
+Error Code
+------------------------------
+getListError 	= 9001
+postError 		= 9002
+putError 		= 9003
+deleteError 	= 9004

@@ -1,0 +1,25 @@
+
+------------------------------
+OBJECT-TYPE (객체 종류)
+------------------------------
+
+객체 종류 리스트 가져오기
+
+BASE URL: dabin02272.cafe24.com:8090
+FULL URL: dabin02272.cafe24.com:8090/api/object-type/list 
+URL: /api/object-type/list 
+METHOD: GET
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":[
+		{"objectTypeId":1,"objectTypeName":"MENU","comment":null},
+		{"objectTypeId":2,"objectTypeName":"SCREEN","comment":null},
+		{"objectTypeId":3,"objectTypeName":"BUTTON","comment":null},
+		{"objectTypeId":4,"objectTypeName":"FUNCTION","comment":null},
+		{"objectTypeId":5,"objectTypeName":"DATA","comment":null}]
+	}  
+} 
+

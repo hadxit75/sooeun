@@ -1,0 +1,22 @@
+
+------------------------------
+role-TYPE (역할 종류)
+------------------------------
+
+역할 종류 리스트 가져오기
+
+BASE URL: dabin02272.cafe24.com:8090
+FULL URL: dabin02272.cafe24.com:8090/api/role-type/list 
+URL: /api/role-type/list 
+METHOD: GET
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":[
+		{"roleTypeId":1,"roleTypeName":"직책","comment":직책},
+		{"roleTypeId":2,"roleTypeName":"직무","comment":직무}
+		] 
+} 
+

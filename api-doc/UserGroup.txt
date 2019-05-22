@@ -1,0 +1,144 @@
+
+------------------------------
+User 그룹 (사용자그룹)
+------------------------------
+사용자 그룹 리스트 가져오기(모든 항목 가져오기)
+
+BASE URL: dabin02272.cafe24.com:8090
+FULL URL: dabin02272.cafe24.com:8090/api/user-group/list 
+
+
+URL: /api/user-group/list 
+METHOD: GET
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":":[
+		{"userGroupId":15,"userId":13,"groupId":10,"orders":1,"legacyId":40,"legacyName":"CRM","userGroupName":"user group 2-1","comment":"test 1 1"},
+		{"userGroupId":16,"userId":14,"groupId":10,"orders":2,"legacyId":40,"legacyName":"CRM","userGroupName":"user group 2-1","comment":"test 1 1"},
+		{"userGroupId":17,"userId":15,"groupId":10,"orders":1,"legacyId":40,"legacyName":"CRM","userGroupName":"user group 2","comment":"test 1"},
+		{"userGroupId":18,"userId":16,"groupId":10,"orders":2,"legacyId":40,"legacyName":"CRM","userGroupName":"user group 2","comment":"test 2"}
+	],
+	"result":null,
+	"error":null}
+}
++++++
+사용자  그룹 리스트 가져오기 (group-id 에 해당하는 항목들 가져오기)
+METHOD: GET
+URL: /api/user-group/{group-id}  
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":":[
+		{"userGroupId":15,"userId":13,"groupId":10,"orders":1,"legacyId":40,"legacyName":"CRM","userGroupName":"user group 2-1","comment":"test 1 1"},
+		{"userGroupId":16,"userId":14,"groupId":10,"orders":2,"legacyId":40,"legacyName":"CRM","userGroupName":"user group 2-1","comment":"test 1 1"},
+		{"userGroupId":17,"userId":15,"groupId":10,"orders":1,"legacyId":40,"legacyName":"CRM","userGroupName":"user group 2","comment":"test 1"},
+		{"userGroupId":18,"userId":16,"groupId":10,"orders":2,"legacyId":40,"legacyName":"CRM","userGroupName":"user group 2","comment":"test 2"}
+	],
+	"result":null,
+	"error":null}
+}
+
++++++
+원천시스템별 사용자  그룹 리스트 가져오기 (원천시스템 legacy-id 에 해당하는 항목들 가져오기)
+METHOD: GET
+URL: /api/user-group/legacy/{legacy-id}  
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":":[
+		{"userGroupId":15,"userId":13,"groupId":10,"orders":1,"legacyId":40,"legacyName":"CRM","userGroupName":"user group 2-1","comment":"test 1 1"},
+		{"userGroupId":16,"userId":14,"groupId":10,"orders":2,"legacyId":40,"legacyName":"CRM","userGroupName":"user group 2-1","comment":"test 1 1"},
+		{"userGroupId":17,"userId":15,"groupId":10,"orders":1,"legacyId":40,"legacyName":"CRM","userGroupName":"user group 2","comment":"test 1"},
+		{"userGroupId":18,"userId":16,"groupId":10,"orders":2,"legacyId":40,"legacyName":"CRM","userGroupName":"user group 2","comment":"test 2"}
+	],
+	"result":null,
+	"error":null}
+}
+ 
++++++
+사용자 그룹 생성하기 (사용자 그룹 추가 메뉴)
+URL: /api/user-group
+METHOD: POST
+REQUESTBODY: [
+	{"userId": 3,"userGroupName": "user group 2", "orders" : 1, "legacyId":40,"comment": "test 1"},
+	{"userId": 4,"userGroupName": "user group 2", "orders" : 2,"legacyId":40,"comment": "test 2"}
+]
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
+
+
++++++
+사용자  그룹 지우기 (사용자 그룹 상세에서 삭제 메뉴, groupId에 해당하는 항목 지우기)
+URL: /api/user-group/group-id
+METHOD: DELETE
+REQUESTBODY: [
+	{ "groupId": 14},
+	{ "groupId": 15}
+]
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
+ 
+ +++++
+--------------------------------------------------------------------------
+사용자 그룹 상세에서 수정 버튼 눌렀을 때 처리:
+
+1. 행변화 없이 내용만 수정했을 경우 
+	- group-id를 포함하여 PUT /api/user-group
+2. 행 추가후 내용 수정했을 경우 
+   - 추가한 행은 group-id를 포함하여 POST /api/user-group/put-add
+   - 나머지 내용 수정한 행은  group-id를  포함하여 PUT /api/user-group
+3. 행 삭제후 내용 수정 했을 경우
+	- 삭제한 행은 userGroupId를 포함한 DELETE /api/user-group/user-group-id
+	- 나머지 내용 수정한 행은  group-id를 포함하여 PUT /api/user-group
+--------------------------------------------------------------------------
+사용자 그룹 수정하기 (사용자 상세-행변화 없이 내용만 수정했을 경우 )
+URL: /api/user-group
+METHOD: PUT 
+REQUESTBODY: {
+	"userGroupName": "user group 2-1",  "comment": "test 1 1", "groupId": 13, "legacyId":40
+}
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
++++++
+사용자 그룹의 사용자 생성하기 (사용자 상세 리스트에서 + 버튼으로 추가한 항목)
+URL: /api/user-group/put-add
+METHOD: POST
+-- 참고: REQUESTBODY에서 [ {},{} ] 와 같이 [{}] 순서 주의
+REQUESTBODY: [
+		{"userId": 15,"userGroupName": "user group 2", "orders" : 1, "legacyId":40,"comment": "test 1", "groupId": 13},
+		{"userId": 16,"userGroupName": "user group 2", "orders" : 2,"legacyId":40,"comment": "test 2", "groupId": 13}
+] 
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
++++++
+사용자  지우기 (사용자 그룹 상세 리스트에서 - 버튼, userGroupId 해당하는 항목 지우기)
+URL: /api/user-group/user-group-id
+METHOD: DELETE
+REQUESTBODY: [
+	{ "userGroupId": 29},
+	{ "userGroupId": 30}
+]
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}

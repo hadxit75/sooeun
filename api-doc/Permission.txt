@@ -1,0 +1,161 @@
+
+------------------------------
+Permission (권한)
+------------------------------
+5/12: /api/permission/{group-id}  이 api에 리스트에 objectTypeId, regacyId 이 두가지 항목 추가
+5/12: /api/permission/put-add 에서 요청시 group-id 추가
+5/12: /api/permission  DELETE에서 API 이름 수정 --> group-id 추가; /api/permission/group-id
+5/13:  /api/permission/legacy/{legacy-name}  --> /api/permission/legacy/{legacy-id} 수정
+5/13: /api/permission/legacy/{legacy-id} 응답에 object-type-id 추가
+5/13: /api/permission/object/{legacy-id}/{object-type-id} 원천시스템/객체종류별 권한 리스트 가져오기 추가
+
+-------------------------------
+권한 리스트 가져오기(모든 항목 가져오기)
+
+BASE URL: dabin02272.cafe24.com:8090
+FULL URL: dabin02272.cafe24.com:8090/api/permission/list 
+URL: /api/permission/list 
+
+METHOD: GET
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":[ 
+		{"prmssnId":4,"prmssnName":"3","legacyName":"CRM","objectName":"SCREEN-1","objectTypeName":"SCREEN","oprtnName":"READ","objectId":3,"oprtnId":1,"groupId":7,"orders":0,"objectTypeId":1,"legacyId":41,"prmssntComment":"test 1"},
+		{"prmssnId":8,"prmssnName":"4","legacyName":"CRM","objectName":"SCREEN-2","objectTypeName":"SCREEN","oprtnName":"DELETE","objectId":5,"oprtnId":3,"groupId":9,"orders":2,"objectTypeId":1,"legacyId":41,"prmssntComment":"test3"}
+		]
+	"result":null,
+	"error":null}
+}
++++++
+권한 리스트 가져오기 (group-id 에 해당하는 항목들 가져오기)
+- 리스트에서는 다음 2개로 권한,객체 비고 구분 "prmssnComment":"test3","objectComment":null
+URL: /api/permission/{group-id}  
+METHOD: GET
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":[ 
+		{"prmssnId":8,"prmssnName":"4","legacyName":"CRM","objectName":"SCREEN-2","objectTypeName":"SCREEN","oprtnName":"DELETE","prmssnComment":"test3","objectComment":null,"prmssntComment":null,"objectId":5,"oprtnId":3,"groupId":9,"orders":2,"objectTypeId":2,"legacyId":40}	]
+	"result":null,
+	"error":null}
+}
++++++
+원천시스템별 권한 리스트 가져오기 (원천시스템별에 해당하는 항목들 가져오기)
+
+URL: /api/permission/legacy/{legacy-id}  
+- 리스트에서는 다음 2개로 권한,객체 비고 구분 "prmssnComment":"test3","objectComment":null
+METHOD: GET
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":[ 
+		{"prmssnId":4,"prmssnName":"3","legacyName":"CRM","prmssnComment":"test3","objectComment":null,"objectName":"SCREEN-1","objectTypeName":"SCREEN","objectTypeId":1,"oprtnName":"READ","objectId":3,"oprtnId":1,"groupId":7,"orders":0,"prmssntComment":"test 1"},
+		{"prmssnId":8,"prmssnName":"4","legacyName":"CRM","prmssnComment":"test3","objectComment":null, "objectName":"SCREEN-2","objectTypeName":"SCREEN","objectTypeId":1,"oprtnName":"DELETE","objectId":5,"oprtnId":3,"groupId":9,"orders":2,"prmssntComment":"test3"}
+		]
+	"result":null,
+	"error":null}
+}
++++++
+원천시스템/객체종류별 권한 리스트 가져오기 (원천시스템/객체종류별에 해당하는 항목들 가져오기)
+
+URL: /api/permission/object/{legacy-id}/{object-type-id}  
+- 리스트에서는 다음 2개로 권한,객체 비고 구분 "prmssnComment":"test3","objectComment":null
+METHOD: GET
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":[ 
+		{"prmssnId":4,"prmssnName":"3","legacyName":"CRM","prmssnComment":"test3","objectComment":null,"objectName":"SCREEN-1","objectTypeName":"SCREEN","oprtnName":"READ","objectId":3,"oprtnId":1,"groupId":7,"orders":0,"objectTypeId":2,"legacyId":0,"prmssntComment":"test 1"},
+		{"prmssnId":8,"prmssnName":"4","legacyName":"CRM","prmssnComment":"test3","objectComment":null,"objectName":"SCREEN-2","objectTypeName":"SCREEN","oprtnName":"DELETE","objectId":5,"oprtnId":3,"groupId":9,"orders":2,"objectTypeId":2,"legacyId":0,"prmssntComment":"test3"}
+	],
+	"result":null,
+	"error":null}
+}
++++++
+권한 생성하기 (권한 추가 메뉴)
+URL: /api/permission
+METHOD: POST
+REQUESTBODY: [
+	{"prmssnName": "test 1","objectId": 3,"oprtnId": 1 , "orders" : 1, "prmssntComment": "test 1"},
+	{"prmssnName": "test 2","objectId": 3,"oprtnId": 1 , "orders" : 2,"prmssntComment": "test 2"}
+]
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
+ +++++
+--------------------------------------------------------------------------
+권한 상세에서 수정 버튼 눌렀을 때 처리:
+
+1. 행변화 없이 내용만 수정했을 경우 
+	- group-id를 포함하여 PUT /api/permission
+2. 행 추가후 내용 수정했을 경우 
+   - 추가한 행은 group-id를 포함하여 POST /api/permission/put-add
+   - 나머지 내용 수정한 행은  group-id를  포함하여 PUT /api/permission
+3. 행 삭제후 내용 수정 했을 경우
+	- 삭제한 행은 prmssnId를 포함한 DELETE /api/permission/permission-id
+	- 나머지 내용 수정한 행은  group-id를 포함하여 PUT /api/permission
+--------------------------------------------------------------------------
+권한 수정하기 (권한 상세)
+URL: /api/permission
+METHOD: PUT
+-- 참고: REQUESTBODY에서 [ {},{} ] 와 같이 [{}] 순서 주의
+REQUESTBODY: [
+	{"prmssnName": "test 111","objectId": 3,"oprtnId": 2 , "orders" : 1, "prmssntComment": "test 1", "groupId": 11, "prmssnId":12},
+	{"prmssnName": "test 211","objectId": 3,"oprtnId": 2 , "orders" : 2,"prmssntComment": "test 2", "groupId": 11, "prmssnId":13}
+]
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
+
++++++
+권한 생성하기 (권한 상세 리스트에서 + 버튼으로 추가한 항목)
+URL: /api/permission/put-add
+METHOD: POST
+-- 참고: REQUESTBODY에서 [ {},{} ] 와 같이 [{}] 순서 주의
+REQUESTBODY: [
+	{"prmssnName": "test 1","objectId": 3,"oprtnId": 1 , "orders" : 1, "groupId": 11,"prmssntComment": "test 1"},
+	{"prmssnName": "test 2","objectId": 3,"oprtnId": 1 , "orders" : 2,"groupId": 11,"prmssntComment": "test 2"}
+]
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
++++++
+권한  지우기 (권한 상세 리스트에서 - 버튼, prmssnId에 해당하는 항목 지우기)
+URL: /api/permission/permission-id
+METHOD: DELETE
+REQUESTBODY: {
+ "prmssnId":9 
+}
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
++++++
+권한  지우기 (권한 상세에서 삭제 메뉴, groupId에 해당하는 항목 지우기)
+URL: /api/permission/group-id
+METHOD: DELETE
+REQUESTBODY: { 
+	"groupId":10 
+}
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
+

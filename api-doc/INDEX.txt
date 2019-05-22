@@ -1,0 +1,10 @@
+
+원천시스템(LEGACY) 리스트 가져오기, Legacy.txt, 4월10일, 생성
+Object (객체) , Object.txt, 4월10일, 생성
+ObjectType (객체 종류) , ObjectType.txt, 4월22일, 생성
+Operation (연산), Operation.txt, 4월23일, 생성
+Permission (권한), Permission.txt, 4월24일, 생성
+Role(역할), Role.txt, 4월25일, 생성
+RoleType(역할 종류), RoleType.txt, 4월25일, 생성
+RoleGroup(역할 그룹), RoleGroup.txt, 4월28일, 생성
+RolePermission(역할 권한), RolePermission.txt, 4월30일, 생성

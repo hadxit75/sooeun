@@ -1,0 +1,68 @@
+
+------------------------------
+Operation (연산)
+------------------------------
+연산 리스트 가져오기
+
+BASE URL: dabin02272.cafe24.com:8090
+FULL URL: dabin02272.cafe24.com:8090/api/operation/list 
+URL: /api/operation/list 
+
+METHOD: GET
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":[
+		{"oprtnId":1,"oprtnName":"READ","comment":"0"},
+		{"oprtnId":2,"oprtnName":"UPDATE","comment":"0"},
+		{"oprtnId":3,"oprtnName":"DELETE","comment":"0"},
+		{"oprtnId":4,"oprtnName":"CREATE","comment":"0"},
+		{"oprtnId":5,"oprtnName":"SEARCH","comment":"0"},
+		{"oprtnId":6,"oprtnName":"EXECUTE","comment":"0"}],
+	"result":null,
+	"error":null}
+	]
+}
+
+연산 하나 생성하기 
+URL: /api/operation
+METHOD: POST
+REQUESTBODY: { 
+	"oprtnName":"TEST-POST",
+	"comment":"TEST OPERATION"
+}
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
+ 
+
+연산 하나 수정하기 
+URL: /api/operation
+METHOD: PUT
+REQUESTBODY: {  {
+	 "oprtnId" : 8,
+	"oprtnName":"TEST-PUT 2",
+	"comment":"TEST OPERATION"
+}
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
+
+연산 하나 지우기 
+URL: /api/operation
+METHOD: DELETE
+REQUESTBODY: {
+ "oprtnId" : 8
+}
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
+
