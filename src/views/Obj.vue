@@ -55,6 +55,8 @@
 </template>
 
 <script>
+import { APIService } from "../util/APIService";
+
 export default {
   name: "obj",
   data() {
@@ -70,52 +72,48 @@ export default {
   },
   created() {
     var self = this;
-    this.$http
-      .get("http://dabin02272.cafe24.com:8090/api/object/list", {
-        headers: { "Content-Type": "application/json" }
-      })
-      .then(response => {
-        this.listData = response.data.results;
-        this.displayData = this.listData;
+    APIService.getObject().then(data => {
+      this.listData = data;
+      this.displayData = this.listData;
 
-        var _self = this;
-        _self.$http
-          .get("http://dabin02272.cafe24.com:8090/api/legacy/list", {
-            headers: { "Content-Type": "application/json" }
-          })
-          .then(response => {
-            _self.listData2 = _self.listData.filter(item => {
-              var _value = response.data.results.find(
-                sitem => item.legacyId == sitem.legacyId
-              ).legacyName;
+      var _self = this;
+      _self.$http
+        .get("http://dabin02272.cafe24.com:8090/api/legacy/list", {
+          headers: { "Content-Type": "application/json" }
+        })
+        .then(response => {
+          _self.listData2 = _self.listData.filter(item => {
+            var _value = response.data.results.find(
+              sitem => item.legacyId == sitem.legacyId
+            ).legacyName;
 
-              _value = _value ? _value : "";
-              item["legacyName"] = _value;
-              return item;
-            });
-            _self.displayData = _self.listData2;
-            _self.listData = _self.listData2;
+            _value = _value ? _value : "";
+            item["legacyName"] = _value;
+            return item;
           });
+          _self.displayData = _self.listData2;
+          _self.listData = _self.listData2;
+        });
 
-        var _self2 = this;
-        _self2.$http
-          .get("http://dabin02272.cafe24.com:8090/api/object-type/list", {
-            headers: { "Content-Type": "application/json" }
-          })
-          .then(response => {
-            _self2.listData3 = _self.listData.filter(item => {
-              var _value = response.data.results.find(
-                sitem => item.objectTypeId == sitem.objectTypeId
-              ).objectTypeName;
+      var _self2 = this;
+      _self2.$http
+        .get("http://dabin02272.cafe24.com:8090/api/object-type/list", {
+          headers: { "Content-Type": "application/json" }
+        })
+        .then(response => {
+          _self2.listData3 = _self.listData.filter(item => {
+            var _value = response.data.results.find(
+              sitem => item.objectTypeId == sitem.objectTypeId
+            ).objectTypeName;
 
-              _value = _value ? _value : "";
-              item["objectTypeName"] = _value;
-              return item;
-            });
-            _self.displayData = _self.listData3;
-            _self.listData = _self.listData3;
+            _value = _value ? _value : "";
+            item["objectTypeName"] = _value;
+            return item;
           });
-      });
+          _self.displayData = _self.listData3;
+          _self.listData = _self.listData3;
+        });
+    });
   },
   methods: {
     test() {
