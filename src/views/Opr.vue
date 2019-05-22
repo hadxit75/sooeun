@@ -46,56 +46,56 @@
 
 <script>
 export default {
- name: "opr",
+  name: "opr",
   data() {
     return {
       listData: [],
-      search: '',
+      search: "",
       displayData: [],
-      legacyData : []
-    }
+      legacyData: []
+    };
   },
   created() {
-
     var self = this;
-    this.$http.get('http://dabin02272.cafe24.com:8090/api/operation/list', { headers: { 'Content-Type': 'application/json' } })
-    .then((response) => {
-      this.listData = response.data.results;
-      this.displayData = this.listData;
-    });
-    
+    this.$http
+      .get("http://dabin02272.cafe24.com:8090/api/operation/list", {
+        headers: { "Content-Type": "application/json" }
+      })
+      .then(response => {
+        this.listData = response.data.results;
+        this.displayData = this.listData;
+      });
   },
   methods: {
-      test()
-      {
-          //console.log(this.listData);
-      },
-      rowSelected(items) {
-        this.$router.push({name:'oprDetail',params:{objs:items} })
-      },
-       greet: function () {
-        this.$router.push({name:'oprAdd'})   
-      },
-      handleCurrentChange(val) {
-        //console.log(val)
-        this.$router.push({name:'oprDetail',params:{objs:val} })
-      },
-      searchHandler(){
-        //console.log(" searchHandler")
-        var self =this;
-        if(this.search){
-            this.displayData = this.listData.filter(data => !self.search 
-            || data.oprtnName.toLowerCase().includes(self.search.toLowerCase())
-            ) 
-        }else{
-            this.displayData = this.listData
-        }
-        
-      },
-      indexMethod(index) {
-        return index + 1;
+    test() {
+      //console.log(this.listData);
+    },
+    rowSelected(items) {
+      this.$router.push({ name: "oprDetail", params: { objs: items } });
+    },
+    greet: function() {
+      this.$router.push({ name: "oprAdd" });
+    },
+    handleCurrentChange(val) {
+      //console.log(val)
+      this.$router.push({ name: "oprDetail", params: { objs: val } });
+    },
+    searchHandler() {
+      //console.log(" searchHandler")
+      var self = this;
+      if (this.search) {
+        this.displayData = this.listData.filter(
+          data =>
+            !self.search ||
+            data.oprtnName.toLowerCase().includes(self.search.toLowerCase())
+        );
+      } else {
+        this.displayData = this.listData;
       }
+    },
+    indexMethod(index) {
+      return index + 1;
     }
-    
+  }
 };
 </script>
