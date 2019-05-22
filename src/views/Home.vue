@@ -24,6 +24,7 @@
         type="index"
         :index="indexMethod"
         label="순번"
+        width="70px"
         align="center"
         >
         </el-table-column>
@@ -70,29 +71,38 @@ export default {
   name: "home",
   data() {
     return {
-        selected: null,
-        options: [
-            { value: null, text: '순번' },
-            { value: 'a', text: '원천시스템' },
-            { value: 'b', text: '객체' },
-            { value: 'c', text: '권한' },
-            { value: 'd', text: 'Role'},
-            { value: 'd', text: '사용자'}
+      selected: null,
+      options: [
+        { value: null, text: "순번" },
+        { value: "a", text: "원천시스템" },
+        { value: "b", text: "객체" },
+        { value: "c", text: "권한" },
+        { value: "d", text: "Role" },
+        { value: "d", text: "사용자" }
       ],
-      listHeader: ["순번","원천시스템", "객체", "권한", "Role", "사용자"],
+      listHeader: ["순번", "원천시스템", "객체", "권한", "Role", "사용자"],
       listData: [
-        {id: 1, system: "공통", obj: 10, per: 20, role: 5, user: 200},
-        {id: 2, system: "업무현황시스템", obj: 20, per: 30, role: 10, user: 300},
-        {id: 3, system: "CRM", obj: 30, per: 40, role: 15, user: 400}
+        { id: 1, system: "공통", obj: 10, per: 20, role: 5, user: 200 },
+        {
+          id: 2,
+          system: "업무현황시스템",
+          obj: 20,
+          per: 30,
+          role: 10,
+          user: 300
+        },
+        { id: 3, system: "CRM", obj: 30, per: 40, role: 15, user: 400 }
       ],
       text: "test"
+    };
+  },
+  methods: {
+    formatter(row, column) {
+      return row.address;
+    },
+    indexMethod(index) {
+      return index + 1;
     }
   }
-  ,
-    methods: {
-      formatter(row, column) {
-        return row.address;
-      }
-    }
 };
 </script>

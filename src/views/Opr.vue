@@ -21,6 +21,7 @@
 
         <el-table-column
         type="index"
+        width="70px"
         :index="indexMethod"
         label="순번"
         align="center">

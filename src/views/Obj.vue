@@ -1,6 +1,7 @@
 
 <template>
-    <div>
+ <div class="container">
+   <div>
     <div class="p-3 float-left">    
         <h4>객체현황</h4>
     </div>
@@ -19,6 +20,7 @@
     style="width: 100">
     <el-table-column
       type="index"
+      width="70px"
       :index="indexMethod"
       label="순번"
       align="center">
@@ -49,7 +51,7 @@
     </el-table-column>
      
   </el-table>
-
+    </div>
     </div>
  </div>
 </template>

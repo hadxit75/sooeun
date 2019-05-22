@@ -1,5 +1,5 @@
 <template>
-  <nav :class="classes" class="navbar navbar-expand-lg">
+  <nav :class="classes" class="navbar navbar-expand-lg" style="box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
     <div class="container-fluid">
       <slot></slot>
       <slot name="toggle-button">
@@ -24,64 +24,73 @@
   </nav>
 </template>
 <script>
-  import { CollapseTransition } from 'vue2-transitions';
+import { CollapseTransition } from "vue2-transitions";
 
-  export default {
-    name: 'navbar',
-    props: {
-      showNavbar: {
-        type: Boolean,
-        description: "Whether navbar is visible"
-      },
-      navbarMenuClasses: {
-        type: [String, Object],
-        description: 'Navbar menu css classes'
-      },
-      transparent: {
-        type: Boolean,
-        default: true,
-        description: 'Whether navbar is transparent'
-      },
-      position: {
-        type: String,
-        default: 'absolute',
-        description: 'Navbar position (absolute|fixed|relative)'
-      },
-      type: {
-        type: String,
-        default: 'white',
-        validator(value) {
-          return ['white', 'default', 'primary', 'danger', 'success', 'warning', 'info'].includes(value);
-        },
-        description: 'Navbar type (primary|info|danger|default|warning|success)'
-      }
+export default {
+  name: "navbar",
+  props: {
+    showNavbar: {
+      type: Boolean,
+      description: "Whether navbar is visible"
     },
-    model: {
-      prop: 'showNavbar',
-      event: 'change'
+    navbarMenuClasses: {
+      type: [String, Object],
+      description: "Navbar menu css classes"
     },
-    components: {
-      CollapseTransition
+    transparent: {
+      type: Boolean,
+      default: true,
+      description: "Whether navbar is transparent"
     },
-    computed: {
-      classes() {
-        let color = `bg-${this.type}`;
-        let navPosition = `navbar-${this.position}`;
+    position: {
+      type: String,
+      default: "absolute",
+      description: "Navbar position (absolute|fixed|relative)"
+    },
+    type: {
+      type: String,
+      default: "white",
+      validator(value) {
         return [
-          { 'navbar-transparent': !this.showNavbar && this.transparent },
-          { [color]: this.showNavbar || !this.transparent },
-          navPosition]
-      }
-    },
-    methods: {
-      toggleMenu() {
-        this.$emit('change', !this.showNavbar);
-      }
+          "white",
+          "default",
+          "primary",
+          "danger",
+          "success",
+          "warning",
+          "info"
+        ].includes(value);
+      },
+      description: "Navbar type (primary|info|danger|default|warning|success)"
+    }
+  },
+  model: {
+    prop: "showNavbar",
+    event: "change"
+  },
+  components: {
+    CollapseTransition
+  },
+  computed: {
+    classes() {
+      let color = `bg-${this.type}`;
+      let navPosition = `navbar-${this.position}`;
+      return [
+        { "navbar-transparent": !this.showNavbar && this.transparent },
+        { [color]: this.showNavbar || !this.transparent },
+        navPosition
+      ];
+    }
+  },
+  methods: {
+    toggleMenu() {
+      this.$emit("change", !this.showNavbar);
     }
   }
+};
 </script>
 <style scoped>
-  .navbar-relative {
-    position: relative;
-  }
+.navbar-relative {
+  position: relative;
+}
 </style>

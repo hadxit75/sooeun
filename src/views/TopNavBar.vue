@@ -13,7 +13,7 @@
         </navbar-toggle-button>
       </div> -->
        <router-link to="/" >
-      <a class="navbar-brand" href="#">ROLE</a>
+      <a class="navbar-brand" href="#">HOME</a>
        </router-link>
     </div>
 
@@ -32,9 +32,9 @@
          <li class="nav-item">
           <router-link to="/obj" class="nav-item" tag="li">
           <a class="nav-link btn-magnify" >
-            <i class="nc-icon nc-layout-11"></i>
+            <i class="nc-icon nc-app"></i>
             <p>
-              <span class="d-md-block">객체 현황</span>
+              <span class="d-md-block">객체현황</span>
             </p>
           </a>
           </router-link>
@@ -42,9 +42,9 @@
          <li class="nav-item">
           <router-link to="/opr" class="nav-item" tag="li">
           <a class="nav-link btn-magnify" >
-            <i class="nc-icon nc-layout-11"></i>
+            <i class="nc-icon nc-atom"></i>
             <p>
-              <span class="d-md-block">Opr</span>
+              <span class="d-md-block">연산관리</span>
             </p>
           </a>
           </router-link>
@@ -52,9 +52,9 @@
          <li class="nav-item">
           <router-link to="/per" class="nav-item" tag="li">
           <a class="nav-link btn-magnify" >
-            <i class="nc-icon nc-layout-11"></i>
+            <i class="nc-icon nc-touch-id"></i>
             <p>
-              <span class="d-md-block">Per</span>
+              <span class="d-md-block">권환현황</span>
             </p>
           </a>
           </router-link>
@@ -62,60 +62,69 @@
         <li class="nav-item">
           <router-link to="/role" class="nav-item" tag="li">
           <a class="nav-link btn-magnify" >
-            <i class="nc-icon nc-layout-11"></i>
+            <i class="nc-icon nc-tap-01"></i>
             <p>
-              <span class="d-md-block">Role</span>
+              <span class="d-md-block">Role현황</span>
             </p>
           </a>
           </router-link>
         </li>
-        <li class="nav-item">
-          <router-link to="/user" class="nav-item" tag="li">
-          <a class="nav-link btn-magnify" >
-            <i class="nc-icon nc-layout-11"></i>
-            <p>
-              <span class="d-md-block">User</span>
-            </p>
-          </a>
-          </router-link>
-        </li>
-        <li class="nav-item">
-          <router-link to="/org" class="nav-item" tag="li">
-          <a class="nav-link btn-magnify" >
-            <i class="nc-icon nc-layout-11"></i>
-            <p>
-              <span class="d-md-block">Org</span>
-            </p>
-          </a>
-          </router-link>
-        </li>
-        <drop-down icon="nc-icon nc-bell-55" tag="li"
+
+
+        <drop-down icon="nc-icon nc-single-02" tag="li"
                    position="right"
                    direction="none"
-                   class="nav-item btn-rotate dropdown">
+                   class="nav-item btn-nmagnify dropdown">
           <a slot="title"
              slot-scope="{isOpen}"
              class="nav-link dropdown-toggle"
              data-toggle="dropdown"
              aria-haspopup="true"
              :aria-expanded="isOpen">
-            <i class="nc-icon nc-bell-55"></i>
+            <i class="nc-icon nc-single-02"></i>
             <p>
-              <span class="d-lg-none d-md-block">Some Actions</span>
+              <span class="d-md-block">사용자</span>
             </p>
           </a>
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <a class="dropdown-item" href="#">Something else here</a>
+          <a class="dropdown-item" href="#">사용자 그룹관리</a>
+          <a class="dropdown-item" href="#">사용자 관리</a>
         </drop-down>
+
+
+
+        <!-- // <li class="nav-item">
+        //   <router-link to="/user" class="nav-item" tag="li">
+        //   <a class="nav-link btn-magnify" >
+        //     <i class="nc-icon nc-single-02"></i>
+        //     <p>
+        //       <span class="d-md-block">User</span>
+        //     </p>
+        //   </a>
+        //   </router-link>
+        // </li> -->
+
+
+
+
         <li class="nav-item">
+          <router-link to="/org" class="nav-item" tag="li">
+          <a class="nav-link btn-magnify" >
+            <i class="nc-icon nc-vector"></i>
+            <p>
+              <span class="d-md-block">조직도관리</span>
+            </p>
+          </a>
+          </router-link>
+        </li>
+        
+        <!-- <li class="nav-item">
           <a class="nav-link btn-rotate" href="#pablo">
             <i class="nc-icon nc-settings-gear-65"></i>
             <p>
               <span class="d-lg-none d-md-block">Account</span>
             </p>
           </a>
-        </li>
+        </li> -->
       </ul>
     </template>
   </navbar>
@@ -160,4 +169,8 @@ export default {
 };
 </script>
 <style>
+.nav-item a,
+.nav-item i {
+  font-size: 20px !important;
+}
 </style>
