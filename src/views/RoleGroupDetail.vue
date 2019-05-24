@@ -36,20 +36,20 @@
                             </el-select></td>
                             <td><el-select v-model="sitem.roleId" placeholder="Select" :disabled="sitem.utype != 'I'" @change="test(index,$event)" clearable>
                                 <el-option
-                                v-for="(item,index) in roleSelect"
+                                v-for="(item,index) in objectTypeSelectNew(sitem.legacyId, sitem.roleTypeId)"
                                 :key="index"
                                 :label="item.roleName"
                                 :value="item.roleId">
                                 </el-option>
                             </el-select></td>
-                            <td><el-input placeholder="" v-model="sitem.comment" :disabled="sitem.utype != 'I'"></el-input></td>
+                            <td><el-input placeholder="" v-model="sitem.roleComment" :disabled="sitem.utype != 'I'"></el-input></td>
                             <td><el-button type="warning" v-on:click="rowMinus(sitem.orders, sitem.roleGroupId)" plain>-</el-button></td>
                             </tr>
                             <tr>
                             <td >Role 그룹이름</td> 
                             <td colspan="2"><el-input placeholder="" v-model="roleGroupName"></el-input></td>
                             <td>비고</td>
-                            <td colspan="2"><el-input placeholder="" v-model="roleComment"></el-input></td>
+                            <td colspan="2"><el-input placeholder="" v-model="roleGroupComment"></el-input></td>
                             </tr>
                         </tbody>
                     </table>
@@ -79,6 +79,9 @@ export default {
       groupId: this.$route.params.objs.groupId,
       roleGroupName: this.$route.params.objs.roleGroupName,
       roleComment: this.$route.params.objs.roleComment,
+      roleGroupComment: this.$route.params.objs.roleGroupComment,
+      sroleGroupName: this.$route.params.objs.roleGroupName,
+      sroleGroupComment: this.$route.params.objs.roleGroupComment,
       selected: null,
       legacySelect: [],
       roleTypeSelect: [],
@@ -90,49 +93,86 @@ export default {
       oprtnId: null,
       oprtnName: null,
       tasks: [],
+      tasksClone: [],
       slegacyId: null
     }
   },
   created() {
-     console.log("this.groupId::"+this.groupId)
+    //console.log("this.groupId::"+this.groupId)
     this.$http.get('http://dabin02272.cafe24.com:8090/api/role-group/'+ this.groupId, { headers: { 'Content-Type': 'application/json' } })
     .then((response) => {
       this.tasks = response.data.results;
          this.tasks['utype']='U'
          this.roleTypeSelect = response.data.results;   
-         this.roleSelect = response.data.results; 
-
+         //this.roleSelect = response.data.results; 
+         
          var _self = this;
-         _self.$http.get('http://dabin02272.cafe24.com:8090/api/legacy/list', { headers: { 'Content-Type': 'application/json' } })
+
+         this.$http.get('http://dabin02272.cafe24.com:8090/api/legacy/list', { headers: { 'Content-Type': 'application/json' } })
             .then((response) => {  
                 _self.legacySelect = response.data.results;
+                //this.tasksClone = response.data.results;
 
-        })       
+        })  
+        
+         this.$http.get('http://dabin02272.cafe24.com:8090/api/role/list', { headers: { 'Content-Type': 'application/json' } })
+            .then((response) => {  
+                _self.roleSelect = response.data.results;
+                _self.tasksClone = response.data.results;
+
+        })  
     }); 
   },
    methods: {
        test(index,event)
        {
-           //console.log("test tasks::",this.tasks)
-           var _a 
+           var _a ;
+           var _idx = 1;
            this.tasks.forEach(item=>{
-               if(item.orders == index+1)
+               if(_idx == index+1)
                {
                    _a = item.roleId
                }
+               _idx++;
            })
-           var _d = this.roleSelect.find(item=> item.roleId == _a)
+
+           //console.log("_a", _a)
+
+           _idx = 1;
            this.tasks = this.tasks.filter(item =>{
-               if(item.orders == index+1)
+               if(_idx == index+1)
                {
                     item.roleId = _a;
+                    //console.log("item.roleId",item.roleId)
+                    this.tasksClone.forEach(sitem=>{
+                        if(sitem.roleId == item.roleId){
+                            item.roleComment = sitem.roleComment
+                        }
+                    })
                }
+               _idx++;
+               //console.log("item", item)
                return item
 
            })
 
+          // console.log("tasks", this.tasks)
+
        },
-      add: function() {
+       objectTypeSelectNew(legacyId, roleTypeId)
+       {
+            var _r=[];
+            this.roleSelect.forEach(item=>{
+                if(item.roleTypeId == roleTypeId && item.legacyId == legacyId)
+                {   
+                    _r.push(item);
+                }
+            });
+    
+            return _r;
+
+        },
+       add: function() {
         var self = this
 
         var _msg = [];
@@ -141,51 +181,50 @@ export default {
              var _item = {"roleGroupName": self.roleGroupName
                          ,"roleId": sitem.roleId
                          ,"orders" : sitem.idx
-                         ,"comment": self.roleComment};
+                         ,"roleComment": self.roleComment};
 
             _msg.push(_item);
-            console.log("_msg", _msg)
+            //console.log("_msg", _msg)
            
         })
 
       },
       edit: function() {
-           var self = this
-           var _msg = [];
+           //롤그룹 명, 코멘트 변경시
+           if(this.roleGroupName != this.sroleGroupName || this.roleGroupComment != this.sroleGroupComment){
+                var self = this
 
-           this.tasks.forEach(sitem=>{
-                var _item = {"roleGroupName": self.roleGroupName
-                ,"comment": self.roleComment
-                ,"groupId": self.groupId };
-                _msg.push(_item);
-            })
-           
-            this.$http.put('http://dabin02272.cafe24.com:8090/api/role-group', _msg)
-            .then((response) => {
-                this.$message({
-                    type: 'success',
-                    message: '수정이 완료되었습니다.' 
-                });
-                //this.$router.push({name:'role'})  
-                            
-            })
-            .catch((error) => {
-                this.$message({
-                    type: 'error',
-                    message: '에러가 발생하였습니다.'
-                });
-                console.log(error.config)
-            })
+                self.$http.put('http://dabin02272.cafe24.com:8090/api/role-group', { roleGroupName: self.roleGroupName 
+                                                                                    ,roleGroupComment: self.roleGroupComment
+                                                                                    ,groupId: self.groupId
+                                                                                    })
+            
+                .then((response) => {
+                    this.$message({
+                        type: 'success',
+                        message: '수정이 완료되었습니다.' 
+                    });
+                    //this.$router.push({name:'role'})  
+                                
+                })
+                .catch((error) => {
+                    this.$message({
+                        type: 'error',
+                        message: '에러가 발생하였습니다.'
+                    });
+                    console.log(error.config)
+                })
+           }
 
+           //롤 항목 추가 시
            var self2 = this
-
            var _msg2 = [];
            this.tasks.forEach(sitem=>{
                if(sitem.utype=="I"){
                 var _item = {"roleId": sitem.roleId
                             ,"roleGroupName": self2.roleGroupName
                             ,"orders": sitem.orders 
-                            ,"comment" : self2.roleComment
+                            ,"roleGroupComment" : self2.roleGroupComment
                             ,"groupId": self2.groupId};
 
                 _msg2.push(_item);
@@ -250,10 +289,10 @@ export default {
       },
       rowPlus: function () {
           var _index = this.tasks.length+1;
-          this.tasks.push({orders:_index++,roleTypeId:"", legacyId:"", roleId:"", roleGroupName:"", roleGroupComment:"", utype:"I"})
+          this.tasks.push({orders:_index++,roleTypeId:"", legacyId:"", roleId:"", roleName:"", roleGroupName:"", roleGroupComment:"", utype:"I"})
       },
       rowMinus: function (sidx, roleGroupId) {
-        alert(roleGroupId)
+        //alert(roleGroupId)
           if (roleGroupId != null) {
               if(this.tasks.length <= 1){
                   this.$message({
@@ -317,7 +356,6 @@ export default {
            
       },
       roleTypeChange: function(index, event){
-        //console.log("start")
         var _a 
 
         this.tasks.forEach(item=>{
@@ -326,24 +364,14 @@ export default {
                 _a = item;
             }
         })
-        
-        var _idx = 0;
 
-        var _self = this;
-
-        _self.roleSelect = [];
-        _self.roleSelect.push("")
-        
-        _self.$http.get('http://dabin02272.cafe24.com:8090/api/role/role-type/legacy/'+_self.slegacyId+'/'+ _a.roleTypeId ,{ headers: { 'Content-Type': 'application/json' } })
-            .then((response) => {
-                _self.roleSelect.push(...response.data.results);
-        })
-
+        var _idx = 1;
         this.tasks = this.tasks.filter(item=>{
-            if(item.orders == index+1)
+            if(_idx == index+1)
             {
                 item.roleId = ""
             }
+            _idx++;
             return item;
         })
       }

@@ -42,14 +42,14 @@
                                 :value="item.roleId">
                                 </el-option>
                             </el-select></td>
-                            <td><el-input placeholder="" v-model="sitem.comment"></el-input></td>
+                            <td><el-input placeholder="" v-model="sitem.roleComment"></el-input></td>
                             <td><el-button type="warning" v-on:click="rowMinus(sitem.idx)" plain>-</el-button></td>
                             </tr>
                             <tr>
                             <td >Role 그룹이름</td> 
                             <td colspan="2"><el-input placeholder="" v-model="roleGroupName"></el-input></td>
                             <td>비고</td>
-                            <td colspan="2"><el-input placeholder="" v-model="roleComment"></el-input></td>
+                            <td colspan="2"><el-input placeholder="" v-model="roleGroupComment"></el-input></td>
                             </tr>
                         </tbody>
                     </table>
@@ -86,9 +86,12 @@ export default {
       oprtnId: null,
       oprtnName: null,
       tasks: [],
+      tasksClone: [],
       roleGroupName: null,
       roleComment: null,
-      slegacyId: null
+      slegacyId: null,
+      roleGroupComment: null,
+      groupId: null
     }
   },
   created() {
@@ -100,7 +103,7 @@ export default {
    methods: {
        test(index,event)
        {
-           console.log(this.tasks)
+           //console.log(this.tasks)
            var _a 
            this.tasks.forEach(item=>{
                if(item.idx == index+1)
@@ -113,6 +116,11 @@ export default {
                if(item.idx == index+1)
                {
                     item.roleId = _a;
+                    this.tasksClone.forEach(sitem=>{
+                        if(sitem.roleId = item.roleId){
+                            item.roleComment = sitem.roleComment
+                        }
+                    })
                }
                return item
 
@@ -121,14 +129,14 @@ export default {
        },
       add: function() {
         var self = this
-
         var _msg = [];
+
         this.tasks.forEach(sitem=>{
 
              var _item = {"roleGroupName": self.roleGroupName
                          ,"roleId": sitem.roleId
                          ,"orders": sitem.idx
-                         ,"comment": self.roleComment
+                         ,"roleGroupComment": self.roleGroupComment
                          ,"groupId": sitem.groupId};
 
             _msg.push(_item);
@@ -205,6 +213,7 @@ export default {
         _self.$http.get('http://dabin02272.cafe24.com:8090//api/role/role-type/legacy/'+_self.slegacyId+'/'+ _a.roleTypeId ,{ headers: { 'Content-Type': 'application/json' } })
             .then((response) => {
                 _self.roleSelect.push(...response.data.results);
+                _self.tasksClone = response.data.results;
         })
 
         this.tasks = this.tasks.filter(item=>{
