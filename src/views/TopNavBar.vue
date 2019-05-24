@@ -16,117 +16,42 @@
        <a class="navbar-brand" href="#"><img src="assets/img/logo.png"/>Role 관리 시스템</a>
        </router-link>
     </div>
-
-    <template slot="navbar-menu">
-      <ul class="navbar-nav">
-        <!-- <li class="nav-item">
-          <router-link to="/" class="nav-item" tag="li">
-          <a class="nav-link btn-magnify" >
-            <i class="nc-icon nc-layout-11"></i>
-            <p>
-              <span class="d-md-block">권환 현황</span>
-            </p>
-          </a>
-          </router-link>
-        </li> -->
-         <li class="nav-item">
-          <router-link to="/obj" class="nav-item" tag="li">
-          <a class="nav-link btn-magnify" >
-            <i class="nc-icon nc-app"></i>
-            <p>
-              <span class="d-md-block">객체관리</span>
-            </p>
-          </a>
-          </router-link>
-        </li>
-         <li class="nav-item">
-          <router-link to="/opr" class="nav-item" tag="li">
-          <a class="nav-link btn-magnify" >
-            <i class="nc-icon nc-atom"></i>
-            <p>
-              <span class="d-md-block">연산관리</span>
-            </p>
-          </a>
-          </router-link>
-        </li>
-         <li class="nav-item">
-          <router-link to="/per" class="nav-item" tag="li">
-          <a class="nav-link btn-magnify" >
-            <i class="nc-icon nc-touch-id"></i>
-            <p>
-              <span class="d-md-block">권환관리</span>
-            </p>
-          </a>
-          </router-link>
-        </li>
-        <li class="nav-item">
-          <router-link to="/role" class="nav-item" tag="li">
-          <a class="nav-link btn-magnify" >
-            <i class="nc-icon nc-tap-01"></i>
-            <p>
-              <span class="d-md-block">Role관리</span>
-            </p>
-          </a>
-          </router-link>
-        </li>
-
-
-        <drop-down icon="nc-icon nc-single-02" tag="li"
-                   position="right"
-                   direction="none"
-                   class="nav-item btn-nmagnify dropdown">
-          <a slot="title"
-             slot-scope="{isOpen}"
-             class="nav-link dropdown-toggle"
-             data-toggle="dropdown"
-             aria-haspopup="true"
-             :aria-expanded="isOpen">
-            <i class="nc-icon nc-single-02"></i>
-            <p>
-              <span class="d-md-block">사용자관리</span>
-            </p>
-          </a>
-          <a class="dropdown-item" href="#">사용자 그룹 등록/조회</a>
-          <a class="dropdown-item" href="#">사용자 등록/조회</a>
-        </drop-down>
-
-
-
-        <!-- // <li class="nav-item">
-        //   <router-link to="/user" class="nav-item" tag="li">
-        //   <a class="nav-link btn-magnify" >
-        //     <i class="nc-icon nc-single-02"></i>
-        //     <p>
-        //       <span class="d-md-block">User</span>
-        //     </p>
-        //   </a>
-        //   </router-link>
-        // </li> -->
-
-
-
-
-        <li class="nav-item">
-          <router-link to="/org" class="nav-item" tag="li">
-          <a class="nav-link btn-magnify" >
-            <i class="nc-icon nc-vector"></i>
-            <p>
-              <span class="d-md-block">조직도관리</span>
-            </p>
-          </a>
-          </router-link>
-        </li>
+    <div style="display:block;width:100%">
+      <div style="display: inline-block; text-align: right; width: 100%">
+        <div style="display:flex;float:right">
+          <div style="margin-top:5px">
+          <el-breadcrumb separator-class="el-icon-arrow-right">
+          <el-breadcrumb-item >homepage</el-breadcrumb-item>
+          <el-breadcrumb-item>promotion management</el-breadcrumb-item>
+          <el-breadcrumb-item>promotion list</el-breadcrumb-item>
+          <el-breadcrumb-item>promotion detail</el-breadcrumb-item>
+         </el-breadcrumb>
+          </div>
+          <div style="margin-left:5px">
+             <span>홍길동</span>
+          </div>
+          <div style="margin-left:5px">
+             <el-button size="mini" round>로그아웃</el-button>
+          </div>
+        </div>
+      </div>
+      <div class="center-align">
+          <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" >
+          <el-menu-item index="1"> <router-link to="/obj" >객체관리</router-link></el-menu-item>
+          <el-menu-item index="2"> <router-link to="/opr"> 연산관리</router-link></el-menu-item>
+          <el-menu-item index="3"> <router-link to="/per"> 권환관리</router-link></el-menu-item>
+          <el-menu-item index="4"> <router-link to="/role"> Role관리</router-link></el-menu-item>
         
-        <!-- <li class="nav-item">
-          <a class="nav-link btn-rotate" href="#pablo">
-            <i class="nc-icon nc-settings-gear-65"></i>
-            <p>
-              <span class="d-lg-none d-md-block">Account</span>
-            </p>
-          </a>
-        </li> -->
-      </ul>
-    </template>
+          <el-submenu index="5">
+            <template slot="title"><span class="custom-font">사용자관리</span></template>
+            <el-menu-item index="5-1">사용자 그룹 등록/조회</el-menu-item>
+            <el-menu-item index="5-2">사용자 등록/조회</el-menu-item>
+          </el-submenu>
+            <el-menu-item index="6" ><router-link to="/org"> 조직도관리</router-link></el-menu-item>
+          </el-menu>
+      </div>
+    </div>
+  
   </navbar>
 </template>
 <script>
@@ -140,7 +65,9 @@ export default {
   data() {
     return {
       activeNotifications: false,
-      showNavbar: true
+      showNavbar: true,
+      activeIndex: "",
+      activeIndex2: ""
     };
   },
   methods: {
@@ -169,8 +96,15 @@ export default {
 };
 </script>
 <style>
-.nav-item a,
-.nav-item i {
-  font-size: 20px !important;
+.el-menu-item a,
+.custom-font {
+  font-size: 20px;
+  text-decoration: none !important;
+  color: #333333 !important;
+}
+.center-align {
+  display: table;
+  margin: 0 auto;
+  margin-top: -15px;
 }
 </style>
