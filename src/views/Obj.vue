@@ -171,5 +171,4 @@ td {
   cursor: pointer;
 }
 </style>
-</style>
 
