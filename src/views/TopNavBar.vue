@@ -13,7 +13,7 @@
         </navbar-toggle-button>
       </div> -->
        <router-link to="/" >
-      <a class="navbar-brand" href="#">HOME</a>
+       <a class="navbar-brand" href="#"><img src="assets/img/logo.png"/>Role 관리 시스템</a>
        </router-link>
     </div>
 
@@ -34,7 +34,7 @@
           <a class="nav-link btn-magnify" >
             <i class="nc-icon nc-app"></i>
             <p>
-              <span class="d-md-block">객체현황</span>
+              <span class="d-md-block">객체관리</span>
             </p>
           </a>
           </router-link>
@@ -54,7 +54,7 @@
           <a class="nav-link btn-magnify" >
             <i class="nc-icon nc-touch-id"></i>
             <p>
-              <span class="d-md-block">권환현황</span>
+              <span class="d-md-block">권환관리</span>
             </p>
           </a>
           </router-link>
@@ -64,7 +64,7 @@
           <a class="nav-link btn-magnify" >
             <i class="nc-icon nc-tap-01"></i>
             <p>
-              <span class="d-md-block">Role현황</span>
+              <span class="d-md-block">Role관리</span>
             </p>
           </a>
           </router-link>
@@ -83,11 +83,11 @@
              :aria-expanded="isOpen">
             <i class="nc-icon nc-single-02"></i>
             <p>
-              <span class="d-md-block">사용자</span>
+              <span class="d-md-block">사용자관리</span>
             </p>
           </a>
-          <a class="dropdown-item" href="#">사용자 그룹관리</a>
-          <a class="dropdown-item" href="#">사용자 관리</a>
+          <a class="dropdown-item" href="#">사용자 그룹 등록/조회</a>
+          <a class="dropdown-item" href="#">사용자 등록/조회</a>
         </drop-down>
 
 

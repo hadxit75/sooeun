@@ -4,10 +4,11 @@
         <div class="p-3 float-left">    
             <h4>연산 관리</h4>
         </div>
-        <div class="p-3 float-right">
+        <div class="p-3 float-right" style="margin-right:-15px">
         <b-form inline>
             <b-form-input v-model="search" id="inline-form-input-name" class="mb-2 mr-sm-2 mb-sm-0" v-on:keyup="searchHandler"></b-form-input>
-            <b-button v-on:click="greet" variant="warning" >추가</b-button>
+            <!-- <b-button v-on:click="greet" variant="warning" >추가</b-button> -->
+             <el-button plain type="primary" @click="greet">추가</el-button> 
         </b-form>
         </div>
 

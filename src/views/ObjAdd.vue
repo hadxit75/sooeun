@@ -41,6 +41,7 @@
                 </form>
             </div>
             <div>
+                
                 <b-button v-on:click="add" variant="success">확인</b-button>&nbsp;&nbsp;&nbsp;&nbsp;
                 <b-button v-on:click="cancle" variant="warning">취소</b-button>
             </div>
@@ -51,7 +52,7 @@
 <script>
 export default {
   components: {
-      name: 'AddItem'
+    name: "AddItem"
   },
   data() {
     return {
@@ -62,47 +63,54 @@ export default {
       objectComment: null,
       legacyId: null,
       objectTypeId: null
-    }
+    };
   },
   created() {
-    this.$http.get('http://dabin02272.cafe24.com:8090/api/object-type/list', { headers: { 'Content-Type': 'application/json' } })
-    .then((response) => {
-      this.objSelect = response.data.results;
+    this.$http
+      .get("http://dabin02272.cafe24.com:8090/api/object-type/list", {
+        headers: { "Content-Type": "application/json" }
+      })
+      .then(response => {
+        this.objSelect = response.data.results;
 
-      var _self = this;
-        _self.$http.get('http://dabin02272.cafe24.com:8090/api/legacy/list', { headers: { 'Content-Type': 'application/json' } })
-            .then((response) => {
-  
-                _self.legacySelect = response.data.results;
-        })
-    });   
+        var _self = this;
+        _self.$http
+          .get("http://dabin02272.cafe24.com:8090/api/legacy/list", {
+            headers: { "Content-Type": "application/json" }
+          })
+          .then(response => {
+            _self.legacySelect = response.data.results;
+          });
+      });
   },
-   methods: {
-      add: function() {
-        var self = this
-        this.$http.post('http://dabin02272.cafe24.com:8090/api/object', { legacyId : self.legacyId , 
-                                                                          objectTypeId : self.objectTypeId,
-                                                                          objectName : self.objectName,
-                                                                          objectComment : self.objectComment })
-        .then((response) => {
-            this.$message({
-                type: 'success',
-                message: '추가가 완료되었습니다.'
-             });
-            this.$router.push({name:'obj'})  
-                         
+  methods: {
+    add: function() {
+      var self = this;
+      this.$http
+        .post("http://dabin02272.cafe24.com:8090/api/object", {
+          legacyId: self.legacyId,
+          objectTypeId: self.objectTypeId,
+          objectName: self.objectName,
+          objectComment: self.objectComment
         })
-        .catch((error) => {
-            this.$message({
-                type: 'error',
-                message: '에러가 발생하였습니다.'
-             });
-            console.log(error.config)
+        .then(response => {
+          this.$message({
+            type: "success",
+            message: "추가가 완료되었습니다."
+          });
+          this.$router.push({ name: "obj" });
         })
-      },
-      cancle: function () {
-        this.$router.go(-1)  
-      }
+        .catch(error => {
+          this.$message({
+            type: "error",
+            message: "에러가 발생하였습니다."
+          });
+          console.log(error.config);
+        });
+    },
+    cancle: function() {
+      this.$router.go(-1);
     }
-}
+  }
+};
 </script>

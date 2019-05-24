@@ -22,10 +22,13 @@
                     </table>
                 </form>
             </div>
-            <div>
-                <b-button v-on:click="edit" variant="success" >수정</b-button>&nbsp;&nbsp;&nbsp;
+            <div style="margin-left:15px">
+                <!-- <b-button v-on:click="edit" variant="success" >수정</b-button>&nbsp;&nbsp;&nbsp;
                 <b-button v-on:click="del" variant="danger" >삭제</b-button>&nbsp;&nbsp;&nbsp;
-                <b-button v-on:click="cancle" variant="warning" >취소</b-button>
+                <b-button v-on:click="cancle" variant="warning" >취소</b-button> -->
+                <el-button plain type="primary" @click="edit">수정</el-button> 
+                <el-button plain type="danger" @click="del">삭제</el-button> 
+                <el-button plain type="warning" @click="cancle">취소</el-button> 
             </div>
         </div>
     </div>
@@ -34,71 +37,77 @@
 <script>
 export default {
   components: {
-      name: 'AddItem'
+    name: "AddItem"
   },
   data() {
     return {
       oprtnId: this.$route.params.objs.oprtnId,
       oprtnName: this.$route.params.objs.oprtnName,
       comment: this.$route.params.objs.comment
-    }
+    };
   },
-   methods: {
-      edit: function() {
-        var self = this
-        this.$http.put('http://dabin02272.cafe24.com:8090/api/operation', {  oprtnId : self.oprtnId, 
-                                                                          oprtnName : self.oprtnName,
-                                                                          comment : self.comment })
-        .then((response) => {
-            this.$message({
-                type: 'success',
-                message: '수정이 완료되었습니다.'
-            });
-            this.$router.push({name:'opr'}) 
+  methods: {
+    edit: function() {
+      var self = this;
+      this.$http
+        .put("http://dabin02272.cafe24.com:8090/api/operation", {
+          oprtnId: self.oprtnId,
+          oprtnName: self.oprtnName,
+          comment: self.comment
         })
-        .catch((error) => {
-            this.$message({
-                type: 'error',
-                message: '에러가 발생하였습니다.'
-            });
-            console.log(error.config)
-        })
-      },
-      del: function() {
-
-        this.$confirm('삭제 하시겠습니까?', 'Warning', {
-          confirmButtonText: '확인',
-          cancelButtonText: '취소',
-          type: 'warning'
-        }).then(() => {
-            var self = this
-            this.$http.delete('http://dabin02272.cafe24.com:8090/api/operation', { data: {oprtnId : self.oprtnId} })
-            .then((response) => {
-                this.$router.push({name:'opr'}) 
-            })
-            .catch((error) => {
-                this.$message({
-                    type: 'error',
-                    message: '에러가 발생하였습니다.'
-                });
-                console.log(error.config)
-            })
-
-            this.$message({
-            type: 'success',
-            message: '삭제가 완료되었습니다.'
-          });
-        }).catch(() => {
+        .then(response => {
           this.$message({
-            type: 'info',
-            message: '삭제가 취소되었습니다.'
-          });          
+            type: "success",
+            message: "수정이 완료되었습니다."
+          });
+          this.$router.push({ name: "opr" });
+        })
+        .catch(error => {
+          this.$message({
+            type: "error",
+            message: "에러가 발생하였습니다."
+          });
+          console.log(error.config);
         });
-        
-      },
-      cancle: function () {
-        this.$router.go(-1)  
-      }
+    },
+    del: function() {
+      this.$confirm("삭제 하시겠습니까?", "Warning", {
+        confirmButtonText: "확인",
+        cancelButtonText: "취소",
+        type: "warning"
+      })
+        .then(() => {
+          var self = this;
+          this.$http
+            .delete("http://dabin02272.cafe24.com:8090/api/operation", {
+              data: { oprtnId: self.oprtnId }
+            })
+            .then(response => {
+              this.$router.push({ name: "opr" });
+            })
+            .catch(error => {
+              this.$message({
+                type: "error",
+                message: "에러가 발생하였습니다."
+              });
+              console.log(error.config);
+            });
+
+          this.$message({
+            type: "success",
+            message: "삭제가 완료되었습니다."
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "삭제가 취소되었습니다."
+          });
+        });
+    },
+    cancle: function() {
+      this.$router.go(-1);
     }
-}
+  }
+};
 </script>

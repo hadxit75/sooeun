@@ -8,7 +8,7 @@
 
       </main-content>
 
-      <!-- <content-footer></content-footer> -->
+      <content-footer></content-footer>
     </div>
   </div>
 </template>
@@ -16,14 +16,14 @@
 </style>
 <script>
 import TopNavbar from "./TopNavBar.vue";
-//   import ContentFooter from './ContentFooter.vue'
+import ContentFooter from "./ContentFooter.vue";
 import MainContent from "./Content.vue";
 //   import UserMenu from 'src/components/UIComponents/SidebarPlugin/UserMenu.vue'
 
 export default {
   components: {
     TopNavbar,
-    //   ContentFooter,
+    ContentFooter,
     MainContent
     //   UserMenu,
   },
