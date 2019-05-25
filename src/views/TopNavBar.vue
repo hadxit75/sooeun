@@ -44,8 +44,14 @@
         
           <el-submenu index="5">
             <template slot="title"><span class="custom-font">사용자관리</span></template>
-            <el-menu-item index="5-1">사용자 그룹 등록/조회</el-menu-item>
-            <el-menu-item index="5-2">사용자 등록/조회</el-menu-item>
+            <el-menu-item index="5-1">
+              <router-link to="/ugstatus">사용자 그룹현황</router-link>
+            </el-menu-item>
+            <el-menu-item index="5-2">
+               <router-link to="/ugstatus">사용자 권환 관리</router-link>
+            </el-menu-item>
+
+
           </el-submenu>
             <el-menu-item index="6" ><router-link to="/org"> 조직도관리</router-link></el-menu-item>
           </el-menu>
