@@ -47,37 +47,34 @@
 <script>
 import APIService from "../util/APIService";
 export default {
-     data() {
+  data() {
     return {
-         search: '',
+      search: "",
       displayData: []
     };
   },
   created() {
-       APIService.getUserGroupList().then(data => {
-          this.displayData = data;
-       });
-    },
-    methods: {
-
+    APIService.getUserGroupList().then(data => {
+      this.displayData = data;
+    });
+  },
+  methods: {
     greet: function() {
       this.$router.push({ name: "ugAdd" });
     },
     indexMethod(index) {
       return index + 1;
     },
-      handleCurrentChange(val) {
+    handleCurrentChange(val) {
       //console.log(val)
       this.$router.push({ name: "ugDetail", params: { objs: val } });
     },
     handleDelete(index, row) {
-        console.log(index, row);
-      }
+      console.log(index, row);
+    }
   }
-
-}
+};
 </script>
 
 <style>
-
 </style>

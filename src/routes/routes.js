@@ -18,7 +18,7 @@ import RoleGroupDetail from "../views/RoleGroupDetail.vue";
 
 import UserGroupStatus from "../views/UserGroupStatus.vue";
 import UserGroupDetail from "../views/UserGroupDetail.vue";
-
+import UserGroupAdd from "../views/UserGroupAdd.vue";
 import Frame from "../views/Frame.vue";
 
 const routes = [
@@ -70,6 +70,14 @@ const routes = [
         path: "/user",
         name: "user",
         component: User,
+        meta: {
+          requiresAuth: false
+        }
+      },
+      {
+        path: "/ugadd",
+        name: "ugAdd",
+        component: UserGroupAdd,
         meta: {
           requiresAuth: false
         }
