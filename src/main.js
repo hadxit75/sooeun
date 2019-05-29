@@ -164,6 +164,8 @@ Vue.use(VueNotify);
 
 locale.use(lang);
 Vue.prototype.$message = Message;
+Vue.prototype.$alert = MessageBox.alert;
+Vue.prototype.$confirm = MessageBox.confirm;
 // configure router
 const router = new VueRouter({
   routes, // short for routes: routes
