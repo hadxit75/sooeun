@@ -15,6 +15,11 @@ import RoleAdd from "../views/RoleAdd.vue";
 import RoleGroupAdd from "../views/RoleGroupAdd.vue";
 import RoleDetail from "../views/RoleDetail.vue";
 import RoleGroupDetail from "../views/RoleGroupDetail.vue";
+import RolePer from "../views/RolePer.vue";
+import RolePerDetail from "../views/RolePerDetail.vue";
+import RolePerAdd from "../views/RolePerAdd.vue";
+import RolePerGroupAdd from "../views/RolePerGroupAdd.vue";
+import RoleGroupPerDetail from "../views/RoleGroupPerDetail.vue";
 
 import UserGroupStatus from "../views/UserGroupStatus.vue";
 import UserGroupDetail from "../views/UserGroupDetail.vue";
@@ -185,7 +190,47 @@ const routes = [
         meta: {
           requiresAuth: false
         }
-      }
+      },
+      {
+        path: '/rolePer',
+        name: 'rolePer',
+        component: RolePer,
+        meta: {
+          requiresAuth: false
+        }
+      },
+      {
+        path: '/rolePerDetail',
+        name: 'rolePerDetail',
+        component: RolePerDetail,
+        meta: {
+          requiresAuth: false
+        }
+      },
+      {
+        path: '/rolePerAdd',
+        name: 'rolePerAdd',
+        component: RolePerAdd,
+        meta: {
+          requiresAuth: false
+        }
+      },
+      {
+        path: '/rolePerGroupAdd',
+        name: 'rolePerGroupAdd',
+        component: RolePerGroupAdd,
+        meta: {
+          requiresAuth: false
+        }
+      },
+      {
+        path: '/roleGroupPerDetail',
+        name: 'roleGroupPerDetail',
+        component: RoleGroupPerDetail,
+        meta: {
+          requiresAuth: false
+        }
+      },
     ]
   }
   // { path: "*", component: NotFound }

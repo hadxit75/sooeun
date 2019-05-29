@@ -22,9 +22,9 @@
                     </table>
                 </form>
             </div>
-            <div>
-                <b-button v-on:click="add" variant="success">확인</b-button>&nbsp;&nbsp;&nbsp;&nbsp;
-                <b-button v-on:click="cancle" variant="warning">취소</b-button>
+            <div style="margin-left:15px">
+                <el-button plain type="primary" @click="add">확인</el-button> 
+                <el-button plain type="danger" @click="cancle">취소</el-button> 
             </div>
         </div>
     </div>
@@ -49,17 +49,11 @@ export default {
                                                                              oprtnName : self.oprtnName,
                                                                              comment : self.comment })
         .then((response) => {
-            this.$message({
-                type: 'success',
-                message: '추가가 완료되었습니다.'
-             });
+            alert('추가가 완료되었습니다.');
             this.$router.push({name:'opr'})   
         })
         .catch((error) => {
-            this.$message({
-                type: 'error',
-                message: '에러가 발생하였습니다.'
-             });
+            alert('에러가 발생하였습니다.');
             console.log(error.config)
         })
       },

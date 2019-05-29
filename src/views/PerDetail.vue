@@ -70,10 +70,10 @@
 
                 </form>
             </div>
-            <div>
-                <b-button v-on:click="edit" variant="success" >수정</b-button>&nbsp;&nbsp;&nbsp;
-                <b-button v-on:click="del" variant="danger" >삭제</b-button>&nbsp;&nbsp;&nbsp;
-                <b-button v-on:click="cancle" variant="warning" >취소</b-button>
+            <div style="margin-left:15px">
+                <el-button plain type="primary" @click="edit">수정</el-button> 
+                <el-button plain type="danger" @click="del">삭제</el-button> 
+                <el-button plain type="warning" @click="cancle">취소</el-button> 
             </div>
         </div>
     </div>
@@ -112,12 +112,11 @@ export default {
     }
   },
   created() {
-    //console.log("this.groupId::"+this.groupId)
     this.$http.get('http://dabin02272.cafe24.com:8090/api/permission/'+ this.groupId, { headers: { 'Content-Type': 'application/json' } })
     .then((response) => {
       this.tasks = response.data.results;
         this.tasks['utype']='U'
-       //console.log("tasks", this.tasks)
+ 
         var _self = this;
          _self.$http.get('http://dabin02272.cafe24.com:8090/api/legacy/list', { headers: { 'Content-Type': 'application/json' } })
             .then((response) => {  
@@ -191,17 +190,6 @@ export default {
                 _r.push(item);
             }
         });
-        // console.log(_r);
-
-        // var _r=[];
-
-        // if(_a)
-        // {
-        // _a.value.forEach(item =>{
-        //     _r.push(item)
-        // })
-        // }
-
         return _r;
 
     },
@@ -218,18 +206,12 @@ export default {
             
                 this.$http.put('http://dabin02272.cafe24.com:8090/api/permission', _msg)
                 .then((response) => {
-                    this.$message({
-                        type: 'success',
-                        message: '수정이 완료되었습니다.' 
-                    });
+                    alert('수정이 완료되었습니다.');
                     this.$router.push({name:'per'})  
                                 
                 })
                 .catch((error) => {
-                    this.$message({
-                        type: 'error',
-                        message: '에러가 발생하였습니다.'
-                    });
+                    alert('에러가 발생하였습니다.');
                     console.log(error.config)
                 })
            }
@@ -245,18 +227,12 @@ export default {
             })
             self2.$http.post('http://dabin02272.cafe24.com:8090/api/permission/put-add', _msg2)
             .then((response) => {
-                self2.$message({
-                    type: 'success',
-                    message: '수정이 완료되었습니다.' 
-                });
+                alert('수정이 완료되었습니다.');
                 self2.$router.push({name:'per'})  
                             
             })
             .catch((error) => {
-                self2.$message({
-                    type: 'error',
-                    message: '에러가 발생하였습니다.'
-                });
+                alert('에러가 발생하였습니다.');
                 console.log(error.config)
             })
 
@@ -277,22 +253,14 @@ export default {
                 this.$router.push({name:'per'}) 
             })
             .catch((error) => {
-                this.$message({
-                    type: 'error',
-                    message: '에러가 발생하였습니다.'
-                });
+                alert('에러가 발생하였습니다.');
                 console.log(error.config)
             })
-
-            this.$message({
-            type: 'success',
-            message: '삭제가 완료되었습니다.'
-          });
+            alert('삭제가 완료되었습니다.');
+           
         }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '삭제가 취소되었습니다.'
-          });          
+          alert('삭제가 취소되었습니다.');
+        
         });
         
       },
@@ -305,14 +273,10 @@ export default {
           this.editFlag++;
       },
       rowMinus: function (sidx, sPrmssnId) {
-          //console.log("sPrmssnId:::"+sPrmssnId)
-          //console.log("sidx:::"+sidx)
           if (sPrmssnId != null) {
               if(this.tasks.length <= 1){
-                  this.$message({
-                    type: 'info',
-                    message: '하단 삭제 버튼을 눌러 주세요.(전체삭제)'
-                });
+                  alert('하단 삭제 버튼을 눌러 주세요.(전체삭제)');
+
               }else if(this.tasks.length > 1){
               this.$confirm('삭제 하시겠습니까?', 'Warning', {
                 confirmButtonText: '확인',
@@ -328,37 +292,28 @@ export default {
                         });
                     })
                     .catch((error) => {
-                        this.$message({
-                            type: 'error',
-                            message: '에러가 발생하였습니다.'
-                        });
+                        alert('에러가 발생하였습니다.');
                         console.log(error.config)
                     })
                 }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '삭제가 취소되었습니다.'
-                });          
+                    alert('삭제가 취소되었습니다.');      
             });
           }
           }else{
-            //console.log("here?")
             var _lidx = 1;
             this.tasks = this.tasks.filter(item=>{
-                   //console.log(item);
-                if(item.orders != sidx)
-                {
-                    item['orders'] = _lidx;
-                    _lidx++;
+            
+            if(item.orders != sidx)
+            {
+                item['orders'] = _lidx;
+                _lidx++;
                 return item;
-                }
-
+            }
                 this.editFlag--;
             }); 
           } 
       },
       legacyChange: function(selected){
-            //console.log("selected:::"+selected)
             this.slegacyId = selected
 
             var _self = this;
@@ -375,8 +330,6 @@ export default {
                    _m.forEach(item=>{
                        _self.objTypeSelect.push(item);
                    });
-
-                   //console.log(_self.objTypeSelect);
 
             })
            
@@ -407,8 +360,7 @@ export default {
               _idx++;
               return item;
           })
-        // console.log("objSelect::", _self.objSelect)
-
+       
       }
     }
 }

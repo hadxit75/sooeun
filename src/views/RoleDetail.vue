@@ -27,10 +27,7 @@
                 </form>
             </div>
             <div style="margin-left:20px">
-                <!-- <b-button v-on:click="edit" variant="success" >수정</b-button>&nbsp;&nbsp;&nbsp;
-                <b-button v-on:click="del" variant="danger" >삭제</b-button>&nbsp;&nbsp;&nbsp;
-                <b-button v-on:click="cancle" variant="warning" >취소</b-button> -->
-                  <el-button plain type="primary" @click="edit">수정</el-button> 
+                <el-button plain type="primary" @click="edit">수정</el-button> 
                 <el-button plain type="danger" @click="del">삭제</el-button> 
                 <el-button plain type="warning" @click="cancle">취소</el-button> 
             </div>
@@ -62,17 +59,11 @@ export default {
           comment: self.comment
         })
         .then(response => {
-          this.$message({
-            type: "success",
-            message: "수정이 완료되었습니다."
-          });
+          alert('수정이 완료되었습니다.');
           this.$router.push({ name: "role" });
         })
         .catch(error => {
-          this.$message({
-            type: "error",
-            message: "에러가 발생하였습니다."
-          });
+          alert('에러가 발생하였습니다.');
           console.log(error.config);
         });
     },
@@ -92,23 +83,14 @@ export default {
               this.$router.push({ name: "role" });
             })
             .catch(error => {
-              this.$message({
-                type: "error",
-                message: "에러가 발생하였습니다."
-              });
+              alert('에러가 발생하였습니다.');
               console.log(error.config);
             });
 
-          this.$message({
-            type: "success",
-            message: "삭제가 완료되었습니다."
-          });
+          alert('삭제가 완료되었습니다.');
         })
         .catch(() => {
-          this.$message({
-            type: "info",
-            message: "삭제가 취소되었습니다."
-          });
+          alert('삭제가 취소되었습니다.');
         });
     },
     cancle: function() {

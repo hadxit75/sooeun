@@ -19,14 +19,14 @@
     <div style="display:block;width:100%">
       <div style="display: inline-block; text-align: right; width: 100%">
         <div style="display:flex;float:right">
-          <div style="margin-top:5px">
+          <!-- <div style="margin-top:5px">
           <el-breadcrumb separator-class="el-icon-arrow-right">
           <el-breadcrumb-item >homepage</el-breadcrumb-item>
           <el-breadcrumb-item>promotion management</el-breadcrumb-item>
           <el-breadcrumb-item>promotion list</el-breadcrumb-item>
           <el-breadcrumb-item>promotion detail</el-breadcrumb-item>
          </el-breadcrumb>
-          </div>
+          </div> -->
           <div style="margin-left:5px">
              <span>홍길동</span>
           </div>
@@ -39,9 +39,19 @@
           <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" >
           <el-menu-item index="1"> <router-link to="/obj" >객체관리</router-link></el-menu-item>
           <el-menu-item index="2"> <router-link to="/opr"> 연산관리</router-link></el-menu-item>
-          <el-menu-item index="3"> <router-link to="/per"> 권환관리</router-link></el-menu-item>
-          <el-menu-item index="4"> <router-link to="/role"> Role관리</router-link></el-menu-item>
-        
+          <el-menu-item index="3"> <router-link to="/per"> 권한관리</router-link></el-menu-item>
+          <!-- <el-menu-item index="4"> <router-link to="/role"> Role관리</router-link></el-menu-item> -->
+
+          <el-submenu index="4">
+            <template slot="title"><span class="custom-font">Role관리</span></template>
+            <el-menu-item index="4-1">
+              <router-link to="/role">Role관리</router-link>
+            </el-menu-item>
+            <el-menu-item index="4-2">
+               <router-link to="/rolePer">Role 권한관리</router-link>
+            </el-menu-item>
+          </el-submenu>
+
           <el-submenu index="5">
             <template slot="title"><span class="custom-font">사용자관리</span></template>
             <el-menu-item index="5-1">
@@ -50,9 +60,7 @@
             <el-menu-item index="5-2">
                <router-link to="/ugstatus">사용자 권환 관리</router-link>
             </el-menu-item>
-
-
-          </el-submenu>
+           </el-submenu>
             <el-menu-item index="6" ><router-link to="/org"> 조직도관리</router-link></el-menu-item>
           </el-menu>
       </div>
