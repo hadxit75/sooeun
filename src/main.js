@@ -163,7 +163,7 @@ Vue.use(VueRouter);
 Vue.use(VueNotify);
 
 locale.use(lang);
-
+Vue.prototype.$message = Message;
 // configure router
 const router = new VueRouter({
   routes, // short for routes: routes
