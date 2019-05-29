@@ -60,10 +60,10 @@
 
                 </form>
             </div>
-            <div>
-                <b-button v-on:click="edit" variant="success" >수정</b-button>&nbsp;&nbsp;&nbsp;
-                <b-button v-on:click="del" variant="danger" >삭제</b-button>&nbsp;&nbsp;&nbsp;
-                <b-button v-on:click="cancle" variant="warning" >취소</b-button>
+           <div style="margin-left:15px">
+                <el-button plain type="primary" @click="edit">수정</el-button> 
+                <el-button plain type="danger" @click="del">삭제</el-button> 
+                <el-button plain type="warning" @click="cancle">취소</el-button> 
             </div>
         </div>
     </div>
@@ -184,7 +184,7 @@ export default {
                          ,"roleComment": self.roleComment};
 
             _msg.push(_item);
-            //console.log("_msg", _msg)
+            
            
         })
 
@@ -233,18 +233,12 @@ export default {
 
             self2.$http.post('http://dabin02272.cafe24.com:8090/api/role-group/put-add', _msg2)
             .then((response) => {
-                self2.$message({
-                    type: 'success',
-                    message: '수정이 완료되었습니다.' 
-                });
+                alert('수정이 완료되었습니다.');
                 self2.$router.push({name:'role'})  
                             
             })
             .catch((error) => {
-                self2.$message({
-                    type: 'error',
-                    message: '에러가 발생하였습니다.'
-                });
+                alert('에러가 발생하였습니다.');
                 console.log(error.config)
             })
 
@@ -265,22 +259,13 @@ export default {
                 this.$router.push({name:'role'}) 
             })
             .catch((error) => {
-                this.$message({
-                    type: 'error',
-                    message: '에러가 발생하였습니다.'
-                });
+                 alert('에러가 발생하였습니다.');
                 console.log(error.config)
             })
+            alert('삭제가 완료되었습니다.');
 
-            this.$message({
-            type: 'success',
-            message: '삭제가 완료되었습니다.'
-          });
         }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '삭제가 취소되었습니다.'
-          });          
+          alert('삭제가 취소되었습니다.');     
         });
         
       },
@@ -295,10 +280,8 @@ export default {
         //alert(roleGroupId)
           if (roleGroupId != null) {
               if(this.tasks.length <= 1){
-                  this.$message({
-                    type: 'info',
-                    message: '하단 삭제 버튼을 눌러 주세요.(전체삭제)'
-                });
+                  alert('하단 삭제 버튼을 눌러 주세요.(전체삭제)');     
+                  
               }else if(this.tasks.length > 1){
               this.$confirm('삭제 하시겠습니까?', 'Warning', {
                 confirmButtonText: '확인',
@@ -312,21 +295,14 @@ export default {
                         .then((response) => {
                         self.tasks = response.data.results;
                         });
-                    })
-                    .catch((error) => {
-                        this.$message({
-                            type: 'error',
-                            message: '에러가 발생하였습니다.'
-                        });
-                        console.log(error.config)
-                    })
-                }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '삭제가 취소되었습니다.'
-                });          
-            });
-          }
+                    }).catch((error) => {
+                            alert('에러가 발생하였습니다.'); 
+                            console.log(error.config)
+                        })
+                    }).catch(() => {
+                        alert('삭제가 취소되었습니다.');        
+                    });
+                }//end of else if
           }else{
             //console.log("here?")
             var _lidx = 1;

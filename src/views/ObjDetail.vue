@@ -101,17 +101,11 @@ export default {
           objectComment: self.objectComment
         })
         .then(response => {
-          this.$message({
-            type: "success",
-            message: "수정이 완료되었습니다."
-          });
+          alert('수정이 완료되었습니다.');
           this.$router.push({ name: "obj" });
         })
         .catch(error => {
-          this.$message({
-            type: "error",
-            message: "에러가 발생하였습니다."
-          });
+          alert('에러가 발생하였습니다.');
           console.log(error.config);
         });
     },
@@ -131,23 +125,14 @@ export default {
               this.$router.push({ name: "obj" });
             })
             .catch(error => {
-              this.$message({
-                type: "error",
-                message: "에러가 발생하였습니다."
-              });
+              alert('에러가 발생하였습니다.');
               console.log(error.config);
             });
 
-          this.$message({
-            type: "success",
-            message: "삭제가 완료되었습니다."
-          });
+          alert('삭제가 완료되었습니다.');
         })
         .catch(() => {
-          this.$message({
-            type: "info",
-            message: "삭제가 취소되었습니다."
-          });
+          alert('삭제가 취소되었습니다.');
         });
     },
     cancle: function() {

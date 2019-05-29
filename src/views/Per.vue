@@ -149,8 +149,6 @@ export default {
       if (columnIndex === 5 || columnIndex === 6) {
         const _row = this.spanArr[rowIndex];
         const _col = _row > 0 ? 1 : 0;
-        //alert(_row);
-        //alert(_col);
         return {
           rowspan: _row,
           colspan: _col
