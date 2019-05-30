@@ -34,9 +34,8 @@
                         <el-tree
                         :data="data"
                         show-checkbox
+                         @check-change="handleCheckChange"
                         node-key="id"
-                        :default-expanded-keys="[2, 3]"
-                        :default-checked-keys="[5]"
                         :props="defaultProps">
                         </el-tree>
                         </el-card>
@@ -47,24 +46,14 @@
                         :data="tableData"
                         style="width: 100%"
                         @selection-change="handleSelectionChange">
+                        
                         <el-table-column
-                        type="selection"
-                        width="55">
+                        property="userEmpId"
+                        label="사번">
                         </el-table-column>
                         <el-table-column
-                        label="Date"
-                        width="120">
-                        <template slot-scope="scope">{{ scope.row.date }}</template>
-                        </el-table-column>
-                        <el-table-column
-                        property="name"
-                        label="Name"
-                        width="120">
-                        </el-table-column>
-                        <el-table-column
-                        property="address"
-                        label="Address"
-                        show-overflow-tooltip>
+                        property="position"
+                        label="직책">
                         </el-table-column>
                     </el-table>
                     </div>
@@ -76,6 +65,7 @@
 </template>
 
 <script>
+import APIService from "../util/APIService";
 export default {
   components: {
     name: "AddItem"
@@ -93,94 +83,10 @@ export default {
       objSelect: [],
       groupName: "",
       comment: "",
-      tableData: [
-        {
-          date: "2016-05-03",
-          name: "Tom",
-          address: "No. 189, Grove St, Los Angeles"
-        },
-        {
-          date: "2016-05-02",
-          name: "Tom",
-          address: "No. 189, Grove St, Los Angeles"
-        },
-        {
-          date: "2016-05-04",
-          name: "Tom",
-          address: "No. 189, Grove St, Los Angeles"
-        },
-        {
-          date: "2016-05-01",
-          name: "Tom",
-          address: "No. 189, Grove St, Los Angeles"
-        },
-        {
-          date: "2016-05-08",
-          name: "Tom",
-          address: "No. 189, Grove St, Los Angeles"
-        },
-        {
-          date: "2016-05-06",
-          name: "Tom",
-          address: "No. 189, Grove St, Los Angeles"
-        },
-        {
-          date: "2016-05-07",
-          name: "Tom",
-          address: "No. 189, Grove St, Los Angeles"
-        }
-      ],
+      tableData: [],
       multipleSelection: [],
-      data: [
-        {
-          id: 1,
-          label: "Level one 1",
-          children: [
-            {
-              id: 4,
-              label: "Level two 1-1",
-              children: [
-                {
-                  id: 9,
-                  label: "Level three 1-1-1"
-                },
-                {
-                  id: 10,
-                  label: "Level three 1-1-2"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          id: 2,
-          label: "Level one 2",
-          children: [
-            {
-              id: 5,
-              label: "Level two 2-1"
-            },
-            {
-              id: 6,
-              label: "Level two 2-2"
-            }
-          ]
-        },
-        {
-          id: 3,
-          label: "Level one 3",
-          children: [
-            {
-              id: 7,
-              label: "Level two 3-1"
-            },
-            {
-              id: 8,
-              label: "Level two 3-2"
-            }
-          ]
-        }
-      ],
+      data: [],
+      org: [],
       defaultProps: {
         children: "children",
         label: "label"
@@ -188,23 +94,64 @@ export default {
     };
   },
   created() {
-    // this.$http
-    //   .get("http://dabin02272.cafe24.com:8090/api/object-type/list", {
-    //     headers: { "Content-Type": "application/json" }
-    //   })
-    //   .then(response => {
-    //     this.objSelect = response.data.results;
-    //     var _self = this;
-    //     _self.$http
-    //       .get("http://dabin02272.cafe24.com:8090/api/legacy/list", {
-    //         headers: { "Content-Type": "application/json" }
-    //       })
-    //       .then(response => {
-    //         _self.legacySelect = response.data.results;
-    //       });
-    //   });
+    APIService.getOrgList().then(data => {
+      // var dummy = data.find(item => item.deptDepth == 0);
+      var _parent = [];
+
+      data.forEach(item => {
+        if (item.deptDepth == 1) {
+          var _child = this.recursiveDepth(data, 2, item.deptId);
+          _parent.push({
+            id: item.deptSeq,
+            label: item.deptNm,
+            children: _child,
+            obj: item
+          });
+          // console.log("p", _parent);
+        }
+      });
+      this.data = _parent;
+    });
   },
+  mounted() {},
   methods: {
+    handleCheckChange(data, checked, indeterminate) {
+      if (checked) {
+        var self = this;
+        console.log(data, checked, indeterminate);
+        APIService.getOrgMemberList(data.obj.orgId, data.obj.deptId).then(
+          data => {
+            console.log("d", data);
+            this.tableData = [];
+            data.forEach(item => {
+              this.tableData.push({
+                userEmpId: item.userEmpId,
+                position: item.membPostion
+              });
+            });
+          }
+        );
+      }
+    },
+    recursiveDepth(sdata, i, parentId) {
+      var _parent = [];
+      var self = this;
+
+      sdata.forEach(item => {
+        if (item.deptDepth == i && item.deptParent == parentId) {
+          var _child = self.recursiveDepth(sdata, i + 1, item.deptId);
+          _parent.push({
+            id: item.deptSeq,
+            label: item.deptNm,
+            children: _child,
+            obj: item
+          });
+          // console.log(_parent);
+        }
+      });
+
+      return _parent;
+    },
     toggleSelection(rows) {
       if (rows) {
         rows.forEach(row => {
