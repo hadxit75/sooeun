@@ -118,5 +118,9 @@ export default {
         }
       })
       .then(response => response.data.results);
+  },
+  setUserGroup(data) {
+    const url = `${baseURL}/api/user-group`;
+    return axios.post(url, data).then(response => response);
   }
 };

@@ -15,7 +15,7 @@
                     <div class="col-md-3">
                         <label>비고</label>
                         <el-input
-                            v-model="comment">
+                            v-model="groupcomment">
                         </el-input>
                  
                      </div>
@@ -23,7 +23,7 @@
                       <el-button plain type="success" icon="el-icon-search" style="width:100%">사용자 검색</el-button> 
                      </div>
                       <div class="col-md-2" style="margin-top:30px">
-                      <el-button plain type="primary"  style="width:100%">확인</el-button> 
+                      <el-button plain type="primary" @click="onInsertEvent()" style="width:100%">확인</el-button> 
                      </div>
                       <div class="col-md-2"  style="margin-top:30px">
                       <el-button plain type="danger"  style="width:100%">취소</el-button> 
@@ -31,7 +31,9 @@
                      <div class="col-md-12" style="margin-top:10px;margin-bottom:10px"></div>
                     <div class="col-md-4">
                         <el-card shadow="never">
+                           <p>조직도</p>
                         <el-tree
+                        style="height:calc(100vh - 400px);overflow-y:scroll"
                         :data="data"
                         show-checkbox
                          @check-change="handleCheckChange"
@@ -41,21 +43,43 @@
                         </el-card>
                     </div>
                     <div class="col-md-8">
+                       <el-card shadow="never">
+                          <p>선택된 사용자</p>
                         <el-table
                         ref="multipleTable"
                         :data="tableData"
-                        style="width: 100%"
+                        style="width: 100%;height:calc(100vh - 400px);overflow-y:scroll"
                         @selection-change="handleSelectionChange">
-                        
+                        <el-table-column
+                          type="index"
+                          width="50">
+                        </el-table-column>
+                         <el-table-column
+                          type="selection"
+                          width="55">
+                        </el-table-column>
                         <el-table-column
                         property="userEmpId"
                         label="사번">
+                        </el-table-column>
+                        <el-table-column
+                        property="userName"
+                        label="성명">
+                        </el-table-column>
+                        <el-table-column
+                        property="org"
+                        label="조직">
+                        </el-table-column>
+                        <el-table-column
+                        property="level"
+                        label="직급">
                         </el-table-column>
                         <el-table-column
                         property="position"
                         label="직책">
                         </el-table-column>
                     </el-table>
+                       </el-card>
                     </div>
                 
                 </div>
@@ -72,7 +96,7 @@ export default {
   },
   data() {
     return {
-      //   legacyId: this.$route.params.objs.legacyId,
+      // legacyId: this.$route.params.objs.legacyId,
       //   legacyName: this.$route.params.objs.legacyName,
       //   objectTypeId: this.$route.params.objs.objectTypeId,
       //   objectTypeName: this.$route.params.objs.objectTypeName,
@@ -82,7 +106,7 @@ export default {
       legacySelect: [],
       objSelect: [],
       groupName: "",
-      comment: "",
+      groupcomment: "",
       tableData: [],
       multipleSelection: [],
       data: [],
@@ -115,18 +139,42 @@ export default {
   },
   mounted() {},
   methods: {
-    handleCheckChange(data, checked, indeterminate) {
+    onInsertEvent() {
+      var self = this;
+
+      var sendItem = [];
+      var idx = 0;
+
+      this.tableData.forEach(item => {
+        var _t = {
+          userId: item.userEmpId,
+          userGroupName: self.groupName,
+          orders: idx++,
+          legacyId: 40,
+          comment: self.groupcomment
+        };
+        sendItem.push(_t);
+      });
+
+      if (sendItem.length > 0) {
+        APIService.setUserGroup(sendItem).then(result => console.log(result));
+      }
+    },
+    handleCheckChange(mdata, checked, indeterminate) {
       if (checked) {
         var self = this;
-        console.log(data, checked, indeterminate);
-        APIService.getOrgMemberList(data.obj.orgId, data.obj.deptId).then(
+        // console.log(data);
+        APIService.getOrgMemberList(mdata.obj.orgId, mdata.obj.deptId).then(
           data => {
-            console.log("d", data);
-            this.tableData = [];
+            // console.log("d", data);
+            // this.tableData = [];
             data.forEach(item => {
               this.tableData.push({
                 userEmpId: item.userEmpId,
-                position: item.membPostion
+                userName: "",
+                org: mdata.obj.deptNm,
+                position: item.membPostion,
+                level: item.membRank
               });
             });
           }
