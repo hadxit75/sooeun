@@ -97,4 +97,30 @@ export default {
       })
       .then(response => response.data.results);
   },
+  getOrgList() {
+    const url = `${baseURL}/api/organization/list`;
+    return axios
+      .get(url, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      })
+      .then(response => response.data.results);
+  },
+  getOrgMemberList(orgId, deptId) {
+    const url = `${baseURL}/api/organization/users/${orgId}/${deptId}`;
+    return axios
+      .get(url, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      })
+      .then(response => response.data.results);
+  },
+  setUserGroup(data) {
+    const url = `${baseURL}/api/user-group`;
+    return axios.post(url, data).then(response => response);
+  }
 };

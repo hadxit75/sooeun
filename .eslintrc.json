@@ -25,6 +25,6 @@
     "constructor-super": "warn",
     "valid-typeof": "warn"
   },
-  "extends": ["plugin:vue/base"],
+  "extends": ["plugin:vue/essential", "@vue/airbnb"],
   "plugins": ["html"]
 }
