@@ -26,13 +26,14 @@
                       <el-button plain type="primary" @click="onInsertEvent()" style="width:100%">확인</el-button> 
                      </div>
                       <div class="col-md-2"  style="margin-top:30px">
-                      <el-button plain type="danger"  style="width:100%">취소</el-button> 
+                      <el-button plain type="danger"  @click="backToStatus()" style="width:100%">취소</el-button> 
                      </div>
                      <div class="col-md-12" style="margin-top:10px;margin-bottom:10px"></div>
                     <div class="col-md-4">
                         <el-card shadow="never">
                            <p>조직도</p>
                         <el-tree
+                        ref="tree"
                         style="height:calc(100vh - 400px);overflow-y:scroll"
                         :data="data"
                         show-checkbox
@@ -139,18 +140,20 @@ export default {
   },
   mounted() {},
   methods: {
+    backToStatus() {
+      this.$router.push("/ugstatus");
+    },
     onInsertEvent() {
       var self = this;
 
       var sendItem = [];
       var idx = 0;
 
-      this.tableData.forEach(item => {
+      this.multipleSelection.forEach(item => {
         var _t = {
           userId: item.userEmpId,
           userGroupName: self.groupName,
           orders: idx++,
-          legacyId: 40,
           comment: self.groupcomment
         };
         sendItem.push(_t);
@@ -163,7 +166,8 @@ export default {
     handleCheckChange(mdata, checked, indeterminate) {
       if (checked) {
         var self = this;
-        // console.log(data);
+        console.log(mdata);
+
         APIService.getOrgMemberList(mdata.obj.orgId, mdata.obj.deptId).then(
           data => {
             // console.log("d", data);
@@ -171,14 +175,21 @@ export default {
             data.forEach(item => {
               this.tableData.push({
                 userEmpId: item.userEmpId,
-                userName: "",
+                userName: item.userNm,
                 org: mdata.obj.deptNm,
                 position: item.membPostion,
-                level: item.membRank
+                level: item.membRank,
+                deptId: item.deptId
               });
             });
           }
         );
+      } else {
+        this.tableData = this.tableData.filter(item => {
+          if (item.deptId != mdata.obj.deptId) {
+            return item;
+          }
+        });
       }
     },
     recursiveDepth(sdata, i, parentId) {
@@ -211,6 +222,7 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
+      console.log(this.multipleSelection);
     },
     edit: function() {
       //   //

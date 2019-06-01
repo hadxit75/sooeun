@@ -87,7 +87,7 @@ export default {
       .then(response => response.data.results);
   },
   getUserGroupList() {
-    const url = `${baseURL}/api/user-group/list`;
+    const url = `${baseURL}/api/user-group/group-id-list `;
     return axios
       .get(url, {
         headers: {
