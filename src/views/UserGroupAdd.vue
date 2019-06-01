@@ -160,7 +160,22 @@ export default {
       });
 
       if (sendItem.length > 0) {
-        APIService.setUserGroup(sendItem).then(result => console.log(result));
+        APIService.setUserGroup(sendItem)
+          .then(result => {
+            this.$message({
+              type: "success",
+              message: "삭제가 완료되었습니다."
+            });
+
+            this.$router.push("/ugstatus");
+          })
+          .catch(error => {
+            this.$message({
+              type: "error",
+              message: "에러가 발생했습니다."
+            });
+            console.log(error.config);
+          });
       }
     },
     handleCheckChange(mdata, checked, indeterminate) {

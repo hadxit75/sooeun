@@ -97,6 +97,17 @@ export default {
       })
       .then(response => response.data.results);
   },
+  getUsersFromGroupId(groupid) {
+    const url = `${baseURL}/api/user-group/${groupid}`;
+    return axios
+      .get(url, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      })
+      .then(response => response.data.results);
+  },
   getOrgList() {
     const url = `${baseURL}/api/organization/list`;
     return axios
@@ -122,5 +133,9 @@ export default {
   setUserGroup(data) {
     const url = `${baseURL}/api/user-group`;
     return axios.post(url, data).then(response => response);
+  },
+  deleteUserGroup(data) {
+    const url = `${baseURL}/api/user-group/group-id`;
+    return axios.delete(url, { data }).then(response => response);
   }
 };
