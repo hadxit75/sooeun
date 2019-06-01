@@ -14,22 +14,23 @@ SUCCESS RESPONSE: {
 	"code":200,
 	"message":"good",
 	"results":":[
-		{"orgId":"OSSTEM","deptId":"0","deptNm":"오스템임플란트(주)","deptPath":"오스템임플란트(주)","deptDepth":1,"deptSeq":1,"numChild":456},
-		{"orgId":"OP","deptId":"0","deptNm":"오스템파마","deptPath":"오스템임플란트(주)","deptDepth":1,"deptSeq":458,"numChild":8},
-		{"orgId":"OC","deptId":"0","deptNm":"뷰센","deptPath":"오스템임플란트(주)","deptDepth":1,"deptSeq":467,"numChild":8},
-		{"orgId":"CT","deptId":"0","deptNm":"오스템카디오텍","deptPath":"오스템임플란트(주)","deptDepth":1,"deptSeq":476,"numChild":18},
-		{"orgId":"OSSTEM","deptId":"O000000597","deptNm":"IT제품개발본부","deptPath":"오스템임플란트(주)/IT제품개발본부","deptDepth":2,"deptSeq":387,"numChild":16},
-		{"orgId":"OSSTEM","deptId":"O000000810","deptNm":"IT제품기획실","deptPath":"오스템임플란트(주)/IT제품개발본부/IT제품기획실","deptDepth":3,"deptSeq":388,"numChild":2},
-		{"orgId":"OSSTEM","deptId":"O000000782","deptNm":"IT제품기획팀","deptPath":"오스템임플란트(주)/IT제품개발본부/IT제품기획실/IT제품기획팀","deptDepth":4,"deptSeq":389,"numChild":0},
-		{"orgId":"OSSTEM","deptId":"O000000814","deptNm":"IT품질관리팀","deptPath":"오스템임플란트(주)/IT제품개발본부/IT제품기획실/IT품질관리팀","deptDepth":4,"deptSeq":390,"numChild":0},
-		{"orgId":"OSSTEM","deptId":"O000000813","deptNm":"스캐너개발실","deptPath":"오스템임플란트(주)/IT제품개발본부/스캐너개발실","deptDepth":3,"deptSeq":400,"numChild":3},
+		{"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"0","deptNm":"오스템임플란트(주)","deptPath":"오스템임플란트(주)","deptDepth":1,"deptSeq":1,"numChild":456},
+		{"orgId":"OP","orgNm":"오스템파마","deptId":"0","deptNm":"오스템파마","deptPath":"오스템임플란트(주)","deptDepth":1,"deptSeq":458,"numChild":8},
+		{"orgId":"OC","orgNm":"주식회사 뷰센","deptId":"0","deptNm":"뷰센","deptPath":"오스템임플란트(주)","deptDepth":1,"deptSeq":467,"numChild":8},
+		{"orgId":"CT","orgNm":"오스템카디오텍 주식회사","deptId":"0","deptNm":"오스템카디오텍","deptPath":"오스템임플란트(주)","deptDepth":1,"deptSeq":476,"numChild":18},
+		{"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000597","deptNm":"IT제품개발본부","deptPath":"오스템임플란트(주)/IT제품개발본부","deptDepth":2,"deptSeq":387,"numChild":16},
+		{"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000810","deptNm":"IT제품기획실","deptPath":"오스템임플란트(주)/IT제품개발본부/IT제품기획실","deptDepth":3,"deptSeq":388,"numChild":2},
+		{"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000782","deptNm":"IT제품기획팀","deptPath":"오스템임플란트(주)/IT제품개발본부/IT제품기획실/IT제품기획팀","deptDepth":4,"deptSeq":389,"numChild":0},
+		{"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000814","deptNm":"IT품질관리팀","deptPath":"오스템임플란트(주)/IT제품개발본부/IT제품기획실/IT품질관리팀","deptDepth":4,"deptSeq":390,"numChild":0},
+		{"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000813","deptNm":"스캐너개발실","deptPath":"오스템임플란트(주)/IT제품개발본부/스캐너개발실","deptDepth":3,"deptSeq":400,"numChild":3},
 		.....
 	],
 	"result":null,
 	"error":null}
 }
 -- 설명
-orgId : 회사 이름, 현재 6개 정도의 회사가 있음.OSSTEM CT 등
+orgId : 회사 아이디, 현재 6개 정도의 회사가 있음.OSSTEM CT 등
+orgNm : 회사 이름
 deptId : 부서 아이디, "0"은 회사/회장/사장이 해당 값을 가지고 있어서, DB query 수정중. 결과값에 오류가 부분적으로 있음. 
 deptPath : 화면에 보여줄 내용으로 상하위 부서간의 구분은 현재 "/"로 하고 있음. 이 값을 이용하여 스토리보드의 계층 구조 표시 필요. --> 오류가 있으나, 일단 이 값을 화면에 표시 필요
 deptDepth : 부서의 탑에서 부터의 깊이, 최상위 값은 1
@@ -37,11 +38,9 @@ deptSeq : 같은 깊이에서의 순서
 numChild : 자식 노드 갯수
 
 +++++++
-특정 부서의 구성원 리스트 가져오기(모든 조직도 항목 가져오기)
+특정 부서의 구성원 리스트 가져오기
 
-BASE URL: dabin02272.cafe24.com:8090
-FULL URL: dabin02272.cafe24.com:8090/api/organization/list 
-URL: /api/organization//users/{orgId}/{deptId} 
+URL: /api/organization/users/{orgId}/{deptId} 
 METHOD: GET
 REQUESTBODY: { }
 SUCCESS RESPONSE: {
@@ -49,11 +48,10 @@ SUCCESS RESPONSE: {
 	"code":200,
 	"message":"good",
 	"results":":[
-		{"orgId":"OSSTEM","deptId":"O000000454","userEmpId":"8102505","membPostion":"차장","membPostionCd":300,"membRank":"팀장","membRankCd":110,"jobYn":"Y","useYn":"Y"},
-{"orgId":"OSSTEM","deptId":"O000000454","userEmpId":"19010501","membPostion":"대리","membPostionCd":500,"membRank":"팀원","membRankCd":400,"jobYn":"Y","useYn":"Y"},
-"orgId":"OSSTEM","deptId":"O000000454","userEmpId":"20011819","membPostion":"대리","membPostionCd":500,"membRank":"팀원","membRankCd":400,"jobYn":"Y","useYn":"Y"},
-"orgId":"OSSTEM","deptId":"O000000454","userEmpId":"20042506","membPostion":"과장","membPostionCd":400,"membRank":"팀원","membRankCd":400,"jobYn":"Y","useYn":"Y"},
-"orgId":"OSSTEM","deptId":"O000000454","userEmpId":"22011516","membPostion":"주임","membPostionCd":550,"membRank":"팀원","membRankCd":400,"jobYn":"Y","useYn":"Y"},
+		{"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000454","userEmpId":"8102505","membPostion":"차장","membPostionCd":300,"membRank":"팀장","membRankCd":110,"jobYn":"Y","useYn":"Y","userNm":"류재호"},
+		{"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000454","userEmpId":"22011516","membPostion":"주임","membPostionCd":550,"membRank":"팀원","membRankCd":400,"jobYn":"Y","useYn":"Y","userNm":"황용현"},
+		{"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000454","userEmpId":"23011406","membPostion":"대리","membPostionCd":500,"membRank":"팀원","membRankCd":400,"jobYn":"Y","useYn":"Y","userNm":"권규태"},
+		{"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000454","userEmpId":"22071608","membPostion":"사원","membPostionCd":600,"membRank":"팀원","membRankCd":400,"jobYn":"Y","useYn":"Y","userNm":"남다운"},
 		.....
 	],
 	"result":null,
@@ -63,4 +61,26 @@ SUCCESS RESPONSE: {
 membPostion : 직급
 membRank : 직책
 
++++++++
+이름에 해당하는 구성원 리스트 가져오기
 
+URL: /api/organization/get-users 
+METHOD: POST
+REQUESTBODY: {
+	"userNm": "재호"
+}
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":":[
+		{"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000374","userEmpId":"8070801","membPostion":"부장","membPostionCd":200,"membRank":"본부장","membRankCd":30,"jobYn":"Y","useYn":"Y","userNm":"최재호","deptNm":"경남영업본부"},
+		{"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000454","userEmpId":"8102505","membPostion":"차장","membPostionCd":300,"membRank":"팀장","membRankCd":110,"jobYn":"Y","useYn":"Y","userNm":"류재호","deptNm":"디지털임플란트PM팀"},
+		{"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000665","userEmpId":"8070801","membPostion":"부장","membPostionCd":200,"membRank":"지점장","membRankCd":125,"jobYn":"N","useYn":"Y","userNm":"최재호","deptNm":"경남남부지점"},
+		{"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000746","userEmpId":"22053101","membPostion":"차장","membPostionCd":300,"membRank":"팀원","membRankCd":400,"jobYn":"Y","useYn":"Y","userNm":"임재호","deptNm":"시설관리1팀"}
+	],
+	"result":null,
+	"error":null}
+}
+-- 설명
+POST 방식 주의

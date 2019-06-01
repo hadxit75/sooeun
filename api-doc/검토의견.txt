@@ -204,3 +204,60 @@ REQUESTBODY: [
 ]
 
 --> 스토리보드의 /api/role-permission/put-add는 오류
+
+5/29 API 추가 요청 및 확인요청
+[확인요청]
+1. http://dabin02272.cafe24.com:8090/api/role-group/legacy/40, 41, 42 -> 결과값 없음, 405 에러
+--> 정상동작
+2. http://dabin02272.cafe24.com:8090/api/role-permission/item-list -> 에러가 나고 있습니다. 
+--> 수정 완료
+3. http://dabin02272.cafe24.com:8090/api/role-permission -> 200 성공이나, 리스트에 반환되지 않습니다. 
+[{"isRoleGroup":1,"groupRoleId":3,"roleId":6,"orders":2,"prmssnGroupId":20,"rolePrmssnName":"0529","rolePrmssnComment":"0529"},{"isRoleGroup":1,"groupRoleId":3,"roleId":6,"orders":3,"prmssnGroupId":40,"rolePrmssnName":"0529","rolePrmssnComment":"0529"}]
+--> 위 요청은 정상적으로 DB에 추가되나, 그룹 리스트 응답에 포함되지 않는 것으로 봐서, 관계가 끊어진 항목들이 있어서 리스트 요청시 제외 된것으로 판단됨. 
+[추가요청]
+1. http://dabin02272.cafe24.com:8090/api/role-permission/group/9.  -> prmssnId 추가요청
+--> 추가 완료
+
+
+---------------------------------------------------------------------------------------------
+5/31일 확인 요청사항
+1. 원천시스템별 사용자  그룹 리스트 가져오기 (원천시스템 legacy-id 에 해당하는 항목들 가져오기)
+METHOD: GET
+URL: /api/user-group/legacy/{legacy-id}  
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":":[
+		{"userGroupId":15,"userId":13,"groupId":10,"orders":1,"legacyId":40,"legacyName":"CRM","userGroupName":"user group 2-1","comment":"test 1 1"},
+		{"userGroupId":16,"userId":14,"groupId":10,"orders":2,"legacyId":40,"legacyName":"CRM","userGroupName":"user group 2-1","comment":"test 1 1"},
+		{"userGroupId":17,"userId":15,"groupId":10,"orders":1,"legacyId":40,"legacyName":"CRM","userGroupName":"user group 2","comment":"test 1"},
+		{"userGroupId":18,"userId":16,"groupId":10,"orders":2,"legacyId":40,"legacyName":"CRM","userGroupName":"user group 2","comment":"test 2"}
+	],
+	"result":null,
+	"error":null}
+
+—> 여기서 사용자 그룹 아이디가 userGroupId 인지 groupid 인지 애매함. 
+만약 groupId 가 키(key)라면 comment 를 다르게 표시 하기가 힘드므로 comment 명칭 변경이 필요합니다. 
+사용자 그룹 정보만 있는 부분 같은데 userId 필드는 무엇을 가리키는 필드인가요? 
+==> 사용자그룹을 그룹핑하는 것이 groupid, userGroupId는 해당 행을 식별하는 식별자, userId는 사용자그룹에 속하는 사용자를 식별하는 식별자.
+    comment는 userGroupComment로 변경하겠음.
+
+2. FULL URL: dabin02272.cafe24.com:8090/api/organization/list 
+URL: /api/organization//users/{orgId}/{deptId} 
+METHOD: GET
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":":[
+		{"orgId":"OSSTEM","deptId":"O000000454","userEmpId":"8102505","membPostion":"차장","membPostionCd":300,"membRank":"팀장","membRankCd":110,"jobYn":"Y","useYn":"Y"},
+		
+-> 이 api 에서 orgId 라고 필드명이 되어 있고 설명은 이름이라고 되어 있는데, 
+아이디 값인지 이름이 값인지가 애매합니다. orgNm필드도 필요상 있어야 할 것 같은데 없는 부분인지 확인 부탁 드립니다. 
+==> 인사정보에 orgId라고 쓰고, OSSTEM 과 같은 회사이름을 쓰는데 6개 정도에 불과해서 별도의 id를 쓰지 않고 있는 상태라서, 식별자 겸 이름으로 생각하면 됩니다.
+    그리고, 실제 데이터에 하나의 사번으로 여러 회사에 겸직하는 경우가 있어서, orgId와 userEmpId는 합쳐서 식별자로 사용해야 합니다.
+	--> 위 답변이 오류네요. 질문하신게 맞는 내용이네요. orgNm이 별도 테이블에 있네요. 추가 했습니다.
+

@@ -7,6 +7,26 @@ User Permission  (권한)
 ------------------------------
 사용자 권한 리스트 가져오기(모든 항목 가져오기)
 
+사용자 권한(그룹) 생성하기 (사용자 권한관리 추가 메뉴)
+URL: /api/user-permission/user-permissions
+METHOD: POST
+REQUESTBODY: [
+	{
+        "userPrmssnName": "user permission 1",
+        "userPrmssnComment": "user permission 1",
+		"userIds": [{"userId":1},{"userId":2}] , 
+		"prmssnGroupIds" : [{"prmssnGroupId": 1 },{"prmssnGroupId": 2 }]
+	}
+]
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+이하 미구현
+
 BASE URL: dabin02272.cafe24.com:8090
 FULL URL: dabin02272.cafe24.com:8090/api/user-permission/item-list
 
@@ -107,7 +127,7 @@ SUCCESS RESPONSE: {
 	"result":null,
 	"error":null}
 }
-+++++
++++++UNUSED
 사용자 권한 생성하기 (User 권한관리 추가 메뉴)
 URL: /api/user-permission
 METHOD: POST
