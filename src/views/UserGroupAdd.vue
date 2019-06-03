@@ -23,7 +23,7 @@
                       <el-button plain type="success" icon="el-icon-search" style="width:100%">사용자 검색</el-button> 
                      </div>
                       <div class="col-md-2" style="margin-top:30px">
-                      <el-button plain type="primary" @click="onInsertEvent()" style="width:100%">확인</el-button> 
+                      <el-button plain type="primary" @click="onInsertEvent()" :disabled="validateStatus()" style="width:100%">확인</el-button> 
                      </div>
                       <div class="col-md-2"  style="margin-top:30px">
                       <el-button plain type="danger"  @click="backToStatus()" style="width:100%">취소</el-button> 
@@ -225,6 +225,9 @@ export default {
       });
 
       return _parent;
+    },
+    validateStatus() {
+      return !(this.groupName && this.multipleSelection.length > 0);
     },
     toggleSelection(rows) {
       if (rows) {
