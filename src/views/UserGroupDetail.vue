@@ -20,7 +20,7 @@
                  
                      </div>
                       <div class="col-md-2" style="margin-top:30px">
-                      <el-button plain type="success" icon="el-icon-search" style="width:100%">사용자 검색</el-button> 
+                      <el-button plain type="success" icon="el-icon-search" style="width:100%">사용자 개별 검색</el-button> 
                      </div>
                       <div class="col-md-2" style="margin-top:30px">
                       <el-button plain type="primary" @click="onModifyEvent()" style="width:100%">수정</el-button> 
@@ -56,7 +56,7 @@
                         @selection-change="handleSelectionChange">
                         <el-table-column
                           type="index"
-                          width="50">
+                          width="100">
                         </el-table-column>
                          <el-table-column
                           type="selection"
@@ -67,19 +67,19 @@
                         label="사번">
                         </el-table-column>
                         <el-table-column
-                        property="userName"
+                        property="userNm"
                         label="성명">
                         </el-table-column>
                         <el-table-column
-                        property="org"
+                        property="deptNm"
                         label="조직">
                         </el-table-column>
                         <el-table-column
-                        property="level"
+                        property="membPostion"
                         label="직급">
                         </el-table-column>
                         <el-table-column
-                        property="position"
+                        property="membRank"
                         label="직책">
                         </el-table-column>
                     </el-table>
@@ -150,11 +150,13 @@ export default {
     });
 
     var self = this;
+    console.log(this.groupId);
     APIService.getUsersFromGroupId(this.groupId).then(data => {
       // console.log(item);
       data.forEach(item => {
-        var _t = { userEmpId: item.userId };
-        self.tableData.push(_t);
+        // var _t = { userEmpId: item.userId };
+        console.log(item);
+        self.tableData.push(item);
         self.orders = item.orders + 1;
       });
 

@@ -20,7 +20,7 @@
                  
                      </div>
                       <div class="col-md-2" style="margin-top:30px">
-                      <el-button plain type="success" icon="el-icon-search" style="width:100%">사용자 검색</el-button> 
+                      <el-button plain type="success" icon="el-icon-search" style="width:100%">사용자 개별 검색</el-button> 
                      </div>
                       <div class="col-md-2" style="margin-top:30px">
                       <el-button plain type="primary" @click="onInsertEvent()" :disabled="validateStatus()" style="width:100%">확인</el-button> 
@@ -53,7 +53,7 @@
                         @selection-change="handleSelectionChange">
                         <el-table-column
                           type="index"
-                          width="50">
+                          width="100">
                         </el-table-column>
                          <el-table-column
                           type="selection"
@@ -151,7 +151,7 @@ export default {
 
       this.multipleSelection.forEach(item => {
         var _t = {
-          userId: item.userEmpId,
+          userId: item.orgId + ":" + item.userEmpId,
           userGroupName: self.groupName,
           orders: idx++,
           comment: self.groupcomment
@@ -189,6 +189,7 @@ export default {
             // this.tableData = [];
             data.forEach(item => {
               this.tableData.push({
+                orgId: item.orgId,
                 userEmpId: item.userEmpId,
                 userName: item.userNm,
                 org: mdata.obj.deptNm,
