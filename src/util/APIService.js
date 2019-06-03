@@ -134,6 +134,14 @@ export default {
     const url = `${baseURL}/api/user-group`;
     return axios.post(url, data).then(response => response);
   },
+  addUserGroup(data) {
+    const url = `${baseURL}/api/user-group/put-add`;
+    return axios.post(url, data).then(response => response);
+  },
+  removeUserGroup(data) {
+    const url = `${baseURL}/api/user-group/user-group-id`;
+    return axios.delete(url, { data }).then(response => response);
+  },
   deleteUserGroup(data) {
     const url = `${baseURL}/api/user-group/group-id`;
     return axios.delete(url, { data }).then(response => response);
