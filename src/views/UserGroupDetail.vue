@@ -20,7 +20,7 @@
                  
                      </div>
                       <div class="col-md-2" style="margin-top:30px">
-                      <el-button plain type="success" icon="el-icon-search" style="width:100%">사용자 개별 검색</el-button> 
+                      <el-button plain type="success" @click="onUserSearch()" icon="el-icon-search" style="width:100%">사용자 개별 검색</el-button> 
                      </div>
                       <div class="col-md-2" style="margin-top:30px">
                       <el-button plain type="primary" @click="onModifyEvent()" style="width:100%">수정</el-button> 
@@ -89,14 +89,17 @@
                 </div>
 
         </div>
+         <user-search :visiable="invokeFlag" @closed="onClickChild" @clicked="onClickChild"></user-search>
     </div>
 </template>
 
 <script>
 import APIService from "../util/APIService";
+import UserSearch from "./UserSearch.vue";
+
 export default {
   components: {
-    name: "AddItem"
+    UserSearch
   },
   data() {
     return {
@@ -111,6 +114,7 @@ export default {
       //   objectName: this.$route.params.objs.objectName,
       //   objectComment: this.$route.params.objs.objectComment,
       legacySelect: [],
+      invokeFlag: false,
       objSelect: [],
       groupName: "",
       orders: 1,
@@ -118,6 +122,7 @@ export default {
       tableData: [],
       multipleSelection: [],
       data: [],
+      baseData: [],
       org: [],
       defaultProps: {
         children: "children",
@@ -128,10 +133,8 @@ export default {
   created() {
     this.groupName = this.userGroupName;
     this.groupcomment = this.userGroupComment;
-    // console.log(this.groupId);
 
     APIService.getOrgList().then(data => {
-      // var dummy = data.find(item => item.deptDepth == 0);
       var _parent = [];
 
       data.forEach(item => {
@@ -143,30 +146,33 @@ export default {
             children: _child,
             obj: item
           });
-          // console.log("p", _parent);
         }
       });
       this.data = _parent;
     });
 
     var self = this;
-    console.log(this.groupId);
     APIService.getUsersFromGroupId(this.groupId).then(data => {
-      // console.log(item);
       data.forEach(item => {
-        // var _t = { userEmpId: item.userId };
-        console.log(item);
         self.tableData.push(item);
         self.orders = item.orders + 1;
       });
 
-      // this.tableData = data.
-      // console.log(data);
+      self.tableData.forEach(row => {
+        self.$refs.multipleTable.toggleRowSelection(row);
+      });
+
+      self.baseData = self.tableData;
     });
-    // console.log(this.tableData);
   },
   mounted() {},
   methods: {
+    onClickChild(evt) {
+      this.invokeFlag = false;
+    },
+    onUserSearch() {
+      this.invokeFlag = true;
+    },
     backToStatus() {
       this.$router.push("/ugstatus");
     },
@@ -185,7 +191,63 @@ export default {
           });
 
           this.$router.push("/ugstatus");
-          // console.log(result);
+        })
+        .catch(error => {
+          this.$message({
+            type: "error",
+            message: "에러가 발생했습니다."
+          });
+          console.log(error.config);
+        });
+    },
+    onInsertEvent() {
+      var self = this;
+
+      var sendItem = [];
+      var idx = 0;
+
+      this.multipleSelection.forEach(item => {
+        var _t = {
+          userId: item.orgId + ":" + item.userEmpId,
+          userGroupName: self.groupName,
+          orders: idx++,
+          comment: self.groupcomment
+        };
+        sendItem.push(_t);
+      });
+
+      if (sendItem.length > 0) {
+        APIService.addUserGroup(sendItem)
+          .then(result => {
+            this.$message({
+              type: "success",
+              message: "삭제가 완료되었습니다."
+            });
+
+            this.$router.push("/ugstatus");
+          })
+          .catch(error => {
+            this.$message({
+              type: "error",
+              message: "에러가 발생했습니다."
+            });
+            console.log(error.config);
+          });
+      }
+    },
+    onRemoveEvent() {
+      var sendItem = [];
+      this.baseData.forEach(item => {
+        var _t = {
+          userGroupId: item.userGroupId
+        };
+        sendItem.push(_t);
+      });
+
+      var self = this;
+      APIService.removeUserGroup(sendItem)
+        .then(result => {
+          self.onInsertEvent();
         })
         .catch(error => {
           this.$message({
@@ -196,38 +258,37 @@ export default {
         });
     },
     onModifyEvent() {
-      // var self = this;
-      // var sendItem = [];
-      // var idx = 0;
-      // this.multipleSelection.forEach(item => {
-      //   var _t = {
-      //     userId: item.userEmpId,
-      //     userGroupName: self.groupName,
-      //     orders: idx++,
-      //     comment: self.groupcomment
-      //   };
-      //   sendItem.push(_t);
-      // });
-      // if (sendItem.length > 0) {
-      //   APIService.setUserGroup(sendItem).then(result => console.log(result));
-      // }
+      var self = this;
+
+      if (this.multipleSelection.length < 1) {
+        this.$confirm(
+          "선택된 사용자가 한명도 없습니다. 전인원 삭제가 맞으십니까?",
+          "Warning",
+          {
+            confirmButtonText: "확인",
+            cancelButtonText: "취소",
+            type: "warning"
+          }
+        ).then(() => {
+          self.onRemoveEvent();
+        });
+      } else {
+        self.onRemoveEvent();
+      }
     },
     handleCheckChange(mdata, checked, indeterminate) {
       if (checked) {
         var self = this;
-        console.log(mdata);
 
         APIService.getOrgMemberList(mdata.obj.orgId, mdata.obj.deptId).then(
           data => {
-            // console.log("d", data);
-            // this.tableData = [];
             data.forEach(item => {
               this.tableData.push({
                 userEmpId: item.userEmpId,
-                userName: item.userNm,
-                org: mdata.obj.deptNm,
-                position: item.membPostion,
-                level: item.membRank,
+                userNm: item.userNm,
+                deptNm: mdata.obj.deptNm,
+                membPostion: item.membPostion,
+                membRank: item.membRank,
                 deptId: item.deptId
               });
             });
@@ -254,7 +315,6 @@ export default {
             children: _child,
             obj: item
           });
-          // console.log(_parent);
         }
       });
 
@@ -271,67 +331,6 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
-      console.log(this.multipleSelection);
-    },
-    edit: function() {
-      //   //
-      //   var self = this;
-      //   this.$http
-      //     .put("http://dabin02272.cafe24.com:8090/api/object", {
-      //       objectId: self.objectId,
-      //       objectTypeId: self.objectTypeId,
-      //       objectName: self.objectName,
-      //       legacyId: self.legacyId,
-      //       objectComment: self.objectComment
-      //     })
-      //     .then(response => {
-      //       this.$message({
-      //         type: "success",
-      //         message: "수정이 완료되었습니다."
-      //       });
-      //       this.$router.push({ name: "obj" });
-      //     })
-      //     .catch(error => {
-      //       this.$message({
-      //         type: "error",
-      //         message: "에러가 발생하였습니다."
-      //       });
-      //       console.log(error.config);
-      //     });
-    },
-    del: function() {
-      //   this.$confirm("삭제 하시겠습니까?", "Warning", {
-      //     confirmButtonText: "확인",
-      //     cancelButtonText: "취소",
-      //     type: "warning"
-      //   })
-      //     .then(() => {
-      //       var self = this;
-      //       this.$http
-      //         .delete("http://dabin02272.cafe24.com:8090/api/object", {
-      //           data: { objectId: self.objectId }
-      //         })
-      //         .then(response => {
-      //           this.$router.push({ name: "obj" });
-      //         })
-      //         .catch(error => {
-      //           this.$message({
-      //             type: "error",
-      //             message: "에러가 발생하였습니다."
-      //           });
-      //           console.log(error.config);
-      //         });
-      //       this.$message({
-      //         type: "success",
-      //         message: "삭제가 완료되었습니다."
-      //       });
-      //     })
-      //     .catch(() => {
-      //       this.$message({
-      //         type: "info",
-      //         message: "삭제가 취소되었습니다."
-      //       });
-      //     });
     },
     cancle: function() {
       this.$router.go(-1);

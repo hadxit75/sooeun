@@ -20,7 +20,7 @@
                  
                      </div>
                       <div class="col-md-2" style="margin-top:30px">
-                      <el-button plain type="success" icon="el-icon-search" style="width:100%">사용자 개별 검색</el-button> 
+                      <el-button plain type="success" @click="onUserSearch()" icon="el-icon-search" style="width:100%">사용자 개별 검색</el-button> 
                      </div>
                       <div class="col-md-2" style="margin-top:30px">
                       <el-button plain type="primary" @click="onInsertEvent()" :disabled="validateStatus()" style="width:100%">확인</el-button> 
@@ -46,54 +46,56 @@
                     <div class="col-md-8">
                        <el-card shadow="never">
                           <p>선택된 사용자</p>
-                        <el-table
-                        ref="multipleTable"
-                        :data="tableData"
-                        style="width: 100%;height:calc(100vh - 400px);overflow-y:scroll"
-                        @selection-change="handleSelectionChange">
-                        <el-table-column
-                          type="index"
-                          width="100">
-                        </el-table-column>
-                         <el-table-column
-                          type="selection"
-                          width="55">
-                        </el-table-column>
-                        <el-table-column
-                        property="userEmpId"
-                        label="사번">
-                        </el-table-column>
-                        <el-table-column
-                        property="userName"
-                        label="성명">
-                        </el-table-column>
-                        <el-table-column
-                        property="org"
-                        label="조직">
-                        </el-table-column>
-                        <el-table-column
-                        property="level"
-                        label="직급">
-                        </el-table-column>
-                        <el-table-column
-                        property="position"
-                        label="직책">
-                        </el-table-column>
-                    </el-table>
+                          <el-table
+                              ref="multipleTable"
+                              :data="tableData"
+                              style="width: 100%;height:calc(100vh - 400px);overflow-y:scroll"
+                              @selection-change="handleSelectionChange">
+                              <el-table-column
+                                type="index"
+                                width="100">
+                              </el-table-column>
+                              <el-table-column
+                                type="selection"
+                                width="55">
+                              </el-table-column>
+                              <el-table-column
+                              property="userEmpId"
+                              label="사번">
+                              </el-table-column>
+                              <el-table-column
+                              property="userNm"
+                              label="성명">
+                              </el-table-column>
+                              <el-table-column
+                              property="deptNm"
+                              label="조직">
+                              </el-table-column>
+                              <el-table-column
+                              property="membPostion"
+                              label="직급">
+                              </el-table-column>
+                              <el-table-column
+                              property="membRank"
+                              label="직책">
+                              </el-table-column>
+                          </el-table>
                        </el-card>
                     </div>
                 
                 </div>
 
         </div>
+         <user-search :visiable="invokeFlag" @closed="onClickChild" @clicked="onClickChild"></user-search>
     </div>
 </template>
 
 <script>
 import APIService from "../util/APIService";
+import UserSearch from "./UserSearch.vue";
 export default {
   components: {
-    name: "AddItem"
+    UserSearch
   },
   data() {
     return {
@@ -105,6 +107,7 @@ export default {
       //   objectName: this.$route.params.objs.objectName,
       //   objectComment: this.$route.params.objs.objectComment,
       legacySelect: [],
+      invokeFlag: false,
       objSelect: [],
       groupName: "",
       groupcomment: "",
@@ -120,7 +123,6 @@ export default {
   },
   created() {
     APIService.getOrgList().then(data => {
-      // var dummy = data.find(item => item.deptDepth == 0);
       var _parent = [];
 
       data.forEach(item => {
@@ -132,7 +134,6 @@ export default {
             children: _child,
             obj: item
           });
-          // console.log("p", _parent);
         }
       });
       this.data = _parent;
@@ -140,6 +141,12 @@ export default {
   },
   mounted() {},
   methods: {
+    onClickChild(evt) {
+      this.invokeFlag = false;
+    },
+    onUserSearch() {
+      this.invokeFlag = true;
+    },
     backToStatus() {
       this.$router.push("/ugstatus");
     },
@@ -181,20 +188,17 @@ export default {
     handleCheckChange(mdata, checked, indeterminate) {
       if (checked) {
         var self = this;
-        console.log(mdata);
 
         APIService.getOrgMemberList(mdata.obj.orgId, mdata.obj.deptId).then(
           data => {
-            // console.log("d", data);
-            // this.tableData = [];
             data.forEach(item => {
               this.tableData.push({
                 orgId: item.orgId,
                 userEmpId: item.userEmpId,
-                userName: item.userNm,
-                org: mdata.obj.deptNm,
-                position: item.membPostion,
-                level: item.membRank,
+                userNm: item.userNm,
+                deptNm: mdata.obj.deptNm,
+                membPostion: item.membPostion,
+                membRank: item.membRank,
                 deptId: item.deptId
               });
             });
@@ -221,7 +225,6 @@ export default {
             children: _child,
             obj: item
           });
-          // console.log(_parent);
         }
       });
 
@@ -241,67 +244,6 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
-      console.log(this.multipleSelection);
-    },
-    edit: function() {
-      //   //
-      //   var self = this;
-      //   this.$http
-      //     .put("http://dabin02272.cafe24.com:8090/api/object", {
-      //       objectId: self.objectId,
-      //       objectTypeId: self.objectTypeId,
-      //       objectName: self.objectName,
-      //       legacyId: self.legacyId,
-      //       objectComment: self.objectComment
-      //     })
-      //     .then(response => {
-      //       this.$message({
-      //         type: "success",
-      //         message: "수정이 완료되었습니다."
-      //       });
-      //       this.$router.push({ name: "obj" });
-      //     })
-      //     .catch(error => {
-      //       this.$message({
-      //         type: "error",
-      //         message: "에러가 발생하였습니다."
-      //       });
-      //       console.log(error.config);
-      //     });
-    },
-    del: function() {
-      //   this.$confirm("삭제 하시겠습니까?", "Warning", {
-      //     confirmButtonText: "확인",
-      //     cancelButtonText: "취소",
-      //     type: "warning"
-      //   })
-      //     .then(() => {
-      //       var self = this;
-      //       this.$http
-      //         .delete("http://dabin02272.cafe24.com:8090/api/object", {
-      //           data: { objectId: self.objectId }
-      //         })
-      //         .then(response => {
-      //           this.$router.push({ name: "obj" });
-      //         })
-      //         .catch(error => {
-      //           this.$message({
-      //             type: "error",
-      //             message: "에러가 발생하였습니다."
-      //           });
-      //           console.log(error.config);
-      //         });
-      //       this.$message({
-      //         type: "success",
-      //         message: "삭제가 완료되었습니다."
-      //       });
-      //     })
-      //     .catch(() => {
-      //       this.$message({
-      //         type: "info",
-      //         message: "삭제가 취소되었습니다."
-      //       });
-      //     });
     },
     cancle: function() {
       this.$router.go(-1);

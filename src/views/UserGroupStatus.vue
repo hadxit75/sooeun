@@ -66,11 +66,7 @@ export default {
       return index + 1;
     },
     handleCurrentChange(val) {
-      //console.log(val)
       this.$router.push({ name: "ugDetail", params: { objs: val } });
-    },
-    handleDelete(index, row) {
-      console.log(index, row);
     }
   }
 };
