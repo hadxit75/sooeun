@@ -86,7 +86,7 @@
                 </div>
 
         </div>
-         <user-search :visiable="invokeFlag" @closed="onClickChild" @clicked="onClickChild"></user-search>
+         <user-search :visiable="invokeFlag" @closed="onCloseModal" @clicked="onClickChild"></user-search>
     </div>
 </template>
 
@@ -142,6 +142,15 @@ export default {
   mounted() {},
   methods: {
     onClickChild(evt) {
+      this.invokeFlag = false;
+      var _startpoint = this.tableData.length;
+      this.tableData.push(...evt);
+      var _endpoint = this.tableData.length + 1;
+      for (var i = _startpoint; i < _endpoint; i++) {
+        this.$refs.multipleTable.toggleRowSelection(this.tableData[i]);
+      }
+    },
+    onCloseModal() {
       this.invokeFlag = false;
     },
     onUserSearch() {

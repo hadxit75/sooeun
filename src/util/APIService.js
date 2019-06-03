@@ -132,7 +132,7 @@ export default {
   },
   getUsers(userNm) {
     const url = `${baseURL}/api/organization/get-users`;
-    return axios.post(url, userNm).then(response => response.data.results);
+    return axios.post(url, { userNm }).then(response => response.data.results);
   },
   setUserGroup(data) {
     const url = `${baseURL}/api/user-group`;

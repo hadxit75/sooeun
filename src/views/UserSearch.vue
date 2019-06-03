@@ -1,6 +1,6 @@
 <template>
 <div>
-    <el-dialog title="사용자 검색" :visible.sync="visiablelocal">
+    <el-dialog title="사용자 검색" :visible.sync="visiablelocal" fullscreen @close="onClose()">
 
     <el-input
         placeholder="이름을 입력후 엔터를 입력해주세요"
@@ -11,7 +11,8 @@
     <el-table
         ref="multipleTableSearch"
         :data="searchData"
-        style="margin-bottom:10px"
+        height="calc(100vh - 200px)"
+        style="margin-bottom:10px;"
         @selection-change="handleSelectionChange">
         <el-table-column
         type="index"
@@ -76,6 +77,10 @@ export default {
       multipleSelectionSearch: []
     };
   },
+  mounted() {
+    this.searchData = [];
+    this.search = "";
+  },
   methods: {
     onSearch() {
       if (this.search) {
@@ -83,11 +88,11 @@ export default {
         var _t = { userNm: this.search };
         APIService.getUsers(this.search).then(data => {
           data.forEach(item => {
-            this.tableData.push({
+            this.searchData.push({
               orgId: item.orgId,
               userEmpId: item.userEmpId,
               userNm: item.userNm,
-              deptNm: mdata.obj.deptNm,
+              deptNm: item.deptNm,
               membPostion: item.membPostion,
               membRank: item.membRank,
               deptId: item.deptId
@@ -97,13 +102,15 @@ export default {
       }
     },
     onClose(event) {
-      this.$emit("closed", this.searchData);
+      this.searchData = [];
+      this.search = "";
+      this.$emit("closed");
     },
     onSubmit(event) {
-      this.$emit("clicked", this.searchData);
+      this.$emit("clicked", this.multipleSelectionSearch);
     },
     handleSelectionChange(val) {
-      this.multipleSelection = val;
+      this.multipleSelectionSearch = val;
     }
   }
 };
