@@ -191,6 +191,7 @@ export default {
 
         APIService.getOrgMemberList(mdata.obj.orgId, mdata.obj.deptId).then(
           data => {
+            var _startpoint = this.tableData.length;
             data.forEach(item => {
               this.tableData.push({
                 orgId: item.orgId,
@@ -202,6 +203,10 @@ export default {
                 deptId: item.deptId
               });
             });
+            var _endpoint = this.tableData.length + 1;
+            for (var i = _startpoint; i < _endpoint; i++) {
+              this.$refs.multipleTable.toggleRowSelection(this.tableData[i]);
+            }
           }
         );
       } else {
