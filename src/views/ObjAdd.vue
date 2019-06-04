@@ -49,6 +49,7 @@
 </template>
 
 <script>
+import APIService from '../util/APIService';
 export default {
   components: {
     name: "AddItem"
@@ -65,34 +66,25 @@ export default {
     };
   },
   created() {
-    this.$http
-      .get("http://dabin02272.cafe24.com:8090/api/object-type/list", {
-        headers: { "Content-Type": "application/json" }
-      })
-      .then(response => {
-        this.objSelect = response.data.results;
+    APIService.getObjectTypeList().then(response => {
+        this.objSelect = response;
 
         var _self = this;
-        _self.$http
-          .get("http://dabin02272.cafe24.com:8090/api/legacy/list", {
-            headers: { "Content-Type": "application/json" }
-          })
-          .then(response => {
-            _self.legacySelect = response.data.results;
+        APIService.getLegacyList().then(response => {
+            _self.legacySelect = response;
           });
       });
   },
   methods: {
     add: function() {
       var self = this;
-      this.$http
-        .post("http://dabin02272.cafe24.com:8090/api/object", {
-          legacyId: self.legacyId,
-          objectTypeId: self.objectTypeId,
-          objectName: self.objectName,
-          objectComment: self.objectComment
-        })
-        .then(response => {
+      var _msg = { legacyId: self.legacyId,
+                  objectTypeId: self.objectTypeId,
+                  objectName: self.objectName,
+                  objectComment: self.objectComment
+                  };
+
+      APIService.postObject(_msg).then(response => {
           alert('추가가 완료되었습니다.');
           this.$router.push({ name: "obj" });
         })

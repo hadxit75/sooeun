@@ -36,6 +36,39 @@ export default {
       })
       .then(response => response.data.results);
   },
+  postObject(_msg) {
+    const url = `${baseURL}/api/object`;
+    return axios
+      .post(url, _msg, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      })
+      .then(response => response.data.results);
+  },
+  putObject(_msg) {
+    const url = `${baseURL}/api/object`;
+    return axios
+      .put(url, _msg, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      })
+      .then(response => response.data.results);
+  },
+  deleteObject(_msg) {
+    const url = `${baseURL}/api/object`;
+    return axios
+      .delete(url, _msg, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      })
+      .then(response => response.data.results);
+  },
   ////////////////////////////////////////////////
   // OPERATION API
   getOperationList() {

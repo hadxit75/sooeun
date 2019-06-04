@@ -80,13 +80,9 @@ export default {
       this.displayData = this.listData;
 
       var _self = this;
-      _self.$http
-        .get("http://dabin02272.cafe24.com:8090/api/legacy/list", {
-          headers: { "Content-Type": "application/json" }
-        })
-        .then(response => {
-          _self.listData2 = _self.listData.filter(item => {
-            var _value = response.data.results.find(
+      APIService.getLegacyList().then(response => {
+         _self.listData2 = _self.listData.filter(item => {
+            var _value = response.find(
               sitem => item.legacyId == sitem.legacyId
             ).legacyName;
 
@@ -99,13 +95,9 @@ export default {
         });
 
       var _self2 = this;
-      _self2.$http
-        .get("http://dabin02272.cafe24.com:8090/api/object-type/list", {
-          headers: { "Content-Type": "application/json" }
-        })
-        .then(response => {
+      APIService.getObjectTypeList().then(response => {
           _self2.listData3 = _self.listData.filter(item => {
-            var _value = response.data.results.find(
+            var _value = response.find(
               sitem => item.objectTypeId == sitem.objectTypeId
             ).objectTypeName;
 

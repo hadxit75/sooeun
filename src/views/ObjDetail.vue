@@ -44,15 +44,13 @@
                 <el-button plain type="primary" @click="edit">수정</el-button> 
                 <el-button plain type="danger" @click="del">삭제</el-button> 
                 <el-button plain type="warning" @click="cancle">취소</el-button> 
-                <!-- <b-button v-on:click="edit" variant="success" >수정</b-button>&nbsp;&nbsp;&nbsp;
-                <b-button v-on:click="del" variant="danger" >삭제</b-button>&nbsp;&nbsp;&nbsp;
-                <b-button v-on:click="cancle" variant="warning" >취소</b-button> -->
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import APIService from '../util/APIService';
 export default {
   components: {
     name: "AddItem"
@@ -71,36 +69,28 @@ export default {
     };
   },
   created() {
-    this.$http
-      .get("http://dabin02272.cafe24.com:8090/api/object-type/list", {
-        headers: { "Content-Type": "application/json" }
-      })
-      .then(response => {
-        this.objSelect = response.data.results;
+    APIService.getObjectTypeList().then(response => {
+        this.objSelect = response;
 
         var _self = this;
-        _self.$http
-          .get("http://dabin02272.cafe24.com:8090/api/legacy/list", {
-            headers: { "Content-Type": "application/json" }
-          })
-          .then(response => {
-            _self.legacySelect = response.data.results;
+        APIService.getLegacyList().then(response => {
+            _self.legacySelect = response;
           });
       });
   },
   methods: {
     edit: function() {
-      //
+
       var self = this;
-      this.$http
-        .put("http://dabin02272.cafe24.com:8090/api/object", {
-          objectId: self.objectId,
-          objectTypeId: self.objectTypeId,
-          objectName: self.objectName,
-          legacyId: self.legacyId,
-          objectComment: self.objectComment
-        })
-        .then(response => {
+      
+      var _msg = {objectId: self.objectId,
+                  objectTypeId: self.objectTypeId,
+                  objectName: self.objectName,
+                  legacyId: self.legacyId,
+                  objectComment: self.objectComment
+              };
+
+      APIService.putObject(_msg).then(response => {
           alert('수정이 완료되었습니다.');
           this.$router.push({ name: "obj" });
         })
@@ -117,19 +107,18 @@ export default {
       })
         .then(() => {
           var self = this;
-          this.$http
-            .delete("http://dabin02272.cafe24.com:8090/api/object", {
+          var _msg = {
               data: { objectId: self.objectId }
-            })
-            .then(response => {
+            };
+
+            APIService.deleteObject(_msg).then(response => {
+              alert('삭제가 완료되었습니다.');
               this.$router.push({ name: "obj" });
             })
             .catch(error => {
               alert('에러가 발생하였습니다.');
               console.log(error.config);
             });
-
-          alert('삭제가 완료되었습니다.');
         })
         .catch(() => {
           alert('삭제가 취소되었습니다.');
