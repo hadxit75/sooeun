@@ -42,6 +42,68 @@ SUCCESS RESPONSE: {
 	"result":null,
 	"error":null}
 }
+
++++++
+역할(그룹) 권한 원천시스템 리스트 가져오기 (Role 그룹인 경우와 그룹이 아닌 대상의 원천시스템 리스트)
+URL: /api/role-permission/all/legacy/list 
+METHOD: GET
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":[
+		{"legacyId":40,"legacyName":"CRM","rolePrmssnId":0,"isRoleGroup":0,"groupRoleId":0,"roleId":0,"groupId":0,"orders":0,"prmssnGroupId":0,"prmssnId":0,"roleUnifiedName":null,"roleGroupName":null,"rolePrmssnName":null,"prmssnComment":null,"roleComment":null,"rolePrmssnComment":null,"roleGroupComment":null,"roleName":null,"roleTypeName":null,"objectName":null,"objectTypeName":null,"oprtnName":null}{"rolePrmssnId":6,"isRoleGroup":0,"groupRoleId":0,"roleId":5,"groupId":5,"orders":1,"prmssnGroupId":52,"prmssnId":138,"legacyId":42,"roleUnifiedName":"마케팅팀장 1 111 ","roleGroupName":null,"rolePrmssnName":"update role permission 2-1","prmssnComment":"업무현황 리포트 읽기 권한","roleComment":null,"rolePrmssnComment":"test 1 1","roleGroupComment":null,"roleName":null,"legacyName":"CRM","roleTypeName":null,"objectName":"REPORT_ID_2","objectTypeName":"REPORT","oprtnName":"READ"},
+		], 
+	"result":null,
+	"error":null}
+}
+--설명
+legacyId,legacyName 외에는 무시
+
++++++
+원천시스템별 역할(그룹)권한 리스트 가져오기 (원천시스템 legacy-id 에 해당하는 역할(그룹)권한 항목들 가져오기)
+METHOD: GET
+URL: /api/role-permission/all/legacy/{legacyId} 
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":[		
+		{"rolePrmssnId":11,"isRoleGroup":0,"isRoleItemGroup":0,"groupRoleId":0,"roleId":2,"groupId":0,"rolePrmssnGroupId":6,"orders":4,"prmssnGroupId":9,"prmssnId":0,"legacyId":40,"roleUnifiedName":"마케팅팀장 2","roleGroupName":null,"rolePrmssnName":"test 222 1","prmssnComment":null,"roleComment":null,"rolePrmssnComment":"test 222","roleGroupComment":null,"roleName":null,"legacyName":"CRM","roleTypeName":null,"objectName":null,"objectTypeName":null,"oprtnName":null},
+		{"rolePrmssnId":12,"isRoleGroup":0,"isRoleItemGroup":0,"groupRoleId":0,"roleId":1,"groupId":0,"rolePrmssnGroupId":7,"orders":5,"prmssnGroupId":14,"prmssnId":0,"legacyId":40,"roleUnifiedName":"마케팅팀장 1","roleGroupName":null,"rolePrmssnName":"test 222 2","prmssnComment":null,"roleComment":null,"rolePrmssnComment":"test 222","roleGroupComment":null,"roleName":null,"legacyName":"CRM","roleTypeName":null,"objectName":null,"objectTypeName":null,"oprtnName":null},
+		{"rolePrmssnId":6,"isRoleGroup":0,"isRoleItemGroup":0,"groupRoleId":0,"roleId":5,"groupId":0,"rolePrmssnGroupId":5,"orders":1,"prmssnGroupId":52,"prmssnId":0,"legacyId":40,"roleUnifiedName":"마케팅팀장 1 111 ","roleGroupName":null,"rolePrmssnName":"update role permission 2-1","prmssnComment":null,"roleComment":null,"rolePrmssnComment":"test 1 1","roleGroupComment":null,"roleName":null,"legacyName":"CRM","roleTypeName":null,"objectName":null,"objectTypeName":null,"oprtnName":null},
+		{"rolePrmssnId":14,"isRoleGroup":1,"isRoleItemGroup":1,"groupRoleId":3,"roleId":3,"groupId":0,"rolePrmssnGroupId":10,"orders":3,"prmssnGroupId":9,"prmssnId":0,"legacyId":40,"roleUnifiedName":"role group 2-1","roleGroupName":null,"rolePrmssnName":"update role permission 1","prmssnComment":null,"roleComment":null,"rolePrmssnComment":"update comment 1","roleGroupComment":null,"roleName":null,"legacyName":"CRM","roleTypeName":null,"objectName":null,"objectTypeName":null,"oprtnName":null}
+	],
+	"result":null,
+	"error":null}
+} 
+--설명
+Role이 그룹/비그룹의 구별없이 roleUnifiedName 사용
+ 
++++++
+역할(그룹) 권한 리스트 가져오기 (Role 그룹인 경우와 그룹이 아닌 대상의 이름 리스트)
+URL: /api/role-permission/all/list 
+METHOD: GET
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":[
+		{"rolePrmssnId":6,"isRoleGroup":0,"groupRoleId":0,"roleId":5,"groupId":5,"orders":1,"prmssnGroupId":52,"prmssnId":137,"legacyId":42,"roleUnifiedName":"마케팅팀장 1 111 ","roleGroupName":null,"rolePrmssnName":"update role permission 2-1","prmssnComment":"업무현황 리포트 읽기 권한","roleComment":null,"rolePrmssnComment":"test 1 1","roleGroupComment":null,"roleName":null,"legacyName":"CRM","roleTypeName":null,"objectName":"REPORT_ID_1","objectTypeName":"REPORT","oprtnName":"READ"},
+		{"rolePrmssnId":6,"isRoleGroup":0,"groupRoleId":0,"roleId":5,"groupId":5,"orders":1,"prmssnGroupId":52,"prmssnId":138,"legacyId":42,"roleUnifiedName":"마케팅팀장 1 111 ","roleGroupName":null,"rolePrmssnName":"update role permission 2-1","prmssnComment":"업무현황 리포트 읽기 권한","roleComment":null,"rolePrmssnComment":"test 1 1","roleGroupComment":null,"roleName":null,"legacyName":"CRM","roleTypeName":null,"objectName":"REPORT_ID_2","objectTypeName":"REPORT","oprtnName":"READ"},
+		{"rolePrmssnId":6,"isRoleGroup":0,"groupRoleId":0,"roleId":5,"groupId":5,"orders":1,"prmssnGroupId":52,"prmssnId":139,"legacyId":42,"roleUnifiedName":"마케팅팀장 1 111 ","roleGroupName":null,"rolePrmssnName":"update role permission 2-1","prmssnComment":"업무현황 리포트 읽기 권한","roleComment":null,"rolePrmssnComment":"test 1 1","roleGroupComment":null,"roleName":null,"legacyName":"CRM","roleTypeName":null,"objectName":"REPORT_ID_3","objectTypeName":"REPORT","oprtnName":"READ"},
+		{"rolePrmssnId":6,"isRoleGroup":0,"groupRoleId":0,"roleId":5,"groupId":5,"orders":1,"prmssnGroupId":52,"prmssnId":140,"legacyId":42,"roleUnifiedName":"마케팅팀장 1 111 ","roleGroupName":null,"rolePrmssnName":"update role permission 2-1","prmssnComment":"업무현황 리포트 읽기 권한","roleComment":null,"rolePrmssnComment":"test 1 1","roleGroupComment":null,"roleName":null,"legacyName":"CRM","roleTypeName":null,"objectName":"REPORT_ID_4","objectTypeName":"REPORT","oprtnName":"READ"},
+		{"rolePrmssnId":6,"isRoleGroup":0,"groupRoleId":0,"roleId":5,"groupId":5,"orders":1,"prmssnGroupId":52,"prmssnId":141,"legacyId":42,"roleUnifiedName":"마케팅팀장 1 111 ","roleGroupName":null,"rolePrmssnName":"update role permission 2-1","prmssnComment":"업무현황 리포트 읽기 권한","roleComment":null,"rolePrmssnComment":"test 1 1","roleGroupComment":null,"roleName":null,"legacyName":"CRM","roleTypeName":null,"objectName":"REPORT_ID_5","objectTypeName":"REPORT","oprtnName":"READ"},
+		{"rolePrmssnId":6,"isRoleGroup":0,"groupRoleId":0,"roleId":5,"groupId":5,"orders":1,"prmssnGroupId":52,"prmssnId":142,"legacyId":42,"roleUnifiedName":"마케팅팀장 1 111 ","roleGroupName":null,"rolePrmssnName":"update role permission 2-1","prmssnComment":"업무현황 리포트 읽기 권한","roleComment":null,"rolePrmssnComment":"test 1 1","roleGroupComment":null,"roleName":null,"legacyName":"CRM","roleTypeName":null,"objectName":"SUPER-USER","objectTypeName":"FUNCTION","oprtnName":"EXECUTE"},
+		{"rolePrmssnId":14,"isRoleGroup":1,"groupRoleId":3,"roleId":3,"groupId":10,"orders":3,"prmssnGroupId":9,"prmssnId":76,"legacyId":40,"roleUnifiedName":"role group 2-1","roleGroupName":null,"rolePrmssnName":"update role permission 1","prmssnComment":"0521","roleComment":null,"rolePrmssnComment":"update comment 1","roleGroupComment":null,"roleName":null,"legacyName":"CRM","roleTypeName":null,"objectName":"SCN-2","objectTypeName":"SCREEN","oprtnName":"DELETE"}
+	], 
+	"result":null,
+	"error":null}
+}
+
 +++++
 원천시스템별 역할(그룹)권한 리스트 가져오기 (원천시스템 legacy-id 에 해당하는 역할(그룹)권한 항목들 가져오기)
 METHOD: GET
@@ -53,7 +115,8 @@ SUCCESS RESPONSE: {
 	"message":"good",
 	"results":[
 		{"rolePrmssnId":6,"isRoleGroup":0,"groupRoleId":0,"roleId":5,"groupId":5,"orders":1,"prmssnGroupId":1,"roleGroupName":null,"rolePrmssnName":"update role permission 2-1","prmssnComment":"1111","roleComment":"마케팅팀장 role 1 111","rolePrmssnComment":"test 1 1","roleGroupComment":null,"roleName":"마케팅팀장 1 111 ","legacyName":"CRM","roleTypeName":"직책","objectName":"MENU-1","objectTypeName":"MENU","oprtnName":"SEARCH"},
-"rolePrmssnId":14,"isRoleGroup":1,"groupRoleId":3,"roleId":3,"groupId":10,"orders":3,"prmssnGroupId":9,"roleGroupName":null,"rolePrmssnName":"update role permission 1","prmssnComment":"test3","roleComment":"마케팅팀장 role","rolePrmssnComment":"update comment 1","roleGroupComment":null,"roleName":"마케팅팀장","legacyName":"CRM","roleTypeName":"직책","objectName":"SCREEN-2","objectTypeName":"SCREEN","oprtnName":"DELETE"}	], 
+		{"rolePrmssnId":14,"isRoleGroup":1,"groupRoleId":3,"roleId":3,"groupId":10,"orders":3,"prmssnGroupId":9,"roleGroupName":null,"rolePrmssnName":"update role permission 1","prmssnComment":"test3","roleComment":"마케팅팀장 role","rolePrmssnComment":"update comment 1","roleGroupComment":null,"roleName":"마케팅팀장","legacyName":"CRM","roleTypeName":"직책","objectName":"SCREEN-2","objectTypeName":"SCREEN","oprtnName":"DELETE"}	 
+	],
 	"result":null,
 	"error":null}
 } 
@@ -107,9 +170,9 @@ SUCCESS RESPONSE:  {
 2) Role 그룹인 경우
 	- "isRoleGroup": 1로 그룹임을 표현, "groupRoleId" : 3 해당 Role 그룹 ID, "orders": 2 순서
 REQUESTBODY: [
-	{"isRoleGroup": 1 , "groupRoleId" : 3,"orders": 2,"prmssnGroupId": 1,"rolePrmssnName": "test 111","rolePrmssnComment":"test 111"},
-	{"isRoleGroup": 1 , "groupRoleId" : 3,"orders": 3,"prmssnGroupId": 3,"rolePrmssnName": "test 111","rolePrmssnComment":"test 111"}
-]
+	{"isRoleGroup":1,"groupRoleId":3,"roleId":6,"orders":2,"prmssnGroupId":20,"rolePrmssnName":"0529","rolePrmssnComment":"0529"},
+	{"isRoleGroup":1,"groupRoleId":3,"roleId":6,"orders":3,"prmssnGroupId":40,"rolePrmssnName":"0529","rolePrmssnComment":"0529"}
+	]
 SUCCESS RESPONSE:  {
   	"status":"ok",
 	"code":200,

@@ -48,10 +48,10 @@ SUCCESS RESPONSE: {
 	"code":200,
 	"message":"good",
 	"results":":[
-		{"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000454","userEmpId":"8102505","membPostion":"차장","membPostionCd":300,"membRank":"팀장","membRankCd":110,"jobYn":"Y","useYn":"Y","userNm":"류재호"},
-		{"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000454","userEmpId":"22011516","membPostion":"주임","membPostionCd":550,"membRank":"팀원","membRankCd":400,"jobYn":"Y","useYn":"Y","userNm":"황용현"},
-		{"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000454","userEmpId":"23011406","membPostion":"대리","membPostionCd":500,"membRank":"팀원","membRankCd":400,"jobYn":"Y","useYn":"Y","userNm":"권규태"},
-		{"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000454","userEmpId":"22071608","membPostion":"사원","membPostionCd":600,"membRank":"팀원","membRankCd":400,"jobYn":"Y","useYn":"Y","userNm":"남다운"},
+		{"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000454","userId":"OSSTEM:8102505",""userEmpId":"8102505","membPostion":"차장","membPostionCd":300,"membRank":"팀장","membRankCd":110,"jobYn":"Y","useYn":"Y","userNm":"류재호"},
+		{"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000454","userId":"OSSTEM:22011516","userEmpId":"22011516","membPostion":"주임","membPostionCd":550,"membRank":"팀원","membRankCd":400,"jobYn":"Y","useYn":"Y","userNm":"황용현"},
+		{"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000454","userId":"OSSTEM:23011406","userEmpId":"23011406","membPostion":"대리","membPostionCd":500,"membRank":"팀원","membRankCd":400,"jobYn":"Y","useYn":"Y","userNm":"권규태"},
+		{"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000454","userId":"OSSTEM:22071608","userEmpId":"22071608","membPostion":"사원","membPostionCd":600,"membRank":"팀원","membRankCd":400,"jobYn":"Y","useYn":"Y","userNm":"남다운"},
 		.....
 	],
 	"result":null,
@@ -67,17 +67,14 @@ membRank : 직책
 URL: /api/organization/get-users 
 METHOD: POST
 REQUESTBODY: {
-	"userNm": "재호"
+	"userNm": "영은"
 }
 SUCCESS RESPONSE: {
 	"status":"ok",
 	"code":200,
 	"message":"good",
 	"results":":[
-		{"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000374","userEmpId":"8070801","membPostion":"부장","membPostionCd":200,"membRank":"본부장","membRankCd":30,"jobYn":"Y","useYn":"Y","userNm":"최재호","deptNm":"경남영업본부"},
-		{"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000454","userEmpId":"8102505","membPostion":"차장","membPostionCd":300,"membRank":"팀장","membRankCd":110,"jobYn":"Y","useYn":"Y","userNm":"류재호","deptNm":"디지털임플란트PM팀"},
-		{"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000665","userEmpId":"8070801","membPostion":"부장","membPostionCd":200,"membRank":"지점장","membRankCd":125,"jobYn":"N","useYn":"Y","userNm":"최재호","deptNm":"경남남부지점"},
-		{"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000746","userEmpId":"22053101","membPostion":"차장","membPostionCd":300,"membRank":"팀원","membRankCd":400,"jobYn":"Y","useYn":"Y","userNm":"임재호","deptNm":"시설관리1팀"}
+		{"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000844","userEmpId":"7080701","userId":"OSSTEM:7080701","membPostion":"이사","membPostionCd":50,"membRank":"실장","membRankCd":50,"jobYn":"Y","useYn":"Y","userNm":"김성진","deptNm":"영업교육실"}
 	],
 	"result":null,
 	"error":null}
