@@ -170,7 +170,7 @@ export default {
           userId: item.orgId + ":" + item.userEmpId,
           userGroupName: self.groupName,
           orders: idx++,
-          comment: self.groupcomment
+          userGroupComment: self.groupcomment
         };
         sendItem.push(_t);
       });

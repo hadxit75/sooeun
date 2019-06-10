@@ -26,6 +26,11 @@ import UserGroupDetail from "../views/UserGroupDetail.vue";
 import UserGroupAdd from "../views/UserGroupAdd.vue";
 import Frame from "../views/Frame.vue";
 
+import UserPerStatus from "../views/UserPerStatus.vue";
+import UserPerTab01 from "../views/UserPerTab01.vue";
+import UserPerTab05Detail from "../views/UserPerTab05Detail.vue";
+
+
 const routes = [
   {
     path: "/",
@@ -228,7 +233,31 @@ const routes = [
         name: 'roleGroupPerDetail',
         component: RoleGroupPerDetail,
         meta: {
-          requiresAuth: false
+          requiresAuth: false 
+        }
+      },
+      {
+        path: '/userPerStatus',
+        name: 'userPerStatus',
+        component: UserPerStatus,
+        meta: {
+          requiresAuth: false 
+        }
+      },
+      {
+        path: '/userPerTab01',
+        name: 'userPerTab01',
+        component: UserPerTab01,
+        meta: {
+          requiresAuth: false 
+        }
+      },
+      {
+        path: '/userPerTab05Detail',
+        name: 'userPerTab05Detail',
+        component: UserPerTab05Detail,
+        meta: {
+          requiresAuth: false 
         }
       },
     ]

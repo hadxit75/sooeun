@@ -16,10 +16,10 @@ SUCCESS RESPONSE: {
 	"code":200,
 	"message":"good",
 	"results":":[
-		{"userGroupId":15,"userId":13,"groupId":10,"orders":1,"userGroupName":"user group 2-1","userGroupComment":"test 1 1"},
-		{"userGroupId":16,"userId":14,"groupId":10,"orders":2,"userGroupName":"user group 2-1","userGroupComment":"test 1 1"},
-		{"userGroupId":17,"userId":15,"groupId":10,"orders":1,"userGroupName":"user group 2","userGroupComment":"test 1"},
-		{"userGroupId":18,"userId":16,"groupId":10,"orders":2,"userGroupName":"user group 2","userGroupComment":"test 2"}
+		{"userGroupId":15,"userId":"OSSTEM:8102505","groupId":10,"orders":1,"userGroupName":"user group 2-1","userGroupComment":"test 1 1"},
+		{"userGroupId":16,"userId":"OSSTEM:8102506","groupId":10,"orders":2,"userGroupName":"user group 2-1","userGroupComment":"test 1 1"},
+		{"userGroupId":17,"userId":"OSSTEM:8102507,"groupId":10,"orders":1,"userGroupName":"user group 2","userGroupComment":"test 1"},
+		{"userGroupId":18,"userId":"OSSTEM:8102508","groupId":10,"orders":2,"userGroupName":"user group 2","userGroupComment":"test 2"}
 	],
 	"result":null,
 	"error":null}
@@ -34,14 +34,13 @@ SUCCESS RESPONSE: {
 	"code":200,
 	"message":"good",
 	"results":":[
-		{"userGroupId":15,"userId":13,"groupId":10,"orders":1,"userGroupName":"user group 2-1","userGroupComment":"test 1 1"},
-		{"userGroupId":16,"userId":14,"groupId":10,"orders":2,"userGroupName":"user group 2-1","userGroupComment":"test 1 1"},
-		{"userGroupId":17,"userId":15,"groupId":10,"orders":1,"userGroupName":"user group 2","userGroupComment":"test 1"},
-		{"userGroupId":18,"userId":16,"groupId":10,"orders":2,"userGroupName":"user group 2","userGroupComment":"test 2"}
+		{"userGroupId":39,"userId":"OSSTEM:7091501","groupId":11,"orders":2,"userGroupName":"user group 2","userGroupComment":null,"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000233","userEmpId":"7091501","membPostion":"부장","membPostionCd":200,"membRank":"지점장","membRankCd":125,"jobYn":"Y","useYn":"Y","userNm":"김요한","deptNm":"경남서부지점"},
+		{"userGroupId":38,"userId":"OSSTEM:6081732","groupId":11,"orders":1,"userGroupName":"user group 2","userGroupComment":null,"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000548","userEmpId":"6081732","membPostion":"부장","membPostionCd":200,"membRank":"팀장","membRankCd":110,"jobYn":"Y","useYn":"Y","userNm":"김찬우","deptNm":"시작팀"}
 	],
 	"result":null,
 	"error":null}
 }
+		{"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000374","userId":"OSSTEM:8070801","userEmpId":"8070801","membPostion":"부장","membPostionCd":200,"membRank":"본부장","membRankCd":30,"jobYn":"Y","useYn":"Y","userNm":"최재호","deptNm":"경남영업본부"},
 
 +++++
 사용자  그룹 ID 리스트 가져오기 (group-id 리스트 가져오기)
@@ -53,15 +52,13 @@ SUCCESS RESPONSE: {
 	"code":200,
 	"message":"good",
 	"results":":[
-		{"userGroupId":0,"userId":0,"groupId":6,"orders":0,"userGroupName":null,"userGroupComment":null},
-		{"userGroupId":0,"userId":0,"groupId":8,"orders":0,"userGroupName":null,"userGroupComment":null}
+		{"userGroupId":0,"userId":null,"groupId":11,"orders":0,"userGroupName":"user group 2","userGroupComment":"user group 2"}
 
 	],
 	"result":null,
 	"error":null}
 }
 --
-groupId만 의미 있음
 
 +++++ UNUSED
 원천시스템별 사용자  그룹 리스트 가져오기 (원천시스템 legacy-id 에 해당하는 항목들 가져오기)
@@ -73,10 +70,10 @@ SUCCESS RESPONSE: {
 	"code":200,
 	"message":"good",
 	"results":":[
-		{"userGroupId":15,"userId":13,"groupId":10,"orders":1,"userGroupName":"user group 2-1","userGroupComment":"test 1 1"},
-		{"userGroupId":16,"userId":14,"groupId":10,"orders":2,"userGroupName":"user group 2-1","userGroupComment":"test 1 1"},
-		{"userGroupId":17,"userId":15,"groupId":10,"orders":1,"userGroupName":"user group 2","userGroupComment":"test 1"},
-		{"userGroupId":18,"userId":16,"groupId":10,"orders":2,"userGroupName":"user group 2","userGroupComment":"test 2"}
+		{"userGroupId":15,"userId":"OSSTEM:8102505","groupId":10,"orders":1,"userGroupName":"user group 2-1","userGroupComment":"test 1 1"},
+		{"userGroupId":16,"userId":"OSSTEM:8102505","groupId":10,"orders":2,"userGroupName":"user group 2-1","userGroupComment":"test 1 1"},
+		{"userGroupId":17,"userId":"OSSTEM:8102505","groupId":10,"orders":1,"userGroupName":"user group 2","userGroupComment":"test 1"},
+		{"userGroupId":18,"userId":"OSSTEM:8102505","groupId":10,"orders":2,"userGroupName":"user group 2","userGroupComment":"test 2"}
 	],
 	"result":null,
 	"error":null}
@@ -87,8 +84,8 @@ SUCCESS RESPONSE: {
 URL: /api/user-group
 METHOD: POST
 REQUESTBODY: [
-	{"userId": 3,"userGroupName": "user group 2", "orders" : 1, "userGroupComment": "test 1"},
-	{"userId": 4,"userGroupName": "user group 2", "orders" : 2,"userGroupComment": "test 2"}
+	{"userId": "OSSTEM:8102505","userGroupName": "user group 2", "orders" : 1, "userGroupComment": "test 1"},
+	{"userId": "OSSTEM:8102505","userGroupName": "user group 2", "orders" : 2,"userGroupComment": "test 2"}
 ]
 SUCCESS RESPONSE:  {
   	"status":"ok",
@@ -128,7 +125,7 @@ SUCCESS RESPONSE:  {
 URL: /api/user-group
 METHOD: PUT 
 REQUESTBODY: {
-	"userGroupName": "user group 2-1",  "userGroupComment": "test 1 1", "groupId": 13, "legacyId":40
+	"userGroupName": "user group 2-1",  "userGroupComment": "test 1 1", "groupId": 13
 }
 SUCCESS RESPONSE:  {
   	"status":"ok",
@@ -141,8 +138,8 @@ URL: /api/user-group/put-add
 METHOD: POST
 -- 참고: REQUESTBODY에서 [ {},{} ] 와 같이 [{}] 순서 주의
 REQUESTBODY: [
-		{"userId": 15,"userGroupName": "user group 2", "orders" : 1, "userGroupComment": "test 1", "groupId": 13},
-		{"userId": 16,"userGroupName": "user group 2", "orders" : 2,"userGroupComment": "test 2", "groupId": 13}
+		{"userId": "OSSTEM:8102505","userGroupName": "user group 2", "orders" : 1, "userGroupComment": "test 1", "groupId": 13},
+		{"userId": "OSSTEM:8102505","userGroupName": "user group 2", "orders" : 2,"userGroupComment": "test 2", "groupId": 13}
 ] 
 SUCCESS RESPONSE:  {
   	"status":"ok",

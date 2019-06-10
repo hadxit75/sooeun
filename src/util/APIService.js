@@ -82,10 +82,87 @@ export default {
       })
       .then(response => response.data.results);
   },
+  postOperation(_msg) {
+    const url = `${baseURL}/api/operation`;
+    return axios
+      .post(url, _msg, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      })
+      .then(response => response.data.results);
+  },
+  putOperation(_msg) {
+    const url = `${baseURL}/api/operation`;
+    return axios
+      .put(url, _msg, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      })
+      .then(response => response.data.results);
+  },
+  deleteOperation(_msg) {
+    const url = `${baseURL}/api/operation`;
+    return axios
+      .delete(url, _msg, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      })
+      .then(response => response.data.results);
+  },
   ////////////////////////////////////////////////
   // PERMISSION API
   getPermissionList() {
     const url = `${baseURL}/api/permission/list`;
+    return axios
+      .get(url, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      })
+      .then(response => response.data.results);
+  },
+  getObjLegacyList(legacyId) {
+    const url = `${baseURL}/api/object/legacy/${legacyId}`;
+    return axios
+      .get(url, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      })
+      .then(response => response.data.results);
+  },
+  getObjTypeLegacyList(legacyId, objTypeId) {
+    const url = `${baseURL}/api/object/object-type/${legacyId}/${objTypeId}`;
+    return axios
+      .get(url, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      })
+      .then(response => response.data.results);
+  },
+  postPermission(_msg) {
+    const url = `${baseURL}/api/permission`;
+    return axios
+      .post(url, _msg, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      })
+      .then(response => response.data.results);
+  },
+  getPermissionLegacyList(legacyId) {
+    const url = `${baseURL}/api/permission/legacy/${legacyId}`;
     return axios
       .get(url, {
         headers: {
@@ -182,5 +259,70 @@ export default {
   deleteUserGroup(data) {
     const url = `${baseURL}/api/user-group/group-id`;
     return axios.delete(url, { data }).then(response => response);
-  }
+  },
+  ////////////////////////////////////////////////
+  // USER PERMISSION MANANGEMENT API
+  getUsersPermission(userNm) {
+    const url = `${baseURL}/api/user-permission/user-permissions/list`;
+    return axios
+    .get(url, {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      }
+    })
+    .then(response => response.data.results);
+  },
+  getUsersPermissionGroupId(groupId) {
+    const url = `${baseURL}/api/user-permission/user-permissions/${groupId}`;
+    return axios
+    .get(url, {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      }
+    })
+    .then(response => response.data.results);
+  },
+  postUserPermission(_msg) {
+    const url = `${baseURL}/api/user-permission/user-permissions`;
+    return axios
+      .post(url, _msg, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      })
+      .then(response => response.data.results);
+  },
+  putUserPermission(_msg) {
+    const url = `${baseURL}/api/user-permission`;
+    return axios
+      .put(url, _msg, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      })
+      .then(response => response.data.results);
+  },
+  putUserPermissionAdd(_msg) {
+    const url = `${baseURL}/api/user-permission/user-permissions/put-add`;
+    return axios
+      .put(url, _msg, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      })
+      .then(response => response.data.results);
+  },
+  deleteUserPermissionGroup(data) {
+    const url = `${baseURL}/api/user-permission/group-id`;
+    return axios.delete(url, data).then(response => response);
+  },
+  deleteUserPermissionGroupRow(data) {
+    const url = `${baseURL}/api/user-permission/user-permissions`;
+    return axios.delete(url, data).then(response => response);
+  },
 };

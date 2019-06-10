@@ -165,7 +165,6 @@ export default {
       rowMinus: function (sidx) {
           var _lidx = 1;
           this.tasks = this.tasks.filter(item=>{
-            //   console.log(item);
               if(item.idx != sidx)
               {
                   item['idx'] = _lidx;

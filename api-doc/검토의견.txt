@@ -261,3 +261,57 @@ SUCCESS RESPONSE: {
     그리고, 실제 데이터에 하나의 사번으로 여러 회사에 겸직하는 경우가 있어서, orgId와 userEmpId는 합쳐서 식별자로 사용해야 합니다.
 	--> 위 답변이 오류네요. 질문하신게 맞는 내용이네요. orgNm이 별도 테이블에 있네요. 추가 했습니다.
 
+---------------------------------------------------------------------------------------------
+6/4일 추가 요청사항
+
+1. 사용자권한관리 탭 중 제일 첫 리스트 화면(사용자(그룹)권한현황) 리스트 항목의 오브젝트 이름 맵핑 자료 필요. 
+현재는 리스트 항목이 Api결과값의 어떤 것과 맵핑되는지 알 수 없음
+--> 사용자 권한(그룹)에 대한 리스트는 아래의 값과 같으며,
+이름 : userPrmssnName, 사용자(그룹)이름 : userNm, Role(그룹)이름 : 빈값, 권한(그룹)이름 : prmssnName, 비고 : userPrmssnComment
+참고로 "isUserGroup":0,"isRoleGroup":0,"isPrmssnGroup":1 이 값이 사용자 권한(그룹)을 뜻함.
+{"userPrmssnId":13,"isUserGroup":0,"groupUserId":0,"userId":"OSSTEM:X1234567","isRoleGroup":0,"rolePrmssnGroupId":0,"isPrmssnGroup":1,"prmssnGroupId":52,"groupId":6,"orders":1,"userPrmssnName":"홍길동 업무현황 리포트 권한","userPrmssnComment":"홍길동 업무현황 리포트 권한","userNm":"홍길동","prmssnName":"업무현황 리포트 읽기 권한"}
+2. 사용자 권한 (그룹)추가(현재api 나온 부분) 부분에서 아래 [순번/원천시스템/권한(그룹)이름/비고] 그리드에서 불러올 api 명칭과, 
+맵핑되는 항목 표시가 필요합니다. 맵핑정보가 불분명 합니다. 
+--> 스토리보드에 추가 완료
+
+---------------------------------------------------------------------------------------------
+6월9일 검토사항
+1. 권한추가에서 권한의 비고 항목이 서버에 요청할 떄 NULL로 전달됨. 
+-> 수정하여 반영했습니다. 
+
+---------------------------------------------------------------------------------------------
+6/10 확인 요청사항
+1. http://dabin02272.cafe24.com:8090/api/user-permission/user-permissions/list 의 오류메세지 확인 부탁 드립니다. 
+{
+    "status": "fail",
+    "code": 9001,
+    "message": null,
+    "results": null,
+    "result": null,
+    "error": "StatementCallback; bad SQL grammar [SELECT    GROUP_CONCAT( USER_NM SEPARATOR ',') AS USER_NM,  PRMSSN_NAME,\t\t\t\t\t\t\t\t\t\t\t\t\t\t GROUP_ID, PRMSSN_GROUP_ID,                             \t\t\t\t\t\t\t\t\t USER_PRMSSN_NAME, USER_PRMSSN_COMMENT                  FROM (                                                                                     \t\t\t\t\t\t\tSELECT   c.USER_NM, b.PRMSSN_NAME,                              \t\t\t\t\t\t\t\t\ta.GROUP_ID,  a.PRMSSN_GROUP_ID,                         \t\t\t\t\t\t\t\t\ta.USER_PRMSSN_NAME,a.COMMENT as USER_PRMSSN_COMMENT     \t\t\t\t\t\t\tFROM re_user_prmssn a, prmssn b, re_users c                     \t\t\t\t\t\t\tWHERE 1=1                                                       \t\t\t\t\t\t\tAND a.IS_USER_GROUP = 0                                         \t\t\t\t\t\t\tAND a.IS_ROLE_GROUP = 0                                         \t\t\t\t\t\t\tAND a.IS_PRMSSN_GROUP = 1                                       \t\t\t\t\t\t\tAND a.PRMSSN_GROUP_ID = b.GROUP_ID                              \t\t\t\t\t\t\tAND a.USER_ID = c.USER_ID                                       \t\t\t\t\t\t   GROUP BY a.GROUP_ID,  c.USER_NM                                  \t\t\t\t\t\t\tORDER BY IS_USER_GROUP,a.IS_ROLE_GROUP ASC                      \t\t\t\t\t\t\t) AS A\t                                                        GROUP BY GROUP_ID \t;\t                                                                    ]; nested exception is com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Expression #2 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'role.b.PRMSSN_NAME' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by"
+}
+
+2.  UserPermission.txt api 중 (delete) /api/user-permission/user-permissions api에서 userPrmssnId 를 키로 값을 보내게 되어 있는데 이 화면의 조회쿼리인 
+http://dabin02272.cafe24.com:8090/api/user-permission/user-permissions/16 에서 해당 키가 어떤 항목인지 표시 부탁 드립니다. 
+현재 나오고 있는 항목은 아래와 같습니다. 
+{
+		"userGroupId": 0,
+		"userId": "CT:1010801",
+		"groupId": 16,
+		"orders": 0,
+		"userGroupName": null,
+		"userGroupComment": null,
+		"orgId": "CT",
+		"orgNm": "오스템카디오텍 주식회사",
+		"deptId": "0",
+		"userEmpId": "1010801",
+		"membPostion": "회장",
+		"membPostionCd": 1,
+		"membRank": "회장",
+		"membRankCd": 2,
+		"jobYn": "Y",
+		"useYn": "Y",
+		"userNm": "김서준",
+		"deptNm": "오스템카디오텍"
+	}
+

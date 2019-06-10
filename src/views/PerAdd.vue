@@ -78,6 +78,7 @@
 </template>
 
 <script>
+import APIService from '../util/APIService';
 export default {
   components: {
       name: 'AddItem'
@@ -105,9 +106,8 @@ export default {
     }
   },
   created() {
-    this.$http.get('http://dabin02272.cafe24.com:8090/api/legacy/list', { headers: { 'Content-Type': 'application/json' } })
-    .then((response) => {
-      this.legacySelect = response.data.results;
+    APIService.getLegacyList().then((response) => {
+      this.legacySelect = response;
     });   
   },
    methods: {
@@ -129,7 +129,7 @@ export default {
                     item.objectId = _a;
 
                     this.tasksClone.forEach(sitem=>{
-                        if(sitem.objectId = item.objectId){
+                        if(sitem.objectId == item.objectId){
                             item.objectComment = sitem.objectComment
                         }
                     })
@@ -142,22 +142,15 @@ export default {
         var self = this
 
         var _msg = [];
-        // console.log("self.objectId::"+self.objectId)
+  
         this.tasks.forEach(sitem=>{
-
-             var _item = {"prmssnName": self.prmssnName,"objectId": sitem.objectId,"oprtnId": sitem.oprtnId , "orders" : sitem.idx, "comment": self.prmssnComment};
-
-            _msg.push(_item);
-            //console.log(sitem.objectId);
-           
+             var _item = {"prmssnName": self.prmssnName,"objectId": sitem.objectId,"oprtnId": sitem.oprtnId , "orders" : sitem.idx, "prmssnComment": self.prmssnComment};
+             _msg.push(_item);
         })
-        //console.log(_msg)
 
-         this.$http.post('http://dabin02272.cafe24.com:8090/api/permission', _msg)
-        .then((response) => {
+        APIService.postPermission(_msg).then((response) => {
             alert('추가가 완료되었습니다.');
-            this.$router.push({name:'per'})  
-                         
+            this.$router.push({name:'per'})               
         })
         .catch((error) => {
             alert('에러가 발생하였습니다.');
@@ -189,39 +182,34 @@ export default {
             var _self = this;
             _self.objTypeSelect = [];
 
-            _self.$http.get('http://dabin02272.cafe24.com:8090/api/object/legacy/'+selected ,{ headers: { 'Content-Type': 'application/json' } })
-                .then((response) => {
-                    _self.objTypeSelect = response.data.results;
-            })
-           
+            APIService.getObjLegacyList(selected).then((response) => {
+                    _self.objTypeSelect = response;
+            })  
       },
       objTypeChange: function(index, event){
-          var _a 
+            var _a 
 
-          this.tasks.forEach(item=>{
-              if(item.idx == index+1)
-              {
-                 _a = item;
-              }
-          })
+            this.tasks.forEach(item=>{
+                if(item.idx == index+1)
+                {
+                    _a = item;
+                }
+            })
         
-             var _idx = 0;
-
-             var _self = this;
+            var _idx = 0;
+            var _self = this;
 
             _self.objSelect = [];
             _self.objSelect.push("")
 
-            _self.$http.get('http://dabin02272.cafe24.com:8090/api/object/object-type/'+_self.slegacyId+'/'+ _a.objectTypeId ,{ headers: { 'Content-Type': 'application/json' } })
-                .then((response) => {
-                    _self.objSelect.push(...response.data.results);
-                    _self.tasksClone = response.data.results;
+            APIService.getObjTypeLegacyList(_self.slegacyId, _a.objectTypeId).then((response) => {
+                    _self.objSelect.push(...response);
+                    _self.tasksClone = response;
             })
 
             var _self2 = this;
-            _self2.$http.get('http://dabin02272.cafe24.com:8090/api/operation/list', { headers: { 'Content-Type': 'application/json' } })
-            .then((response) => {
-                _self2.oprSelect = response.data.results;
+            APIService.getOperationList().then((response) => {
+                _self2.oprSelect = response;
              })
  
             this.tasks = this.tasks.filter(item=>{
@@ -231,9 +219,7 @@ export default {
               }
               return item;
           })
-            //console.log("last tasks", this.tasks)
-
-      }
+       }
     }
 }
 </script>

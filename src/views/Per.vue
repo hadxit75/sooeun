@@ -7,7 +7,6 @@
     <div class="p-3 float-right" style="margin-right:-15px">
         <b-form inline>
             <b-form-input v-model="search" id="inline-form-input-name" class="mb-2 mr-sm-2 mb-sm-0" v-on:keyup="searchHandler"></b-form-input>
-            <!-- <b-button v-on:click="greet" variant="warning" >추가</b-button> -->
                <el-button plain type="primary" @click="greet">추가</el-button> 
         </b-form>
     </div>
@@ -72,6 +71,7 @@
 
 
 <script>
+import APIService from '../util/APIService';
 export default {
   name: "obj",
   data() {
@@ -87,23 +87,13 @@ export default {
   },
 
   created() {
-    this.$http
-      .get("http://dabin02272.cafe24.com:8090/api/permission/list", {
-        headers: { "Content-Type": "application/json" }
-      })
-      .then(response => {
-        this.listData = response.data.results;
+    APIService.getPermissionList().then(response => {
+        this.listData = response;
         this.displayData = this.listData;
         this.getSpanArr(this.displayData);
       });
   },
   methods: {
-    test() {
-      //console.log(this.listData);
-    },
-    rowSelected(items) {
-      this.$router.push({ name: "perDetail", params: { objs: items } });
-    },
     greet: function() {
       this.$router.push({ name: "perAdd" });
     },

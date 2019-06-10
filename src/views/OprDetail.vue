@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import APIService from '../util/APIService';
 export default {
   components: {
     name: "AddItem"
@@ -46,13 +47,12 @@ export default {
   methods: {
     edit: function() {
       var self = this;
-      this.$http
-        .put("http://dabin02272.cafe24.com:8090/api/operation", {
-          oprtnId: self.oprtnId,
-          oprtnName: self.oprtnName,
-          comment: self.comment
-        })
-        .then(response => {
+      var _msg = { oprtnId: self.oprtnId,
+                   oprtnName: self.oprtnName,
+                   comment: self.comment
+                 };
+
+      APIService.putOperation(_msg).then(response => {
           alert('수정이 완료되었습니다.');
           this.$router.push({ name: "opr" });
         })
@@ -69,19 +69,16 @@ export default {
       })
         .then(() => {
           var self = this;
-          this.$http
-            .delete("http://dabin02272.cafe24.com:8090/api/operation", {
-              data: { oprtnId: self.oprtnId }
-            })
-            .then(response => {
+          var _msg = { data: { oprtnId: self.oprtnId } };
+
+          APIService.deleteOperation(_msg).then(response => {
+              alert('삭제가 완료되었습니다.');
               this.$router.push({ name: "opr" });
             })
             .catch(error => {
               alert('에러가 발생하였습니다.');
               console.log(error.config);
             });
-
-          alert('삭제가 완료되었습니다.');
         })
         .catch(() => {
           alert('삭제가 취소되었습니다.');

@@ -5,8 +5,75 @@ User Permission  (권한)
 - User이나 User Group과 권한은 1:N의 관계 (User이나 User Group 하나에 권한 및 권한그룹은 여러개 매핑) 
 - User이나 User Group은 권한 그룹을 나타내는 groupId를 각각 하나씩 가지며 이를 기준으로 구분한다(User도 GroupId 하나를 할당)
 ------------------------------
-사용자 권한 리스트 가져오기(모든 항목 가져오기)
+BASE URL: dabin02272.cafe24.com:8090
+사용자 권한은 복잡한 관계로 총4개개로 분류해서 정의한다.
+화면에서 사용자가 그룹인지에 따라서 총 4가지의 부류가 있다.
+isUserGroup : 사용자그룹인지 여부 (isUserGroup이 1인 경우,  isRoleGroup/isPrmssnGroup둘중에 하나는 1)
+isRoleGroup : Role 그룹인지 여부 (isRoleGroup 1인 경우,  isUserGroup/isPrmssnGroup둘중에 하나는 1)
+isPrmssnGroup : Permission인지 여부 (isPrmssnGroup 1인 경우,  isUserGroup이/isRoleGroup 하나는 1)
+-------------------------------
+목차
+I. 사용자, 권한(그룹) : isUserGroup = 0, isRoleGroup=0, isPrmssnGroup=1
+II. 사용자그룹, 권한(그룹) : isUserGroup = 1, isRoleGroup=0, isPrmssnGroup=1
 
+
+========================================================
+I. 사용자, 권한(그룹)
+isUserGroup = 0, isRoleGroup=0, isPrmssnGroup=1
+========================================================
++++++
+사용자 권한 리스트 가져오기 (User 그룹이 아닌 권한 리스트)
+URL: /api/user-permission/user-permissions/list 
+METHOD: GET
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":[
+		{"userPrmssnId":0,"isUserGroup":0,"groupUserId":0,"userId":null,"isRoleGroup":0,"rolePrmssnGroupId":0,"isPrmssnGroup":0,"prmssnGroupId":52,"groupId":6,"orders":0,"legacyId":0,"userPrmssnName":"홍길동 업무현황 리포트 권한","userPrmssnComment":"홍길동 업무현황 리포트 권한","userNm":"홍길동","prmssnName":"업무현황 리포트 읽기 권한","roleName":null,"roleComment":null,"legacyName":null},
+		{"userPrmssnId":0,"isUserGroup":0,"groupUserId":0,"userId":null,"isRoleGroup":0,"rolePrmssnGroupId":0,"isPrmssnGroup":0,"prmssnGroupId":26,"groupId":13,"orders":0,"legacyId":0,"userPrmssnName":"김영은/김다은 OW FUNCTION 권한","userPrmssnComment":"김영은/김다은 OW FUNCTION 권한","userNm":"김다은,김영은","prmssnName":"OW FUNCTION 1 권한","roleName":null,"roleComment":null,"legacyName":null}
+	], 
+	"result":null,
+	"error":null}
+}
+-- 설명
+isUserGroup : 0
+isRoleGroup : 0
+isPrmssnGroup : 1
+
++++++
+특정한 사용자 권한 리스트 가져오기 (User 그룹이 아닌 권한 리스트)
+URL: /api/user-permission/user-permissions/{group-id} 
+METHOD: GET
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":null,
+	"result":{
+		"groupId":13,
+		"userPrmssnName":"김영은/김다은 OW FUNCTION 권한",
+		"userPrmssnComment":"김영은/김다은 OW FUNCTION 권한",
+		"users":[
+			{"userGroupId":0,"groupUserId":0,"userId":"OSSTEM:20060113","groupId":13,"orders":0,"userGroupName":null,"userGroupComment":null,"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000424","userEmpId":"20060113","membPostion":"과장","membPostionCd":400,"membRank":"팀원","membRankCd":400,"jobYn":"Y","useYn":"Y","userNm":"김영은","deptNm":"국제감사1팀"},
+			{"userGroupId":0,"groupUserId":0,"userId":"OSSTEM:19120713","groupId":13,"orders":0,"userGroupName":null,"userGroupComment":null,"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000180","userEmpId":"19120713","membPostion":"대리","membPostionCd":500,"membRank":"팀원","membRankCd":400,"jobYn":"Y","useYn":"Y","userNm":"김다은","deptNm":"관악지점"}
+		],
+		"prmssns":[
+			{"userPrmssnId":0,"isUserGroup":0,"groupUserId":0,"userId":null,"isRoleGroup":0,"rolePrmssnGroupId":0,"isPrmssnGroup":1,"prmssnGroupId":26,"groupId":13,"orders":0,"legacyId":41,"userPrmssnName":"김영은/김다은 OW FUNCTION 권한","userPrmssnComment":"김영은/김다은 OW FUNCTION 권한","userNm":null,"prmssnName":"OW FUNCTION 1 권한","prmssnComment":null,"roleName":null,"roleComment":null,"legacyName":"OW"}
+		]	
+	},
+	"error":null}
+}
+-- 설명
+{group-id} : /api/user-permission/user-permissions/list의 결과중 groupId
+- 권한 (그룹)
+	원천시스템 : legacyName
+	권한(그룹)이름 : prmssnName
+	비고 : prmssnComment
+
+++++++
 사용자 권한(그룹) 생성하기 (사용자 권한관리 추가 메뉴)
 URL: /api/user-permission/user-permissions
 METHOD: POST
@@ -14,7 +81,159 @@ REQUESTBODY: [
 	{
         "userPrmssnName": "user permission 1",
         "userPrmssnComment": "user permission 1",
-		"userIds": [{"userId":1},{"userId":2}] , 
+		"userIds": [{"userId":"OSSTEM:8102505"},{"userId":"OSSTEM:8102506"}] , 
+		"prmssnGroupIds" : [{"prmssnGroupId": 1 },{"prmssnGroupId": 2 }]
+	}
+]
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
++++++
+사용자 권한 지우기 (User 권한 상세에서 삭제 버튼으로 User 권한(그룹) 지우기)
+URL: /api/user-permission/group-id
+METHOD: DELETE
+REQUESTBODY: [
+	{ "groupId": 8},
+	{ "groupId": 9}
+]
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
+
+
++++++
+--------------------------------------------------------------------------
+사용자 권한(그룹) 상세에서 수정 버튼 눌렀을 때 처리:
+
+1. 행변화 없이 내용만 수정했을 경우 
+	- group-id를 포함하여 PUT /api/user-permission
+2. 행 추가후 내용 수정했을 경우 
+   - 추가한 행은 group-id를 포함하여 POST /api/user-permission/put-add
+   - 나머지 내용 수정한 행은  group-id를  포함하여 PUT /api/permission
+3. 행 삭제후 내용 수정 했을 경우
+	- 삭제한 행은 userPrmssnId 포함한 DELETE /api/user-group/user-group-id
+	- 나머지 내용 수정한 행은  group-id를 포함하여 PUT /api/user-permission
+--------------------------------------------------------------------------
+ +++++
+1. 행변화 없이 내용만 수정했을 경우 
+ 사용자 권한 수정하기 (사용자 상세)
+URL: /api/user-permission
+METHOD: PUT
+-- 참고: REQUESTBODY에서 [ {},{} ] 와 같이 [{}] 순서 주의
+REQUESTBODY: {
+		"groupId": 5,"userPrmssnName": "user permission 2-1", "userPrmssnComment": "test 1 1" 
+} 
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
++++++
+2.사용자 권한(그룹) 추가하기   (User 권한 상세에서 + 버튼으로 추가한 항목 저장하기)
+URL: /api/user-permission/user-permissions/put-add 
+METHOD: POST
+REQUESTBODY: [
+	{
+        "groupId": 5,
+		"userIds": [{"userId":"OSSTEM:8102505"},{"userId":"OSSTEM:8102506"}],
+		"prmssnGroupIds" : [{"prmssnGroupId": 3 },{"prmssnGroupId": 4 }]
+	}
+]
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
+--설명
+사용자의 groupId에 따른 기존 사용자아이디에 새로 추가한 prmssnGroupId들을 추가 요청한다.
+
+3. 행 삭제후 내용 수정 했을 경우
++++++
+사용자 권한 항목 지우기 (User 권한 상세에서 - 버튼으로 삭제한 항목 저장하기)
+URL: /api/user-permission/user-permissions
+METHOD: DELETE
+REQUESTBODY: [
+	{ "userPrmssnId": 9},
+	{ "userPrmssnId": 10}
+]
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
+
+========================================================
+II. 사용자그룹, 권한(그룹)
+isUserGroup = 1, isRoleGroup=0, isPrmssnGroup=1
+========================================================
++++++
+사용자그룹 권한 리스트 가져오기 (User 그룹인 권한 리스트)
+URL: /api/user-permission/user-group-permissions/list
+METHOD: GET
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":[
+		{"userPrmssnId":14,"isUserGroup":1,"groupUserId":24,"userId":null,"isRoleGroup":0,"rolePrmssnGroupId":0,"isPrmssnGroup":1,"prmssnGroupId":52,"groupId":11,"orders":1,"userPrmssnName":"업무현황 리포트 권한","userPrmssnComment":"업무현황 리포트 권한","userNm":"IT제품기획팀","prmssnName":"업무현황 리포트 읽기 권한"}
+	], 
+	"result":null,
+	"error":null}
+}
+-- 설명
+isUserGroup : 1
+isRoleGroup : 0
+isPrmssnGroup : 1
+userNm : 실제로는 사용자 그룹이지만 화면의 표현을 용이하기 위하여 userNm으로 표현.
+
++++++
+특정한 사용자그룹 권한 리스트 가져오기 (User 그룹인 권한 리스트)
+URL: /api/user-permission/user-group-permissions/{group-id} 
+METHOD: GET
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":null,
+	"result":{
+		"groupId":14,
+		"userPrmssnName":"업무현황 리포트 권한 222 ",
+		"userPrmssnComment":"업무현황 리포트 권한 222",
+		"users":[
+			"userGroupId":0,"groupUserId":24,"userId":null,"groupId":14,"orders":1,"userGroupName":"IT제품기획팀","userGroupComment":"IT제품기획팀","orgId":null,"orgNm":null,"deptId":null,"userEmpId":null,"membPostion":null,"membPostionCd":0,"membRank":null,"membRankCd":0,"jobYn":null,"useYn":null,"userNm":null,"deptNm":null}
+		],
+		"prmssns":[
+			{"userPrmssnId":21,"isUserGroup":1,"groupUserId":24,"userId":null,"isRoleGroup":0,"rolePrmssnGroupId":0,"isPrmssnGroup":1,"prmssnGroupId":52,"groupId":14,"orders":1,"legacyId":42,"userPrmssnName":"업무현황 리포트 권한 222 ","userPrmssnComment":"업무현황 리포트 권한 222","userNm":"IT제품기획팀","prmssnName":"업무현황 리포트 읽기 권한","prmssnComment":"업무현황 리포트 읽기 권한","roleName":null,"roleComment":null,"legacyName":"업무현황시스템"}
+		]
+	},
+	"error":null}
+}
+-- 설명
+{group-id} : /api/user-permission/user-group-permissions/list의 결과중 groupId
+- 사용자그룹
+	사용자(그룹) 이름 : userGroupName
+	비고 : userGroupComment
+- 권한 (그룹)
+	원천시스템 : legacyName
+	권한(그룹)이름 : prmssnName
+	비고 : prmssnComment
+
+
+++++++
+사용자그룹 권한(그룹) 생성하기 (사용자그룹 권한관리 추가 메뉴)
+URL: /api/user-permission/user-group-permissions
+METHOD: POST
+REQUESTBODY: [
+	{
+        "userPrmssnName": "user permission 1",
+        "userPrmssnComment": "user permission 1",
+		"groupUserId" : 11,
 		"prmssnGroupIds" : [{"prmssnGroupId": 1 },{"prmssnGroupId": 2 }]
 	}
 ]
@@ -24,8 +243,177 @@ SUCCESS RESPONSE:  {
 	"message":"good"
 }
 
++++++
+사용자그룹 권한 지우기 (User그룹 권한 상세에서 삭제 버튼으로 User 권한(그룹) 지우기)
+== 사용자 권한 지우기와 동일한 api
+URL: /api/user-permission/group-id
+METHOD: DELETE
+REQUESTBODY: [
+	{ "groupId": 8},
+	{ "groupId": 9}
+]
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
++++++
+--------------------------------------------------------------------------
+사용자 권한(그룹) 상세에서 수정 버튼 눌렀을 때 처리:
+
+1. 행변화 없이 내용만 수정했을 경우 
+	- group-id를 포함하여 PUT /api/user-permission
+2. 행 추가후 내용 수정했을 경우 
+   - 추가한 행은 group-id를 포함하여 POST /api/user-permission/user-group-permissions/put-add
+   - 나머지 내용 수정한 행은  group-id를  포함하여 PUT /api/permission
+3. 행 삭제후 내용 수정 했을 경우
+	- 삭제한 행은 userPrmssnId 포함한 DELETE /api/user-permission/user-group-permissions
+	- 나머지 내용 수정한 행은  group-id를 포함하여 PUT /api/user-permission
+--------------------------------------------------------------------------
+ +++++
+1. 행변화 없이 내용만 수정했을 경우 
+ 사용자 권한 수정하기 (사용자 상세)와 공용 api
+URL: /api/user-permission
+METHOD: PUT
+-- 참고: REQUESTBODY에서 [ {},{} ] 와 같이 [{}] 순서 주의
+REQUESTBODY: {
+		"groupId": 5,"userPrmssnName": "user permission 2-1", "userPrmssnComment": "test 1 1" 
+} 
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
+
++++++
+2.사용자그룹 권한(그룹) 추가하기   (User그룹 권한 상세에서 + 버튼으로 추가한 항목 저장하기)
+URL: /api/user-permission/user-group-permissions/put-add 
+METHOD: POST
+REQUESTBODY: [
+	{
+        "groupId": 11,
+		"groupUserId" : 24,
+		"prmssnGroupIds" : [{"prmssnGroupId": 3 },{"prmssnGroupId": 4 }]
+	}
+]
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
+--설명
+사용자의 groupId에 따른 기존 그룹사용자아이디에 새로 추가한 prmssnGroupId들을 추가 요청한다.
+
+3. 행 삭제후 내용 수정 했을 경우
++++++
+사용자그룹 권한 항목 지우기 (User그룹 권한 상세에서 - 버튼으로 삭제한 항목 저장하기)
+URL: /api/user-permission/user-group-permissions
+METHOD: DELETE
+REQUESTBODY: [
+	{ "userPrmssnId": 15},
+	{ "userPrmssnId": 16}
+]
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
+
+========================================================
+III. 사용자, Role(그룹)
+isUserGroup = 0, isRoleGroup=1, isPrmssnGroup=0
+========================================================
+========================================================
+IV. 사용자그룹, Role(그룹)
+========================================================
++++++
+사용자그룹 Role(그룹)권한 리스트 가져오기 (User 그룹인 Role(그룹) 권한 리스트)
+URL: /api/user-permission/user-role/list
+METHOD: GET
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":[
+		{"userPrmssnId":17,"isUserGroup":1,"groupUserId":11,"userId":null,"isRoleGroup":1,"rolePrmssnGroupId":0,"isPrmssnGroup":0,"prmssnGroupId":0,"groupId":0,"orders":1,"legacyId":40,"userPrmssnName":"test role group 권한","userPrmssnComment":"user role Group 1","userNm":"user group 2","prmssnName":null,"roleName":"roleGroup update role permission 1","roleComment":"update comment 1","legacyName":"CRM"},
+		{"userPrmssnId":18,"isUserGroup":1,"groupUserId":11,"userId":null,"isRoleGroup":1,"rolePrmssnGroupId":0,"isPrmssnGroup":0,"prmssnGroupId":0,"groupId":0,"orders":2,"legacyId":40,"userPrmssnName":"test non  role group 권한","userPrmssnComment":"user non role Group 1","userNm":"user group 2","prmssnName":null,"roleName":"test 222 1","roleComment":"test 222","legacyName":"CRM"}
+	],
+	"result":null,
+	"error":null}
+}
+-- 설명(사용자(그룹)권한현황 매핑)
+userPrmssnName : 이름
+userNm : 사용자(그룹)이름
+roleName : Role(그룹)이름
+roleName : 권한(그룹)이름
+userPrmssnComment : 비고
+
+
+++++++
+사용자 권한(그룹) 생성하기 (사용자 권한관리 추가 메뉴)
+URL: /api/user-permission/user-role
+METHOD: POST
+REQUESTBODY: [
+	{
+        "userRolesName": "user role Group 1 ",
+        "userRolesComment": "user role Group 1",
+		"groupUserId" : 11,
+		"roleGroupIds" : [
+							{"rolePrmssnId":14,"isRoleItemGroup":1,"rolePrmssnGroupId":10 },
+							{"rolePrmssnId":11,"isRoleItemGroup":0,"rolePrmssnGroupId":6 }
+						]	
+	}
+]
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 이하 미구현
++++++
+사용자 권한 생성하기   (User 권한 상세/User 그룹 권한 상세에서 + 버튼으로 추가한 항목 저장하기)
+URL: /api/user-permission/put-add
+METHOD: POST
+-- 참고: REQUESTBODY에서 [ {},{} ] 와 같이 [{}] 순서 주의
+1) User 그룹이 아닌 경우
+REQUESTBODY: [
+	{"isUserGroup": 0 , "groupUserId" : 0, "groupId": 8, "orders": 4,"prmssnGroupId": 1,"userPrmssnName": "test 222","comment":"test 222"},
+	{"isUserGroup": 0 , "groupUserId" : 0,"groupId": 8,"orders": 5,"prmssnGroupId": 3,"userPrmssnName": "test 222","comment":"test 222"}
+]
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
+2) User 그룹인 경우
+REQUESTBODY: [
+	{"isUserGroup": 1 , "groupUserId" : 3, "groupId": 9, "orders": 4,"prmssnGroupId": 1,"userPrmssnName": "test 111","comment":"test 111"},
+	{"isUserGroup": 1 , "groupUserId" : 3,"groupId": 9,"orders": 5,"prmssnGroupId": 3,"userPrmssnName": "test 111","comment":"test 111"}
+]
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
+3. 행 삭제후 내용 수정 했을 경우
++++++
+사용자 권한 항목 지우기 (User 권한 상세/User 그룹 권한 상세에서 - 버튼으로 삭제한 항목 저장하기)
+URL: /api/user-permission/permissions
+METHOD: DELETE
+REQUESTBODY: [
+	{ "userPrmssnId": 9},
+	{ "userPrmssnId": 10}
+]
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
+
+
+
 
 BASE URL: dabin02272.cafe24.com:8090
 FULL URL: dabin02272.cafe24.com:8090/api/user-permission/item-list
@@ -41,8 +429,8 @@ SUCCESS RESPONSE: {
 	"code":200,
 	"message":"good",
 	"results":[
-		{"userPrmssnId":6,"isUserGroup":0,"groupUserId":0,"userId":5,"groupId":5,"orders":1,"prmssnGroupId":1,"userPrmssnName":"test 111","prmssnComment":"1111","userComment":"test 111","userName":"마케팅팀장 1 ","legacyName":"CRM","userTypeName":"직책","objectName":"MENU-2","objectTypeName":"MENU","oprtnname":null},
-		{"userPrmssnId":11,"isUserGroup":0,"groupUserId":0,"userId":2,"groupId":6,"orders":4,"prmssnGroupId":1,"userPrmssnName":"test 222","prmssnComment":"1111","userComment":"test 222","userName":"마케팅팀장","legacyName":"CRM","userTypeName":"직책","objectName":"MENU-2","objectTypeName":"MENU","oprtnname":null}
+		{"userPrmssnId":6,"isUserGroup":0,"groupUserId":0,"userId":"OSSTEM:8102505","groupId":5,"orders":1,"prmssnGroupId":1,"userPrmssnName":"test 111","prmssnComment":"1111","userComment":"test 111","userName":"마케팅팀장 1 ","legacyName":"CRM","userTypeName":"직책","objectName":"MENU-2","objectTypeName":"MENU","oprtnname":null},
+		{"userPrmssnId":11,"isUserGroup":0,"groupUserId":0,"userId":"OSSTEM:8102506","groupId":6,"orders":4,"prmssnGroupId":1,"userPrmssnName":"test 222","prmssnComment":"1111","userComment":"test 222","userName":"마케팅팀장","legacyName":"CRM","userTypeName":"직책","objectName":"MENU-2","objectTypeName":"MENU","oprtnname":null}
 		], 
 	"result":null,
 	"error":null}

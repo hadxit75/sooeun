@@ -31,6 +31,7 @@
 </template>
 
 <script>
+import APIService from '../util/APIService';
 export default {
   components: {
       name: 'AddItem'
@@ -45,10 +46,11 @@ export default {
    methods: {
       add: function() {
         var self = this
-        this.$http.post('http://dabin02272.cafe24.com:8090/api/operation', { oprtnId : self.oprtnId , 
-                                                                             oprtnName : self.oprtnName,
-                                                                             comment : self.comment })
-        .then((response) => {
+        var _mgs = { oprtnId : self.oprtnId , 
+                     oprtnName : self.oprtnName,
+                     comment : self.comment }
+                     
+       APIService.postOperation(_mgs).then((response) => {
             alert('추가가 완료되었습니다.');
             this.$router.push({name:'opr'})   
         })

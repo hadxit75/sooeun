@@ -32,7 +32,7 @@
             </el-table-column>
             
             <el-table-column
-            prop="comment"
+            prop="userGroupComment"
             label="비고"
             align="center">
             </el-table-column>
