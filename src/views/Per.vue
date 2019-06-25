@@ -87,7 +87,7 @@ export default {
   },
 
   created() {
-    APIService.getPermissionList().then(response => {
+    APIService.getPermissionAllList().then(response => {
         this.listData = response;
         this.displayData = this.listData;
         this.getSpanArr(this.displayData);

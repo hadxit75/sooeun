@@ -4,22 +4,9 @@
          
                 <div class="row">
                      <div class="col-md-12">
-                         <h4>사용자 그룹 추가</h4>
+                         <h4>관리자 추가</h4>
                      </div>
-                    <div class="col-md-3">
-                       <label>사용자 그룹명</label>
-                        <el-input
-                            v-model="groupName">
-                        </el-input>
-                    </div>
-                    <div class="col-md-3">
-                        <label>비고</label>
-                        <el-input
-                            v-model="groupcomment">
-                        </el-input>
-                 
-                     </div>
-                      <div class="col-md-2" style="margin-top:30px">
+                     <div class="col-md-2" style="margin-top:30px">
                       <el-button plain type="success" @click="onUserSearch()" icon="el-icon-search" style="width:100%">사용자 개별 검색</el-button> 
                      </div>
                       <div class="col-md-2" style="margin-top:30px">
@@ -50,7 +37,8 @@
                               ref="multipleTable"
                               :data="tableData"
                               style="width: 100%;height:calc(100vh - 400px);overflow-y:scroll"
-                              @selection-change="handleSelectionChange">
+                              @selection-change="handleSelectionChange"
+                              >
                               <el-table-column
                                 type="index"
                                 width="100">
@@ -58,6 +46,20 @@
                               <el-table-column
                                 type="selection"
                                 width="55">
+                              </el-table-column>
+                              <el-table-column
+                              label="원천시스템"
+                              width="150">
+         <template slot-scope="scope">
+                                <el-select v-model="legacyId"  @change="legacyChange(scope.$index, $event)" placeholder="Select">
+                                  <el-option
+                                    v-for="item in legacySelect"
+                                    :key="item.legacyId"
+                                    :label="item.legacyName"
+                                    :value="item.legacyId">
+                                  </el-option>
+                                </el-select>
+         </template>   
                               </el-table-column>
                               <el-table-column
                               property="userEmpId"
@@ -99,13 +101,6 @@ export default {
   },
   data() {
     return {
-      // legacyId: this.$route.params.objs.legacyId,
-      //   legacyName: this.$route.params.objs.legacyName,
-      //   objectTypeId: this.$route.params.objs.objectTypeId,
-      //   objectTypeName: this.$route.params.objs.objectTypeName,
-      //   objectId: this.$route.params.objs.objectId,
-      //   objectName: this.$route.params.objs.objectName,
-      //   objectComment: this.$route.params.objs.objectComment,
       legacySelect: [],
       invokeFlag: false,
       objSelect: [],
@@ -115,10 +110,12 @@ export default {
       multipleSelection: [],
       data: [],
       org: [],
+      legacySelect: [],
       defaultProps: {
         children: "children",
         label: "label"
-      }
+      },
+      legacyId: null
     };
   },
   created() {
@@ -138,6 +135,11 @@ export default {
         }
       });
       this.data = _parent;
+
+      var _self = this
+      APIService.getLegacyList().then((response) => {
+        _self.legacySelect = response;
+      }); 
     });
   },
   mounted() {},
@@ -210,7 +212,8 @@ export default {
                 deptNm: mdata.obj.deptNm,
                 membPostion: item.membPostion,
                 membRank: item.membRank,
-                deptId: item.deptId
+                deptId: item.deptId,
+                legacyId: ""
               });
             });
             var _endpoint = this.tableData.length + 1;
@@ -226,6 +229,7 @@ export default {
           }
         });
       }
+      console.log("tableData",this.tableData)
     },
     recursiveDepth(sdata, i, parentId) {
       var _parent = [];
@@ -264,6 +268,21 @@ export default {
     },
     cancle: function() {
       this.$router.go(-1);
+    },
+    legacyChange: function(index, legacyId){
+      // console.log("index",index)
+      // console.log("legacyId",legacyId)      
+      var _self = this
+      var rowCnt = this.tableData.length;
+
+      for (var i = 0; i < rowCnt; i++) {
+        if(i == index){
+          _self.tableData[i].legacyId = legacyId;
+        }
+      }
+
+      console.log("tableData", this.tableData)
+
     }
   }
 };

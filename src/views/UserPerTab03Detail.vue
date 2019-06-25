@@ -1,7 +1,7 @@
 <template>
 <div class="row">
         <div class="p-3 float-left">    
-          <h4>사용자 권한 (그룹) 상세</h4>
+          <h4>사용자그룹 권한(그룹)상세</h4>
         </div>
         <div class="col-md-12" style="margin-bottom:10px"></div>
         <div class="col-md-2" style="margin-top:30px">
@@ -17,7 +17,7 @@
 
     <div class="col-md-12">
         <el-card shadow="never">
-            <p>선택된 사용자</p>
+            <p>사용자그룹</p>
             <el-table
                 ref="multipleTable"
                 :data="tableData.users"
@@ -27,24 +27,12 @@
                 width="100">
                 </el-table-column>
                 <el-table-column
-                property="userId"
-                label="사번">
+                property="userGroupName"
+                label="사용자(그룹)이름">
                 </el-table-column>
                 <el-table-column
-                property="userNm"
-                label="성명">
-                </el-table-column>
-                <el-table-column
-                property="deptNm"
-                label="조직">
-                </el-table-column>
-                <el-table-column
-                property="membPostion"
-                label="직급">
-                </el-table-column>
-                <el-table-column
-                property="membRank"
-                label="직책">
+                property="userGroupComment"
+                label="비교">
                 </el-table-column>
             </el-table>
         </el-card>
@@ -79,7 +67,7 @@
                                 :value="item.groupId">
                                 </el-option>
                             </el-select></td>
-                            <td><el-input placeholder="" :disabled="sitem.utype != 'I'" v-model="sitem.prmssnComment"></el-input></td>
+                            <td><el-input placeholder="" v-model="sitem.prmssnComment" :disabled="sitem.utype != 'I'"></el-input></td>
                             <td><el-button type="warning" v-on:click="rowMinus(sitem.orders, sitem.userPrmssnId)" plain>-</el-button></td>
                             </tr>
                             <tr>
@@ -126,7 +114,7 @@ export default {
       tasksClone: [],
       legacySelect: [],
       prmssSelect: [],
-      prmssSelectClone:[],
+      prmssSelectClone: [],
       slegacyId: null,
       userPrmssnName: this.$route.params.objs.userPrmssnName,
       userPrmssnComment: this.$route.params.objs.userPrmssnComment,
@@ -135,23 +123,21 @@ export default {
 
       //상세조회
       groupId: this.$route.params.objs.groupId,
+      groupUserId: this.$route.params.objs.groupUserId,
 
       //전체 데이터 개수
       rowCount: null,
       dataArray: []
-
     };
   },
   created() {
-    APIService.getUsersPermissionGroupId(this.groupId).then(response => {
+    APIService.getUserGroupPermissionGroupId(this.groupId).then(response => {
       //console.log("response", response)
         this.tableData = response;
         this.tableData['utype']='U'
         this.tasks.push(...this.tableData.prmssns);
         this.tasksClone = this.tableData;
-
         this.rowCount = this.tasks.length;
-        // console.log("rowCount",this.rowCount)
 
         //console.log(this.tableData)
         // console.log("tasks",this.tasks)
@@ -161,7 +147,7 @@ export default {
             _self.legacySelect = response;
           }); 
 
-          APIService.getPermissionAllList().then((response) => {
+          APIService.getPermissionList().then((response) => {
             _self.prmssSelect = response;
             _self.prmssSelectClone = response;
           }); 
@@ -172,8 +158,8 @@ export default {
   methods: {
     test(index,event)
     {
-        // console.log("index", index)
-        // console.log("event", event)
+         console.log("index", index)
+         console.log("event", event)
         var _a ;
         var _idx = 1;
         this.tasks.forEach(item=>{
@@ -241,21 +227,12 @@ export default {
 
       //권한 추가되었을 경우
       if(this.tasks.length > this.rowCount){
-
         var sendItem = [];
-        var sendUser = [];
         var sendGroup = [];
         var idx = 0;
-  
-         self.tableData.users.forEach(item => {
-          var _t = {
-            userId: item.orgId + ":" + item.userEmpId
-          };
-          sendUser.push(_t);
-        });
     
         self.tasks.forEach(item => {
-          if(item.utype=="I"){
+         if(item.utype=="I"){
             var _h = {
               prmssnGroupId: item.groupId
             };
@@ -265,14 +242,14 @@ export default {
   
         sendItem.push({
           groupId: self.groupId,
-          userIds: sendUser,
+          groupUserId: self.groupUserId,
           prmssnGroupIds: sendGroup
         });
   
-        // console.log("sendItem",sendItem)
+        console.log(sendItem)
   
         if (sendItem.length > 0) {
-          APIService.putUserPermissionAdd(sendItem)
+          APIService.putUserGroupPermissionAdd(sendItem)
             .then(result => {
               self.$message({
                 type: "success",
@@ -312,15 +289,16 @@ export default {
             })
              
             alert('삭제가 완료되었습니다.');  
+            self.$router.push({name:'userPerStatus'})
 
         }).catch(() => {
           alert('삭제가 취소되었습니다.');       
         });
 
     },
-    rowMinus: function(sidx, userPrmssnId){
+    rowMinus: function(idx, userPrmssnId){
         //기존의 데이터 행삭제
-        if(userPrmssnId != null){
+        if(this.tasks.length > 0 && userPrmssnId != null){
             this.$confirm('삭제 하시겠습니까?', 'Warning', {
             confirmButtonText: '확인',
             cancelButtonText: '취소',
@@ -328,44 +306,30 @@ export default {
 
         }).then(() => {
             var self = this
-            //var data = [{ userPrmssnId : userPrmssnId}];
-            var _t = { userPrmssnId: userPrmssnId };
-            var _item = [_t];
+            var data = [{ userPrmssnId : userPrmssnId}];
 
-            APIService.deleteUserPermissionGroupRow(_item)
+            APIService.deleteUserPermissionGroupRow(data)
             .then((response) => {
-                alert('삭제가 완료되었습니다.');  
-                
-                APIService.getUsersPermissionGroupId(self.groupId).then(response => {
+                 alert('삭제가 완료되었습니다.');  
+                 //to-do 
+                 //조회 로직 추가
+
+                 APIService.getUserGroupPermissionGroupId(self.groupId).then(response => {
                     //console.log("response", response)
                       self.tableData = response;
                       self.tableData['utype']='U'
                       self.tasks = self.tableData.prmssns;
                       self.tasksClone = self.tableData;
                       self.rowCount = self.tasks.length;
-
                     });  
-            
-            }).catch((error) => {
+            })
+            .catch((error) => {
                 alert('에러가 발생하였습니다.'); 
                 console.log(error.config)
             })
         }).catch(() => {
           alert('삭제가 취소되었습니다.');       
         });
-        }else{
-           var _lidx = 1;
-            this.tasks = this.tasks.filter(item=>{
-                   //console.log(item);
-                if(item.orders != sidx)
-                {
-                    item['orders'] = _lidx;
-                    _lidx++;
-                return item;
-                }
-
-                //this.editFlag--;
-            }); 
         }
     },
     recursiveDepth(sdata, i, parentId) {
@@ -412,10 +376,10 @@ export default {
 
         APIService.getPermissionLegacyList(this.slegacyId).then((response)=>{
           _self.prmssSelect = response;
+          //console.log(_self.prmssSelect)
         });
       },
       rowPlus: function () {
-        //alert("!!")
           var _index = this.tasks.length+1;
           this.tasks.push({orders:_index++, legacyId:"", groupId:"", prmssnComment:"",utype:"I"})
       },
@@ -428,15 +392,13 @@ export default {
 
         }).then(() => {
             var self = this
-            self.dataArray.push({groupId : self.groupId});
-          
-            var _t = { groupId: this.groupId };
-            var _item = [_t];
 
+            var _t = { groupId: self.groupId };
+            var _item = [_t];
 
             APIService.deleteUserPermissionGroup(_item).then((response) => {
                 alert('삭제가 완료되었습니다.'); 
-                self.$router.push("/userPerStatus");
+                self.$router.push({name:'userPerStatus'})
             })
             .catch((error) => {
                 alert('에러가 발생하였습니다.'); 

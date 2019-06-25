@@ -1,77 +1,47 @@
 <template>
 <div class="row">
         <div class="col-md-2" style="margin-top:30px">
-        <el-button plain type="success" @click="onUserSearch()" icon="el-icon-search" style="width:100%">사용자 개별 검색</el-button> 
-        </div>
-        <div class="col-md-2" style="margin-top:30px">
         <el-button plain type="primary" @click="onInsertEvent()" :disabled="validateStatus()" style="width:100%">확인</el-button> 
         </div>
         <div class="col-md-2"  style="margin-top:30px">
         <el-button plain type="danger"  @click="backToStatus()" style="width:100%">취소</el-button> 
         </div>
         <div class="col-md-12" style="margin-top:10px;margin-bottom:10px"></div>
-        <div class="col-md-4">
-            <el-card shadow="never">
-                <p>조직도</p>
-            <el-tree
-            ref="tree"
-            style="height:calc(100vh - 500px);overflow-y:scroll"
-            :data="data"
-            show-checkbox
-              @check-change="handleCheckChange"
-            node-key="id"
-            :props="defaultProps">
-            </el-tree>
-            </el-card>
-        </div>
-        <div class="col-md-8">
+    <div class="col-md-12">
         <el-card shadow="never">
-            <p>선택된 사용자</p>
-            <el-table
-                ref="multipleTable"
-                :data="tableData"
-                style="width: 100%;height:calc(100vh - 500px);overflow-y:scroll"
-                @selection-change="handleSelectionChange">
-                <el-table-column
-                type="index"
-                width="100">
-                </el-table-column>
-                <el-table-column
-                type="selection"
-                width="55">
-                </el-table-column>
-                <el-table-column
-                property="userEmpId"
-                label="사번">
-                </el-table-column>
-                <el-table-column
-                property="userNm"
-                label="성명">
-                </el-table-column>
-                <el-table-column
-                property="deptNm"
-                label="조직">
-                </el-table-column>
-                <el-table-column
-                property="membPostion"
-                label="직급">
-                </el-table-column>
-                <el-table-column
-                property="membRank"
-                label="직책">
-                </el-table-column>
-            </el-table>
+            <p>사용자 그룹</p>
+            <table class="table table-bordered">
+              <thead>
+                  <th>순번</th>
+                  <th>사용자그룹이름</th>
+                  <th>비고</th>
+              </thead>
+              <tbody>
+                  <tr>
+                  <td>{{index}}</td>
+                  <td><el-select v-model="groupId" placeholder="Select" @change="setComment(index,$event)"  clearable>
+                      <el-option
+                      v-for="item in groupSelect"
+                      :key="item.groupId"
+                      :label="item.userGroupName"
+                      :value="item.groupId">
+                      </el-option>
+                  </el-select></td>
+                  <td><el-input placeholder="" v-model="userGroupComment"></el-input></td>
+                  </tr>
+              </tbody>
+          </table>
         </el-card>
     </div>
-    <user-search :visiable="invokeFlag" @closed="onCloseModal" @clicked="onClickChild"></user-search>
-
+   
     <div class="card-body">
+              <p>Role(그룹)권한</p>
                 <form v-on:submit.prevent="addItem">
                     <table class="table table-bordered">
                         <thead>
                             <th>순번</th>
                             <th>원천시스템</th>
-                            <th>권한(그룹)이름</th>
+                            <th>Role(그룹)이름</th>
                             <th>비고</th>
                             <th>행삭제</th>
                         </thead>
@@ -86,35 +56,31 @@
                                 :value="item.legacyId">
                                 </el-option>
                             </el-select></td>
-                            <td><el-select v-model="sitem.groupId" placeholder="Select" @change="test(index,$event)" clearable>
+                            <td><el-select v-model="sitem.rolePrmssnId" placeholder="Select" @change="test(sitem.idx, sitem.rolePrmssnId)" clearable>
                                 <el-option 
                                 v-for="item in prmssSelect"
-                                :key="item.groupId"
-                                :label="item.prmssnName"
-                                :value="item.groupId">
+                                :key="item.rolePrmssnId"
+                                :label="item.roleUnifiedName"
+                                :value="item.rolePrmssnId">
                                 </el-option>
                             </el-select></td>
-                            <td><el-input placeholder="" v-model="sitem.prmssnComment"></el-input></td>
+                            <td><el-input placeholder="" v-model="sitem.roleGroupComment"></el-input></td>
                             <td><el-button type="warning" v-on:click="rowMinus(sitem.idx)" plain>-</el-button></td>
                             </tr>
                             <tr>
-                            <td>사용자 권한(그룹)이름</td> 
-                            <td><el-input placeholder="" v-model="userPrmssnName"></el-input></td>
+                            <td>사용자그룹 권한(그룹) 이름</td> 
+                            <td><el-input placeholder="" v-model="userRolesName"></el-input></td>
                             <td>비고</td>
-                            <td colspan="2"><el-input placeholder="" v-model="userPrmssnComment"></el-input></td>
+                            <td colspan="2"><el-input placeholder="" v-model="userRolesComment"></el-input></td>
                             </tr>
                         </tbody>
                     </table>
                     <el-row>
                     <el-button type="success" v-on:click="rowPlus" plain>+</el-button>
-                    
                     </el-row>
-
-                </form>
-            </div>
-    </div>
-
-    
+               </form>
+      </div>
+</div> 
 </template>
 
 <script>
@@ -139,79 +105,111 @@ export default {
         children: "children",
         label: "label"
       },
+      groupSelect: [],
+      groupSelectClone: [],
+      userGroupComment: null,
+      index: 1,
+      userGroupId: null,
+      userGroup: [],
+
       //권한
       tasks: [],
-      //tasksClone: [],
+      tasksClone: [],
       legacySelect: [],
       prmssSelect: [],
       prmssSelectClone: [],
       slegacyId: null,
-      userPrmssnName: null,
-      userPrmssnComment: null
+      userRolesName: null,
+      userRolesComment: null,
+      sgroupId: null,
+      prmssnComment: null,
+      suserGroupId: null
     };
   },
   created() {
-    APIService.getOrgList().then(data => {
-      var _parent = [];
-      var _self = this;
 
-      data.forEach(item => {
-        if (item.deptDepth == 1) {
-          var _child = _self.recursiveDepth(data, 2, item.deptId);
-          _parent.push({
-            id: item.deptSeq,
-            label: item.deptNm,
-            children: _child,
-            obj: item
-          });
-        }
-      });
-      _self.data = _parent;
-      
-      APIService.getLegacyList().then((response) => {
-        _self.legacySelect = response;
+      APIService.getRolePermissionLegacyList().then((response) => {
+        this.legacySelect = response;
+
+          var _self = this;
+          APIService.getRolePermissionItemList().then((response) => {
+            _self.prmssSelect = response;
+            _self.prmssSelectClone = response;
+          }); 
+
+           APIService.getUserGroupList().then((response) => {
+            _self.groupSelect = response;
+            _self.groupSelectClone = response;
+          }); 
       }); 
 
-      APIService.getPermissionAllList().then((response) => {
-        _self.prmssSelect = response;
-        _self.prmssSelectClone = response;
-      }); 
-    });
   },
   mounted() {},
   methods: {
+    setComment: function(index,groupId){
+      // console.log("index",index)
+      // console.log("groupId",groupId)
+
+      this.suserGroupId = groupId;
+      var _self = this
+      var _idx = 1;
+
+      var _a ;
+      this.groupSelect.forEach(item=>{
+          if(_idx == index)
+          {
+              _a = item.groupId
+          }
+          _idx++;
+      })
+
+      _idx = 1;
+
+      this.groupSelect = this.groupSelect.filter(item =>{
+        // console.log("item.groupId", item.groupId)
+  
+         if(item.groupId == groupId){
+
+          this.groupSelectClone.forEach(sitem=>{
+                if(sitem.groupId == _self.suserGroupId){	
+                  _self.userGroupComment = sitem.userGroupComment;
+                  // console.log("_self.userGroupComment",_self.userGroupComment)
+                }
+            })
+          }
+          return item
+        })  
+    },
     test(index,event)
     {
         var _a ;
         var _idx = 1;
         this.tasks.forEach(item=>{
-            if(_idx == index+1)
+            if(_idx == index)
             {
-                _a = item.groupId
+                _a = item.rolePrmssnId
             }
             _idx++;
         })
-
-        // console.log("_a", _a)
 
         _idx = 1;
         var _self = this
         this.tasks = this.tasks.filter(item =>{
-            if(_idx == index+1)
+            if(_idx == index)
             {
                 item.groupId = _a;
-                // console.log("item.groupId",item.groupId)
+                 console.log("item.rolePrmssnId",item.rolePrmssnId)
                 _self.prmssSelectClone.forEach(sitem=>{
-                    if(sitem.groupId == item.groupId){
-                        item.prmssnComment = sitem.prmssnComment
+                    if(sitem.rolePrmssnId == item.rolePrmssnId){
+                        item.roleGroupComment = sitem.roleGroupComment
                     }
                 })
             }
             _idx++;
-            // console.log("item", item)
+             console.log("item", item)
             return item
         })
-      // console.log("tasks", this.tasks)
+       console.log("tasks", this.tasks)
     },
     onClickChild(evt) {
       this.invokeFlag = false;
@@ -235,42 +233,48 @@ export default {
       var self = this;
 
       var sendItem = [];
-      var sendUser = [];
       var sendGroup = [];
       var idx = 0;
 
-       this.multipleSelection.forEach(item => {
-        var _t = {
-          userId: item.orgId + ":" + item.userEmpId
-        };
-        sendUser.push(_t);
+      this.tasks.forEach(item => {
+
+        this.prmssSelect.forEach(sitem => {
+          if(sitem.rolePrmssnId == item.rolePrmssnId){
+             item.isRoleItemGroup = sitem.isRoleItemGroup;
+             item.rolePrmssnGroupId = sitem.rolePrmssnGroupId;
+          }
+        })
       });
-  
+
       this.tasks.forEach(item => {
         var _h = {
-          prmssnGroupId: item.groupId
+          rolePrmssnId: item.groupId,
+          isRoleItemGroup: item.isRoleItemGroup,
+          rolePrmssnGroupId: item.rolePrmssnGroupId
         };
         sendGroup.push(_h);
       });
 
+      //console.log("suserGroupId",this.suserGroupId)
+
       sendItem.push({
-        userPrmssnName: this.userPrmssnName,
-        userPrmssnComment: this.userPrmssnComment,
-        userIds: sendUser,
-        prmssnGroupIds: sendGroup
+        userRolesName: this.userRolesName,
+        userRolesComment: this.userRolesComment,
+        groupUserId: this.suserGroupId,
+        roleGroupIds: sendGroup
       });
 
-      //console.log(sendItem)
+      // console.log(sendItem)
 
       if (sendItem.length > 0) {
-        APIService.postUserPermission(sendItem)
+        APIService.postUserPermissionUserGroupRole(sendItem)
           .then(result => {
             this.$message({
               type: "success",
               message: "추가가 완료되었습니다."
             });
 
-            //this.$router.go();
+            this.$router.go();
           })
           .catch(error => {
             this.$message({
@@ -332,22 +336,7 @@ export default {
       return _parent;
     },
     validateStatus() {
-      return !(this.multipleSelection.length > 0);
-    },
-    toggleSelection(rows) {
-      if (rows) {
-        rows.forEach(row => {
-          this.$refs.multipleTable.toggleRowSelection(row);
-        });
-      } else {
-        this.$refs.multipleTable.clearSelection();
-      }
-    },
-    handleSelectionChange(val) {
-      this.multipleSelection = val;
-    },
-    cancle: function() {
-      this.$router.reload();
+      return !(this.tasks.length > 0);
     },
     legacyChange: function(selected){
         this.slegacyId = selected
@@ -355,13 +344,13 @@ export default {
         var _self = this;
         this.prmssSelect = [];
 
-        APIService.getPermissionLegacyList(this.slegacyId).then((response)=>{
+        APIService.getRolePermissionByLegacy(this.slegacyId).then((response)=>{
           _self.prmssSelect = response;
         });
       },
       rowPlus: function () {
           var _index = this.tasks.length+1;
-          this.tasks.push({idx:_index++, legacyId:"", groupId:"", prmssnComment:""})
+          this.tasks.push({idx:_index++, legacyId:"", groupId:"", rolePrmssnId:"", roleGroupComment:"", isRoleItemGroup:"", rolePrmssnGroupId:""})
       },
       rowMinus: function (sidx) {
           var _lidx = 1;
@@ -374,7 +363,7 @@ export default {
                return item;
               }
         });
-      }
+      },
   }
 };
 </script>

@@ -90,9 +90,9 @@ SUCCESS RESPONSE: {
 권한 생성하기 (권한 추가 메뉴)
 URL: /api/permission
 METHOD: POST
-REQUESTBODY: [
-	{"prmssnName": "test 1","objectId": 3,"oprtnId": 1 , "orders" : 1, "prmssntComment": "test 1"},
-	{"prmssnName": "test 2","objectId": 3,"oprtnId": 1 , "orders" : 2,"prmssntComment": "test 2"}
+REQUESTBODY: REQUESTBODY: [
+	{"prmssnName": "test 1","objectId": 3,"legacyId" : 40, oprtnId": 1 , "orders" : 1, "prmssntComment": "test 1"},
+	{"prmssnName": "test 2","objectId": 3,"legacyId" : 40, oprtnId": 2 ,"orders" : 2,"prmssntComment": "test 2"}
 ]
 SUCCESS RESPONSE:  {
   	"status":"ok",
@@ -132,8 +132,8 @@ URL: /api/permission/put-add
 METHOD: POST
 -- 참고: REQUESTBODY에서 [ {},{} ] 와 같이 [{}] 순서 주의
 REQUESTBODY: [
-	{"prmssnName": "test 1","objectId": 3,"oprtnId": 1 , "orders" : 1, "groupId": 11,"prmssntComment": "test 1"},
-	{"prmssnName": "test 2","objectId": 3,"oprtnId": 1 , "orders" : 2,"groupId": 11,"prmssntComment": "test 2"}
+	{"prmssnName": "test 1","objectId": 3,"legacyId" : 40,"oprtnId": 1 , "orders" : 1, "groupId": 11,"prmssntComment": "test 1"},
+	{"prmssnName": "test 2","objectId": 3,"legacyId" : 40,"oprtnId": 1 , "orders" : 2,"groupId": 11,"prmssntComment": "test 2"}
 ]
 SUCCESS RESPONSE:  {
   	"status":"ok",

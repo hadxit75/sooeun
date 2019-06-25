@@ -1,6 +1,7 @@
 <template>
   <navbar v-model="showNavbar">
     <div class="navbar-wrapper">
+      
       <!-- <div class="navbar-minimize">
         <button id="minimizeSidebar" class="btn btn-icon btn-round" @click="minimizeSidebar">
           <i class="nc-icon nc-minimal-right text-center visible-on-sidebar-mini"></i>
@@ -31,7 +32,8 @@
              <span>홍길동</span>
           </div>
           <div style="margin-left:5px">
-             <el-button size="mini" round>로그아웃</el-button>
+             <el-button size="mini" round>로그아웃</el-button>&nbsp;
+             <router-link to="/adminStatus" ><i class="fas fa-cog"></i></router-link>
           </div>
         </div>
       </div>

@@ -3,6 +3,7 @@
     <div class="p-3 float-right" style="margin-right:-15px">
         <b-form inline>
             <b-form-input v-model="search" id="inline-form-input-name" class="mb-2 mr-sm-2 mb-sm-0" v-on:keyup="searchHandler"></b-form-input>
+            <el-button plain type="primary" @click="InsertEvent">추가</el-button> 
         </b-form>
     </div>
     <div> 
@@ -23,31 +24,51 @@
     </el-table-column>
 
     <el-table-column
-      prop="userPrmssnName"
-      label="이름"
+      prop="legacyName"
+      label="원천시스템"
+      width="120px"
       header-align="center">
     </el-table-column>
     
     <el-table-column
+      width="200px"
+      prop="orgNm"
+      label="소속사"
+      align="center">
+    </el-table-column>
+
+    <el-table-column
+      prop="userEmpId"
+      label="사번"
+      align="center">
+    </el-table-column>
+
+    <el-table-column
       prop="userNm"
-      label="사용자(그룹)이름"
-      align="center">
-    </el-table-column>
-
-    <el-table-column
-      prop=""
-      label="Role(그룹)이름"
-      align="center">
-    </el-table-column>
-
-    <el-table-column
-      prop="prmssnName"
-      label="권한(그룹)이름"
+      label="성명"
       header-align="center">
     </el-table-column>
 
      <el-table-column
-      prop="userPrmssnComment"
+      prop="deptNm"
+      label="조직"
+      header-align="center">
+    </el-table-column>
+
+    <el-table-column
+      prop="membPostion"
+      label="직급"
+      header-align="center">
+    </el-table-column>
+
+    <el-table-column
+      prop="membRank"
+      label="직책"
+      header-align="center">
+    </el-table-column>
+
+    <el-table-column
+      prop="adminComment"
       label="비고"
       header-align="center">
     </el-table-column>
@@ -76,23 +97,9 @@ export default {
   },
 
   created() {
-    APIService.getUsersPermission().then(response => {
+    APIService.getSuperAdminList().then(response => {
         this.listData = response;
         this.displayData = this.listData;
-
-          var _self = this
-          APIService.getUsersGroupPermissionList().then(response => {
-            _self.displayData.push(...response);
-          });
-
-           APIService.getUserPermissionUserRoleList().then(response => {
-            _self.displayData.push(...response);
-          });
-
-           APIService.getUserPermissionUserGroupRoleList().then(response => {
-            _self.displayData.push(...response);
-          });
-
        });
   },
   methods: {
@@ -100,27 +107,9 @@ export default {
       //console.log(this.listData);
     },
     handleCurrentChange(val) {
-      // console.log("isUserGroup",val.isUserGroup)
-      // console.log("isRoleGroup",val.isRoleGroup)
-      // console.log("isPrmssnGroup",val.isPrmssnGroup)
+      alert("작업중");
+      //this.$router.push({ name: "userPerTab02Detail", params: { objs: val } });
 
-      if(val.isUserGroup == 0 && val.isRoleGroup == 0 && val.isPrmssnGroup == 1){
-        this.$router.push({ name: "userPerTab05Detail", params: { objs: val } });
-
-      } else if (val.isUserGroup == 1 && val.isRoleGroup == 0 && val.isPrmssnGroup == 1) {
-        this.$router.push({ name: "userPerTab03Detail", params: { objs: val } });
-
-      } else if (val.isUserGroup == 0 && val.isRoleGroup == 1 && val.isPrmssnGroup == 0) {
-        //alert('작업중')
-        this.$router.push({ name: "userPerTab04Detail", params: { objs: val } });
-
-      }else if (val.isUserGroup == 1 && val.isRoleGroup == 1 && val.isPrmssnGroup == 0) {
-        //alert('작업중')
-        this.$router.push({ name: "userPerTab02Detail", params: { objs: val } });
-
-      }else {
-        alert('Error! 관리자에게 확인하세요.')
-      }
     },
     searchHandler() {
       var self = this;
@@ -128,9 +117,14 @@ export default {
         this.displayData = this.listData.filter(
           data =>
             !self.search ||
-            data.userPrmssnName.toLowerCase().includes(self.search.toLowerCase()) ||
+            data.legacyName.toLowerCase().includes(self.search.toLowerCase()) ||
+            data.orgNm.toLowerCase().includes(self.search.toLowerCase()) ||
             data.userNm.toLowerCase().includes(self.search.toLowerCase()) ||
-            data.prmssnName.toLowerCase().includes(self.search.toLowerCase())
+            data.deptNm.toLowerCase().includes(self.search.toLowerCase()) ||
+            data.membPostion.toLowerCase().includes(self.search.toLowerCase()) ||
+            data.membRank.toLowerCase().includes(self.search.toLowerCase()) ||
+            data.adminComment.toLowerCase().includes(self.search.toLowerCase()) ||
+            data.userEmpId.toLowerCase().includes(self.search.toLowerCase())
         );
       } else {
         this.displayData = this.listData;
@@ -138,7 +132,10 @@ export default {
     },
     indexMethod(index) {
       return index + 1;
-    }
+    },
+    InsertEvent: function() {
+      this.$router.push({ name: "adminAdd" });
+    },
   }
 };
 </script>

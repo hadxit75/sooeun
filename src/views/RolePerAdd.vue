@@ -41,7 +41,7 @@
                                 :value="item.roleId">
                                 </el-option>
                             </el-select></td>
-                            <td><el-input placeholder="" v-model="roleSelect.roleComment" ></el-input></td>
+                            <td><el-input placeholder="" v-model="roleComment" ></el-input></td>
                             </tr>
                         </tbody>
                     </table>
@@ -69,15 +69,15 @@
                                 :value="item.legacyId">
                                 </el-option>
                             </el-select></td>
-                            <td><el-select v-model="sitem.prmssnId" placeholder="Select" @change="setComment2" clearable>
+                            <td><el-select v-model="sitem.groupId" placeholder="Select" @change="setComment2(sitem.idx, sitem.groupId)" clearable>
                                 <el-option 
                                 v-for="item in objTypeSelect2"
-                                :key="item.prmssnId"
+                                :key="item.groupId"
                                 :label="item.prmssnName"
-                                :value="item.prmssnId">
+                                :value="item.groupId">
                                 </el-option>
                             </el-select></td>
-                            <td><el-input placeholder="" v-model="prmssnComment"></el-input></td>
+                            <td><el-input placeholder="" v-model="sitem.prmssnComment"></el-input></td>
                             <td><el-button type="warning" v-on:click="rowMinus(sitem.idx)" plain>-</el-button></td>
                             </tr>
                             <tr>
@@ -185,52 +185,77 @@ export default {
         })
   
       },
-      setComment: function(index,selected){
-        this.sroleId = selected
-        var _self = this
-        
-        this.roleSelect = this.roleSelect.filter(item =>{
-            if(item.index == index)
-            {
-                item.roleId = _self.sroleId;
+      setComment: function(index,roleId){
+    //   console.log("index",index)
+    //   console.log("roleId",roleId)
 
-                 this.roleSelectClone.forEach(sitem=>{
-                        if(sitem.roleId = _self.sroleId){	
-                            console.log("sitem.roleId",sitem.roleId)
-                        }
-                    })
+      this.sroleId = roleId;
+      var _self = this
+      var _idx = 1;
+
+      var _a ;
+      this.roleSelect.forEach(item=>{
+          if(_idx == index)
+          {
+              _a = item.roleId
+          }
+          _idx++;
+      })
+
+      _idx = 1;
+      
+      this.roleSelect = this.roleSelect.filter(item =>{
+        if(_idx == index)
+            {
+                item.roleId = roleId;
+
+                this.roleSelectClone.forEach(sitem=>{
+                      if(sitem.roleId == _self.sroleId){	
+                        _self.roleComment = sitem.roleComment;
+                        // console.log("_self.userGroupComment",_self.userGroupComment)
+                      }
+                  })
             }
-            //console.log(item)
-            //onsole.log("this.roleComment",this.roleComment)
+             _idx++;
+            // console.log("item", item)
             return item
-        })
+        })  
       },
       
-      setComment2: function(selected){
-        this.sprmssnId = selected
-        var _self = this
-
-        this.objTypeSelect2 = this.objTypeSelect2.filter(item =>{
-            if(item.index == index)
+      setComment2: function(index, groupId){
+        var _a ;
+        var _idx = 1;
+        this.tasks.forEach(item=>{
+            if(_idx == index)
             {
-                item.prmssnId = _self.sprmssnId;
-
-                  this.objTypeSelect2Clone.forEach(sitem=>{
-                        if(sitem.prmssnId = selected){
-                            _self.prmssnComment = sitem.prmssnComment
-                        }
-                    })
+                _a = item.groupId
             }
-            //console.log(item)
-            //onsole.log("this.roleComment",this.roleComment)
-            return item
+            _idx++;
         })
 
+        _idx = 1;
+        var _self = this
+        this.tasks = this.tasks.filter(item =>{
+            if(_idx == index)
+            {
+                item.groupId = _a;
+                // console.log("item.groupId",item.groupId)
+                _self.objTypeSelect2Clone.forEach(sitem=>{
+                    if(sitem.groupId == item.groupId){
+                        item.prmssnComment = sitem.prmssnComment
+                    }
+                })
+            }
+            _idx++;
+            // console.log("item", item)
+            return item
+        })
+      // console.log("tasks", this.tasks)
        
       },
       rowPlus: function () {
           var _index = this.tasks.length+1;
-          this.tasks.push({orders:_index++, legacyId:"", prmssnId:"", prmssnComment:""})
+          this.tasks.push({orders:_index++, legacyId:"", prmssnId:"", prmssnComment:"", groupId: ""})
       },
       rowMinus: function (sidx) {
           var _lidx = 1;
@@ -248,21 +273,21 @@ export default {
         var self = this
 
         var _msg = [];
- 
+        // console.log("tasks", this.tasks)
         this.tasks.forEach(sitem=>{
 
              var _item = {"isRoleGroup": 0 
                           , "groupRoleId" : 0
                           , "roleId": self.sroleId
                           , "orders": 1
-                          , "prmssnGroupId": sitem.prmssnId 
+                          , "prmssnGroupId": sitem.groupId 
                           , "rolePrmssnName" : self.rolePrmssnName
                           , "rolePrmssnComment": self.rolePrmssnComment};
 
             _msg.push(_item);
            
         })
-        //console.log(_msg)
+        console.log(_msg)
 
          this.$http.post('http://dabin02272.cafe24.com:8090/api/role-permission', _msg)
         .then((response) => {

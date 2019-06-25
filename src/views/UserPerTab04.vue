@@ -63,15 +63,16 @@
             </el-table>
         </el-card>
     </div>
-    <user-search :visiable="invokeFlag" @closed="onCloseModal" @clicked="onClickChild"></user-search>
+   <user-search :visiable="invokeFlag" @closed="onCloseModal" @clicked="onClickChild"></user-search>
 
     <div class="card-body">
+              <p>Role(그룹)권한</p>
                 <form v-on:submit.prevent="addItem">
                     <table class="table table-bordered">
                         <thead>
                             <th>순번</th>
                             <th>원천시스템</th>
-                            <th>권한(그룹)이름</th>
+                            <th>Role(그룹)이름</th>
                             <th>비고</th>
                             <th>행삭제</th>
                         </thead>
@@ -86,32 +87,30 @@
                                 :value="item.legacyId">
                                 </el-option>
                             </el-select></td>
-                            <td><el-select v-model="sitem.groupId" placeholder="Select" @change="test(index,$event)" clearable>
+                            <td><el-select v-model="sitem.rolePrmssnId" placeholder="Select" @change="test(sitem.idx, sitem.rolePrmssnId)" clearable>
                                 <el-option 
                                 v-for="item in prmssSelect"
-                                :key="item.groupId"
-                                :label="item.prmssnName"
-                                :value="item.groupId">
+                                :key="item.rolePrmssnId"
+                                :label="item.roleUnifiedName"
+                                :value="item.rolePrmssnId">
                                 </el-option>
                             </el-select></td>
-                            <td><el-input placeholder="" v-model="sitem.prmssnComment"></el-input></td>
+                            <td><el-input placeholder="" v-model="sitem.roleGroupComment"></el-input></td>
                             <td><el-button type="warning" v-on:click="rowMinus(sitem.idx)" plain>-</el-button></td>
                             </tr>
                             <tr>
-                            <td>사용자 권한(그룹)이름</td> 
-                            <td><el-input placeholder="" v-model="userPrmssnName"></el-input></td>
+                            <td>사용자그룹 권한(그룹) 이름</td> 
+                            <td><el-input placeholder="" v-model="userRolesName"></el-input></td>
                             <td>비고</td>
-                            <td colspan="2"><el-input placeholder="" v-model="userPrmssnComment"></el-input></td>
+                            <td colspan="2"><el-input placeholder="" v-model="userRolesComment"></el-input></td>
                             </tr>
                         </tbody>
                     </table>
                     <el-row>
                     <el-button type="success" v-on:click="rowPlus" plain>+</el-button>
-                    
                     </el-row>
-
-                </form>
-            </div>
+               </form>
+      </div>
     </div>
 
     
@@ -146,8 +145,8 @@ export default {
       prmssSelect: [],
       prmssSelectClone: [],
       slegacyId: null,
-      userPrmssnName: null,
-      userPrmssnComment: null
+      userRolesName: null,
+      userRolesComment: null
     };
   },
   created() {
@@ -168,11 +167,11 @@ export default {
       });
       _self.data = _parent;
       
-      APIService.getLegacyList().then((response) => {
+      APIService.getRolePermissionLegacyList().then((response) => {
         _self.legacySelect = response;
       }); 
 
-      APIService.getPermissionAllList().then((response) => {
+      APIService.getRolePermissionItemList().then((response) => {
         _self.prmssSelect = response;
         _self.prmssSelectClone = response;
       }); 
@@ -185,25 +184,23 @@ export default {
         var _a ;
         var _idx = 1;
         this.tasks.forEach(item=>{
-            if(_idx == index+1)
+            if(_idx == index)
             {
-                _a = item.groupId
+                _a = item.rolePrmssnId
             }
             _idx++;
         })
 
-        // console.log("_a", _a)
-
         _idx = 1;
         var _self = this
         this.tasks = this.tasks.filter(item =>{
-            if(_idx == index+1)
+            if(_idx == index)
             {
                 item.groupId = _a;
                 // console.log("item.groupId",item.groupId)
                 _self.prmssSelectClone.forEach(sitem=>{
-                    if(sitem.groupId == item.groupId){
-                        item.prmssnComment = sitem.prmssnComment
+                    if(sitem.rolePrmssnId == item.rolePrmssnId){
+                        item.roleGroupComment = sitem.roleGroupComment
                     }
                 })
             }
@@ -245,32 +242,44 @@ export default {
         };
         sendUser.push(_t);
       });
+
+      this.tasks.forEach(item => {
+
+        this.prmssSelect.forEach(sitem => {
+          if(sitem.rolePrmssnId == item.rolePrmssnId){
+             item.isRoleItemGroup = sitem.isRoleItemGroup;
+             item.rolePrmssnGroupId = sitem.rolePrmssnGroupId;
+          }
+        })
+      });
   
       this.tasks.forEach(item => {
         var _h = {
-          prmssnGroupId: item.groupId
+          rolePrmssnId: item.rolePrmssnId,
+          isRoleItemGroup: item.isRoleItemGroup,
+          rolePrmssnGroupId: item.rolePrmssnGroupId
         };
         sendGroup.push(_h);
       });
 
       sendItem.push({
-        userPrmssnName: this.userPrmssnName,
-        userPrmssnComment: this.userPrmssnComment,
+        userRolesName: this.userRolesName,
+        userRolesComment: this.userRolesComment,
         userIds: sendUser,
-        prmssnGroupIds: sendGroup
+        roleGroupIds: sendGroup
       });
 
-      //console.log(sendItem)
+       console.log(sendItem)
 
       if (sendItem.length > 0) {
-        APIService.postUserPermission(sendItem)
+        APIService.postUserPermissionUserRole(sendItem)
           .then(result => {
             this.$message({
               type: "success",
               message: "추가가 완료되었습니다."
             });
 
-            //this.$router.go();
+           this.$router.go();
           })
           .catch(error => {
             this.$message({
@@ -355,7 +364,7 @@ export default {
         var _self = this;
         this.prmssSelect = [];
 
-        APIService.getPermissionLegacyList(this.slegacyId).then((response)=>{
+        APIService.getRolePermissionByLegacy(this.slegacyId).then((response)=>{
           _self.prmssSelect = response;
         });
       },

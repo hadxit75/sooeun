@@ -1,0 +1,200 @@
+
+------------------------------
+관리자 관리
+------------------------------
+관리자 리스트 가져오기(모든 항목 가져오기)
+
+BASE URL: dabin02272.cafe24.com:8090
+FULL URL: dabin02272.cafe24.com:8090/api/super-admin/list 
+URL: /api/super-admin/list 
+METHOD: GET
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":":[
+		{"adminId":1,"userId":"OSSTEM:X1234567","legacyId":40,"adminTypeId":1,"adminTypeName":"슈퍼관리자","legacyName":"CRM","orgId":"OSSTEM","orgNm":"오스템임플란트(주)","userEmpId":"X1234567","userNm":"홍길동","deptNm":"정보전략팀","membPostion":"사원","membRank":"팀원","adminComment":"슈퍼관리자"},
+		{"adminId":4,"userId":"OSSTEM:X1234567","legacyId":40,"adminTypeId":2,"adminTypeName":"일반관리자","legacyName":"CRM","orgId":"OSSTEM","orgNm":"오스템임플란트(주)","userEmpId":"X1234567","userNm":"홍길동","deptNm":"정보전략팀","membPostion":"사원","membRank":"팀원","adminComment":"CRM 관리자"},
+		{"adminId":5,"userId":"OSSTEM:X1234568","legacyId":41,"adminTypeId":2,"adminTypeName":"일반관리자","legacyName":"OW","orgId":"OSSTEM","orgNm":"오스템임플란트(주)","userEmpId":"X1234568","userNm":"박문수","deptNm":"정보전략팀","membPostion":"사원","membRank":"팀원","adminComment":"OW 관리자"}
+	],
+	"result":null,
+	"error":null}
+}
++++++
+관리자 생성하기 
+URL: /api/super-admin
+METHOD: POST
+REQUESTBODY: [
+	{"userId": "OSSTEM:X1234567","legacyId": 40, "adminComment": "CRM 관리자"},
+	{"userId": "OSSTEM:X1234568","legacyId": 41, "adminComment": "OW 관리자"}
+
+]
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
++++++
+관리자 비고 수정 하기 
+URL: /api/super-admin
+METHOD: PUT
+REQUESTBODY: {
+	"adminId": 4, "adminComment": "CRM 관리자"
+	}
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
++++++
+관리자    지우기  
+URL: /api/super-admin
+METHOD: DELETE
+REQUESTBODY: [
+	{ "adminId": 4},
+	{ "adminId": 5}
+]
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
+-------------------------------------------------------------------------------
+~~ 이하 미구현
+
++++++
+사용자  그룹 리스트 가져오기 (group-id 에 해당하는 항목들 가져오기)
+METHOD: GET
+URL: /api/user-group/{group-id}  
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":":[
+		{"userGroupId":39,"userId":"OSSTEM:7091501","groupId":11,"orders":2,"userGroupName":"user group 2","userGroupComment":null,"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000233","userEmpId":"7091501","membPostion":"부장","membPostionCd":200,"membRank":"지점장","membRankCd":125,"jobYn":"Y","useYn":"Y","userNm":"김요한","deptNm":"경남서부지점"},
+		{"userGroupId":38,"userId":"OSSTEM:6081732","groupId":11,"orders":1,"userGroupName":"user group 2","userGroupComment":null,"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000548","userEmpId":"6081732","membPostion":"부장","membPostionCd":200,"membRank":"팀장","membRankCd":110,"jobYn":"Y","useYn":"Y","userNm":"김찬우","deptNm":"시작팀"}
+	],
+	"result":null,
+	"error":null}
+}
+		{"orgId":"OSSTEM","orgNm":"오스템임플란트(주)","deptId":"O000000374","userId":"OSSTEM:8070801","userEmpId":"8070801","membPostion":"부장","membPostionCd":200,"membRank":"본부장","membRankCd":30,"jobYn":"Y","useYn":"Y","userNm":"최재호","deptNm":"경남영업본부"},
+
++++++
+사용자  그룹 ID 리스트 가져오기 (group-id 리스트 가져오기)
+METHOD: GET
+URL: /api/user-group/group-id-list 
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":":[
+		{"userGroupId":0,"userId":null,"groupId":11,"orders":0,"userGroupName":"user group 2","userGroupComment":"user group 2"}
+
+	],
+	"result":null,
+	"error":null}
+}
+--
+
++++++ UNUSED
+원천시스템별 사용자  그룹 리스트 가져오기 (원천시스템 legacy-id 에 해당하는 항목들 가져오기)
+METHOD: GET
+URL: /api/user-group/legacy/{legacy-id}  
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":":[
+		{"userGroupId":15,"userId":"OSSTEM:8102505","groupId":10,"orders":1,"userGroupName":"user group 2-1","userGroupComment":"test 1 1"},
+		{"userGroupId":16,"userId":"OSSTEM:8102505","groupId":10,"orders":2,"userGroupName":"user group 2-1","userGroupComment":"test 1 1"},
+		{"userGroupId":17,"userId":"OSSTEM:8102505","groupId":10,"orders":1,"userGroupName":"user group 2","userGroupComment":"test 1"},
+		{"userGroupId":18,"userId":"OSSTEM:8102505","groupId":10,"orders":2,"userGroupName":"user group 2","userGroupComment":"test 2"}
+	],
+	"result":null,
+	"error":null}
+}
+ 
++++++
+사용자 그룹 생성하기 (사용자 그룹 추가 메뉴)
+URL: /api/user-group
+METHOD: POST
+REQUESTBODY: [
+	{"userId": "OSSTEM:8102505","userGroupName": "user group 2", "orders" : 1, "userGroupComment": "test 1"},
+	{"userId": "OSSTEM:8102505","userGroupName": "user group 2", "orders" : 2,"userGroupComment": "test 2"}
+]
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
+
+
++++++
+사용자  그룹 지우기 (사용자 그룹 상세에서 삭제 메뉴, groupId에 해당하는 항목 지우기)
+URL: /api/user-group/group-id
+METHOD: DELETE
+REQUESTBODY: [
+	{ "groupId": 14},
+	{ "groupId": 15}
+]
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
+ 
+ +++++
+--------------------------------------------------------------------------
+사용자 그룹 상세에서 수정 버튼 눌렀을 때 처리:
+
+1. 행변화 없이 내용만 수정했을 경우 
+	- group-id를 포함하여 PUT /api/user-group
+2. 행 추가후 내용 수정했을 경우 
+   - 추가한 행은 group-id를 포함하여 POST /api/user-group/put-add
+   - 나머지 내용 수정한 행은  group-id를  포함하여 PUT /api/user-group
+3. 행 삭제후 내용 수정 했을 경우
+	- 삭제한 행은 userGroupId를 포함한 DELETE /api/user-group/user-group-id
+	- 나머지 내용 수정한 행은  group-id를 포함하여 PUT /api/user-group
+--------------------------------------------------------------------------
+사용자 그룹 수정하기 (사용자 상세-행변화 없이 내용만 수정했을 경우 )
+URL: /api/user-group
+METHOD: PUT 
+REQUESTBODY: {
+	"userGroupName": "user group 2-1",  "userGroupComment": "test 1 1", "groupId": 13
+}
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
++++++
+사용자 그룹의 사용자 생성하기 (사용자 상세 리스트에서 + 버튼으로 추가한 항목)
+URL: /api/user-group/put-add
+METHOD: POST
+-- 참고: REQUESTBODY에서 [ {},{} ] 와 같이 [{}] 순서 주의
+REQUESTBODY: [
+		{"userId": "OSSTEM:8102505","userGroupName": "user group 2", "orders" : 1, "userGroupComment": "test 1", "groupId": 13},
+		{"userId": "OSSTEM:8102505","userGroupName": "user group 2", "orders" : 2,"userGroupComment": "test 2", "groupId": 13}
+] 
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
++++++
+사용자  지우기 (사용자 그룹 상세 리스트에서 - 버튼, userGroupId 해당하는 항목 지우기)
+URL: /api/user-group/user-group-id
+METHOD: DELETE
+REQUESTBODY: [
+	{ "userGroupId": 29},
+	{ "userGroupId": 30}
+]
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}

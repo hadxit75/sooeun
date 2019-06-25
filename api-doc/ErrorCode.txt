@@ -2,7 +2,42 @@
 ------------------------------
 Error Code
 ------------------------------
-getListError 	= 9001
-postError 		= 9002
-putError 		= 9003
-deleteError 	= 9004
+	OK = 200;
+	getListError = 9001;
+	postError = 9002;
+	putError = 9003;
+	deleteError = 9004;
+	LegacyMultipleError = 9005;
+	AdminMultipleError = 9006;
+	AdminSuperUserError = 9007;
+	ObjectMultipleError = 9008;
+	PermissionMultipleError = 9009;
+	OperationMultipleError = 9010;
+	RoleMultipleError = 9011;
+	RoleGroupMultipleError = 9012;
+	UserGroupMultipleError = 9013;
+	RolePermissionMultipleError = 9014;
+	UserGroupPermissionMultipleError = 9015; 
+	UserPermisssionMultipleError = 9016;
+	UserGroupRoleMultipleError = 9017;
+	UserRoleMultipleError = 9018;
+	
+	SUCCESS = "ok";
+	FAIL = "fail";
+	GOOD = "good";
+	LegacyMultipleErrorMsg = "Legacy system must be only one for a permission";
+	AdminMultipleErrorMsg = "이미 해당 원천시스템 관리자로 등록 되어있습니다.";
+	AdminSuperUserErrorMsg = "해당 관리자 정보는 수정할 수 없습니다.";
+	ObjectMultipleErrorMsg = "이미 해당 객체가 등록 되어있습니다.";
+	PermissionMultipleErrorMsg = "이미 해당 권한이 등록 되어있습니다.";
+	OperationMultipleErrorMsg = "이미 해당 연산이 등록 되어있습니다.";
+	RoleMultipleErrorMsg = "이미 해당 Role이 등록 되어있습니다.";
+	RoleGroupMultipleErrorMsg = "이미 해당 Role 그룹이 등록 되어있습니다.";
+	RolePermissionMultipleErrorMsg = "이미 해당 Role 권한(그룹)이 등록 되어있습니다.";
+	UserGroupMultipleErrorMsg = "이미 해당 사용자 그룹이 등록 되어있습니다.";
+	UserGroupPermissionMultipleErrorMsg = "이미 해당 사용자 그룹, 권한이 등록 되어있습니다.";
+	UserPermissionMultipleErrorMsg = "이미 해당 사용자, 권한이 등록 되어있습니다.";
+	UserGroupRoleMultipleErrorMsg = "이미 해당 사용자 그룹, Role이 등록 되어있습니다.";
+	UserRoleMultipleErrorMsg = "이미 해당 사용자, Role이 등록 되어있습니다.";
+	
+	

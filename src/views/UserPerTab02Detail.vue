@@ -1,7 +1,7 @@
 <template>
 <div class="row">
         <div class="p-3 float-left">    
-          <h4>사용자 권한 (그룹) 상세</h4>
+          <h4>사용자그룹 Role (그룹)권한상세</h4>
         </div>
         <div class="col-md-12" style="margin-bottom:10px"></div>
         <div class="col-md-2" style="margin-top:30px">
@@ -17,7 +17,7 @@
 
     <div class="col-md-12">
         <el-card shadow="never">
-            <p>선택된 사용자</p>
+            <p>사용자그룹</p>
             <el-table
                 ref="multipleTable"
                 :data="tableData.users"
@@ -27,24 +27,12 @@
                 width="100">
                 </el-table-column>
                 <el-table-column
-                property="userId"
-                label="사번">
-                </el-table-column>
-                <el-table-column
                 property="userNm"
-                label="성명">
+                label="사용자(그룹)이름">
                 </el-table-column>
                 <el-table-column
-                property="deptNm"
-                label="조직">
-                </el-table-column>
-                <el-table-column
-                property="membPostion"
-                label="직급">
-                </el-table-column>
-                <el-table-column
-                property="membRank"
-                label="직책">
+                property="userGroupComment"
+                label="비교">
                 </el-table-column>
             </el-table>
         </el-card>
@@ -56,7 +44,7 @@
                         <thead>
                             <th>순번</th>
                             <th>원천시스템</th>
-                            <th>권한(그룹)이름</th>
+                            <th>Role(그룹)이름</th>
                             <th>비고</th>
                             <th>행삭제</th>
                         </thead>
@@ -71,15 +59,15 @@
                                 :value="item.legacyId">
                                 </el-option>
                             </el-select></td>
-                            <td><el-select v-model="sitem.prmssnGroupId" placeholder="Select" :disabled="sitem.utype != 'I'" @change="test(index,$event)" clearable>
+                            <td><el-select v-model="sitem.userPrmssnId" placeholder="Select" :disabled="sitem.utype != 'I'" @change="test(index,$event)" clearable>
                                 <el-option 
                                 v-for="item in prmssSelect"
-                                :key="item.groupId"
+                                :key="item.rolePrmssnId"
                                 :label="item.prmssnName"
-                                :value="item.groupId">
+                                :value="item.rolePrmssnId">
                                 </el-option>
                             </el-select></td>
-                            <td><el-input placeholder="" :disabled="sitem.utype != 'I'" v-model="sitem.prmssnComment"></el-input></td>
+                            <td><el-input placeholder="" v-model="sitem.prmssnComment" :disabled="sitem.utype != 'I'"></el-input></td>
                             <td><el-button type="warning" v-on:click="rowMinus(sitem.orders, sitem.userPrmssnId)" plain>-</el-button></td>
                             </tr>
                             <tr>
@@ -108,6 +96,18 @@ export default {
 
   data() {
     return {
+      prmssSelectClone: [],
+      groupSelect: [],
+      groupSelectClone: [],
+      slegacyId: null,
+      userPrmssnName: this.$route.params.objs.userPrmssnName,
+      userPrmssnComment: this.$route.params.objs.userPrmssnComment,
+      suserPrmssnName: this.$route.params.objs.userPrmssnName,
+      suserPrmssnComment: this.$route.params.objs.userPrmssnComment,
+      //상세조회
+      groupId: this.$route.params.objs.groupId,
+      groupUserId: this.$route.params.objs.groupUserId,
+
       //유저
       legacySelect: [],
       invokeFlag: false,
@@ -126,44 +126,34 @@ export default {
       tasksClone: [],
       legacySelect: [],
       prmssSelect: [],
-      prmssSelectClone:[],
-      slegacyId: null,
-      userPrmssnName: this.$route.params.objs.userPrmssnName,
-      userPrmssnComment: this.$route.params.objs.userPrmssnComment,
-      suserPrmssnName: this.$route.params.objs.userPrmssnName,
-      suserPrmssnComment: this.$route.params.objs.userPrmssnComment,
-
-      //상세조회
-      groupId: this.$route.params.objs.groupId,
-
+      
       //전체 데이터 개수
       rowCount: null,
       dataArray: []
-
     };
   },
   created() {
-    APIService.getUsersPermissionGroupId(this.groupId).then(response => {
+    APIService.getUserGroupPermissionUserGroupRole(this.groupId).then(response => {
       //console.log("response", response)
         this.tableData = response;
         this.tableData['utype']='U'
-        this.tasks.push(...this.tableData.prmssns);
+        this.tasks.push(...this.tableData.roles);
         this.tasksClone = this.tableData;
-
         this.rowCount = this.tasks.length;
-        // console.log("rowCount",this.rowCount)
 
-        //console.log(this.tableData)
-        // console.log("tasks",this.tasks)
-         
-          var _self = this
-          APIService.getLegacyList().then((response) => {
-            _self.legacySelect = response;
-          }); 
+        var _self = this
+        APIService.getLegacyList().then((response) => {
+          _self.legacySelect = response;
+        }); 
 
-          APIService.getPermissionAllList().then((response) => {
-            _self.prmssSelect = response;
-            _self.prmssSelectClone = response;
+        APIService.getRolePermissionItemList().then((response) => {
+          _self.prmssSelect = response;
+          _self.prmssSelectClone = response;
+        }); 
+
+        APIService.getUserGroupList().then((response) => {
+            _self.groupSelect = response;
+            _self.groupSelectClone = response;
           }); 
 
       });     
@@ -172,14 +162,14 @@ export default {
   methods: {
     test(index,event)
     {
-        // console.log("index", index)
-        // console.log("event", event)
+        //  console.log("index", index)
+        //  console.log("event", event)
         var _a ;
         var _idx = 1;
         this.tasks.forEach(item=>{
             if(_idx == index+1)
             {
-                _a = item.prmssnGroupId
+                _a = item.userPrmssnId
             }
             _idx++;
         })
@@ -191,10 +181,10 @@ export default {
         this.tasks = this.tasks.filter(item =>{
             if(_idx == index+1)
             {
-                item.groupId = _a;
+                item.userPrmssnId = _a;
                 // console.log("item.groupId",item.groupId)
                 _self.prmssSelectClone.forEach(sitem=>{
-                    if(sitem.groupId == item.groupId){
+                    if(sitem.prmssnId == item.userPrmssnId){
                         item.prmssnComment = sitem.prmssnComment
                     }
                 })
@@ -214,7 +204,7 @@ export default {
       //행변화 없이 내용만 수정했을 경우
       if(this.userPrmssnName != this.suserPrmssnName || this.userPrmssnComment != this.suserPrmssnComment){
         var _msg = {
-          groupId: self.groupId,
+          groupId: self.groupId,            
           userPrmssnName: self.userPrmssnName,
           userPrmssnComment: self.userPrmssnComment 
         }
@@ -241,23 +231,27 @@ export default {
 
       //권한 추가되었을 경우
       if(this.tasks.length > this.rowCount){
-
         var sendItem = [];
-        var sendUser = [];
         var sendGroup = [];
         var idx = 0;
-  
-         self.tableData.users.forEach(item => {
-          var _t = {
-            userId: item.orgId + ":" + item.userEmpId
-          };
-          sendUser.push(_t);
-        });
-    
+
         self.tasks.forEach(item => {
-          if(item.utype=="I"){
+
+        self.prmssSelect.forEach(sitem => {
+            if(sitem.rolePrmssnId == item.rolePrmssnId){
+              item.isRoleItemGroup = sitem.isRoleItemGroup;
+              item.rolePrmssnGroupId = sitem.rolePrmssnGroupId;
+            }
+          })
+        });
+        
+        self.tasks.forEach(item => {
+         if(item.utype=="I"){
             var _h = {
-              prmssnGroupId: item.groupId
+              rolePrmssnId: item.groupId,
+              isRoleItemGroup: item.isRoleItemGroup,
+              rolePrmssnGroupId: item.rolePrmssnGroupId
+
             };
             sendGroup.push(_h);
           }
@@ -265,21 +259,21 @@ export default {
   
         sendItem.push({
           groupId: self.groupId,
-          userIds: sendUser,
-          prmssnGroupIds: sendGroup
+          groupUserId: self.groupUserId,
+          roleGroupIds: sendGroup
         });
   
-        // console.log("sendItem",sendItem)
+         console.log(sendItem)
   
         if (sendItem.length > 0) {
-          APIService.putUserPermissionAdd(sendItem)
+          APIService.postUserPermissionUserGroupRolePutAdd(sendItem)
             .then(result => {
               self.$message({
                 type: "success",
                 message: "추가가 완료되었습니다."
               });
   
-              this.$router.push({name:'userPerStatus'})
+              //this.$router.push({name:'userPerStatus'})
             })
             .catch(error => {
               self.$message({
@@ -312,15 +306,16 @@ export default {
             })
              
             alert('삭제가 완료되었습니다.');  
+            self.$router.push({name:'userPerStatus'})
 
         }).catch(() => {
           alert('삭제가 취소되었습니다.');       
         });
 
     },
-    rowMinus: function(sidx, userPrmssnId){
+    rowMinus: function(idx, userPrmssnId){
         //기존의 데이터 행삭제
-        if(userPrmssnId != null){
+        if(this.tasks.length > 0 && userPrmssnId != null){
             this.$confirm('삭제 하시겠습니까?', 'Warning', {
             confirmButtonText: '확인',
             cancelButtonText: '취소',
@@ -328,44 +323,30 @@ export default {
 
         }).then(() => {
             var self = this
-            //var data = [{ userPrmssnId : userPrmssnId}];
-            var _t = { userPrmssnId: userPrmssnId };
-            var _item = [_t];
+            var data = [{ userPrmssnId : userPrmssnId}];
 
-            APIService.deleteUserPermissionGroupRow(_item)
+            APIService.deleteUserPermissionUserGroupRoleRow(data)
             .then((response) => {
-                alert('삭제가 완료되었습니다.');  
-                
-                APIService.getUsersPermissionGroupId(self.groupId).then(response => {
+                 alert('삭제가 완료되었습니다.');  
+                 //to-do 
+                 //조회 로직 추가
+
+                 APIService.getUserGroupPermissionUserGroupRole(self.groupId).then(response => {
                     //console.log("response", response)
                       self.tableData = response;
                       self.tableData['utype']='U'
-                      self.tasks = self.tableData.prmssns;
+                      self.tasks = self.tableData.roles;
                       self.tasksClone = self.tableData;
                       self.rowCount = self.tasks.length;
-
                     });  
-            
-            }).catch((error) => {
+            })
+            .catch((error) => {
                 alert('에러가 발생하였습니다.'); 
                 console.log(error.config)
             })
         }).catch(() => {
           alert('삭제가 취소되었습니다.');       
         });
-        }else{
-           var _lidx = 1;
-            this.tasks = this.tasks.filter(item=>{
-                   //console.log(item);
-                if(item.orders != sidx)
-                {
-                    item['orders'] = _lidx;
-                    _lidx++;
-                return item;
-                }
-
-                //this.editFlag--;
-            }); 
         }
     },
     recursiveDepth(sdata, i, parentId) {
@@ -410,12 +391,12 @@ export default {
         var _self = this;
         this.prmssSelect = [];
 
-        APIService.getPermissionLegacyList(this.slegacyId).then((response)=>{
+        APIService.getRolePermissionByLegacy(this.slegacyId).then((response)=>{
           _self.prmssSelect = response;
+          //console.log(_self.prmssSelect)
         });
       },
       rowPlus: function () {
-        //alert("!!")
           var _index = this.tasks.length+1;
           this.tasks.push({orders:_index++, legacyId:"", groupId:"", prmssnComment:"",utype:"I"})
       },
@@ -428,15 +409,14 @@ export default {
 
         }).then(() => {
             var self = this
-            self.dataArray.push({groupId : self.groupId});
-          
+            var _mgs = [{ groupId : self.groupId}];
+            
             var _t = { groupId: this.groupId };
             var _item = [_t];
 
-
             APIService.deleteUserPermissionGroup(_item).then((response) => {
                 alert('삭제가 완료되었습니다.'); 
-                self.$router.push("/userPerStatus");
+                self.$router.push({name:'userPerStatus'})
             })
             .catch((error) => {
                 alert('에러가 발생하였습니다.'); 

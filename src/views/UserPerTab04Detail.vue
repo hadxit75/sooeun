@@ -56,7 +56,7 @@
                         <thead>
                             <th>순번</th>
                             <th>원천시스템</th>
-                            <th>권한(그룹)이름</th>
+                            <th>Role(그룹)이름</th>
                             <th>비고</th>
                             <th>행삭제</th>
                         </thead>
@@ -71,12 +71,12 @@
                                 :value="item.legacyId">
                                 </el-option>
                             </el-select></td>
-                            <td><el-select v-model="sitem.prmssnGroupId" placeholder="Select" :disabled="sitem.utype != 'I'" @change="test(index,$event)" clearable>
+                            <td><el-select v-model="sitem.userPrmssnId" placeholder="Select" :disabled="sitem.utype != 'I'" @change="test(sitem.idx, sitem.userPrmssnId)" clearable>
                                 <el-option 
                                 v-for="item in prmssSelect"
-                                :key="item.groupId"
-                                :label="item.prmssnName"
-                                :value="item.groupId">
+                                :key="item.rolePrmssnId"
+                                :label="item.roleUnifiedName"
+                                :value="item.rolePrmssnId">
                                 </el-option>
                             </el-select></td>
                             <td><el-input placeholder="" :disabled="sitem.utype != 'I'" v-model="sitem.prmssnComment"></el-input></td>
@@ -143,11 +143,11 @@ export default {
     };
   },
   created() {
-    APIService.getUsersPermissionGroupId(this.groupId).then(response => {
+    APIService.getUserGroupPermissionUserRole(this.groupId).then(response => {
       //console.log("response", response)
         this.tableData = response;
         this.tableData['utype']='U'
-        this.tasks.push(...this.tableData.prmssns);
+        this.tasks.push(...this.tableData.roles);
         this.tasksClone = this.tableData;
 
         this.rowCount = this.tasks.length;
@@ -161,7 +161,7 @@ export default {
             _self.legacySelect = response;
           }); 
 
-          APIService.getPermissionAllList().then((response) => {
+          APIService.getRolePermissionItemList().then((response) => {
             _self.prmssSelect = response;
             _self.prmssSelectClone = response;
           }); 
@@ -272,7 +272,7 @@ export default {
         // console.log("sendItem",sendItem)
   
         if (sendItem.length > 0) {
-          APIService.putUserPermissionAdd(sendItem)
+          APIService.postUserPermissionUserRolePutAdd(sendItem)
             .then(result => {
               self.$message({
                 type: "success",
@@ -332,15 +332,15 @@ export default {
             var _t = { userPrmssnId: userPrmssnId };
             var _item = [_t];
 
-            APIService.deleteUserPermissionGroupRow(_item)
+            APIService.deleteUserPermissionUserRoleRow(_item)
             .then((response) => {
                 alert('삭제가 완료되었습니다.');  
                 
-                APIService.getUsersPermissionGroupId(self.groupId).then(response => {
+                APIService.getUserGroupPermissionUserRole(self.groupId).then(response => {
                     //console.log("response", response)
                       self.tableData = response;
                       self.tableData['utype']='U'
-                      self.tasks = self.tableData.prmssns;
+                      self.tasks = self.tableData.roles;
                       self.tasksClone = self.tableData;
                       self.rowCount = self.tasks.length;
 
@@ -410,14 +410,15 @@ export default {
         var _self = this;
         this.prmssSelect = [];
 
-        APIService.getPermissionLegacyList(this.slegacyId).then((response)=>{
+        APIService.getRolePermissionByLegacy(this.slegacyId).then((response)=>{
           _self.prmssSelect = response;
+          _self.prmssSelectClone = response;
         });
       },
       rowPlus: function () {
         //alert("!!")
           var _index = this.tasks.length+1;
-          this.tasks.push({orders:_index++, legacyId:"", groupId:"", prmssnComment:"",utype:"I"})
+          this.tasks.push({orders:_index++, legacyId:"", userPrmssnId:"", prmssnComment:"",utype:"I"})
       },
       onDeletetEvent: function() {
 
@@ -428,7 +429,7 @@ export default {
 
         }).then(() => {
             var self = this
-            self.dataArray.push({groupId : self.groupId});
+            // self.dataArray.push({groupId : self.groupId});
           
             var _t = { groupId: this.groupId };
             var _item = [_t];

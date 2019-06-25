@@ -290,6 +290,7 @@ SUCCESS RESPONSE: {
     "result": null,
     "error": "StatementCallback; bad SQL grammar [SELECT    GROUP_CONCAT( USER_NM SEPARATOR ',') AS USER_NM,  PRMSSN_NAME,\t\t\t\t\t\t\t\t\t\t\t\t\t\t GROUP_ID, PRMSSN_GROUP_ID,                             \t\t\t\t\t\t\t\t\t USER_PRMSSN_NAME, USER_PRMSSN_COMMENT                  FROM (                                                                                     \t\t\t\t\t\t\tSELECT   c.USER_NM, b.PRMSSN_NAME,                              \t\t\t\t\t\t\t\t\ta.GROUP_ID,  a.PRMSSN_GROUP_ID,                         \t\t\t\t\t\t\t\t\ta.USER_PRMSSN_NAME,a.COMMENT as USER_PRMSSN_COMMENT     \t\t\t\t\t\t\tFROM re_user_prmssn a, prmssn b, re_users c                     \t\t\t\t\t\t\tWHERE 1=1                                                       \t\t\t\t\t\t\tAND a.IS_USER_GROUP = 0                                         \t\t\t\t\t\t\tAND a.IS_ROLE_GROUP = 0                                         \t\t\t\t\t\t\tAND a.IS_PRMSSN_GROUP = 1                                       \t\t\t\t\t\t\tAND a.PRMSSN_GROUP_ID = b.GROUP_ID                              \t\t\t\t\t\t\tAND a.USER_ID = c.USER_ID                                       \t\t\t\t\t\t   GROUP BY a.GROUP_ID,  c.USER_NM                                  \t\t\t\t\t\t\tORDER BY IS_USER_GROUP,a.IS_ROLE_GROUP ASC                      \t\t\t\t\t\t\t) AS A\t                                                        GROUP BY GROUP_ID \t;\t                                                                    ]; nested exception is com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Expression #2 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'role.b.PRMSSN_NAME' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by"
 }
+--> 쿼리를 원복했습니다. 쿼리에 문제가 있어서 수정해서 올릴때 까지는 이전 방식으로 보이도록 해 놓았습니다.
 
 2.  UserPermission.txt api 중 (delete) /api/user-permission/user-permissions api에서 userPrmssnId 를 키로 값을 보내게 되어 있는데 이 화면의 조회쿼리인 
 http://dabin02272.cafe24.com:8090/api/user-permission/user-permissions/16 에서 해당 키가 어떤 항목인지 표시 부탁 드립니다. 
@@ -314,4 +315,297 @@ http://dabin02272.cafe24.com:8090/api/user-permission/user-permissions/16 에서
 		"userNm": "김서준",
 		"deptNm": "오스템카디오텍"
 	}
+--> userPrmssnId이고요, userPrmssnId 의 값이 0으로 된 오류를 수정했습니다.
+----------------------------------------------------------------
+6/10 화면 검토 사항
+1. 사용자 권한 (그룹) 상세 타이틀 스트링 누락 
+: 수정완료
+2. 사용자 권한 (그룹) 상세에서 삭제버튼 동작 안함
+: 수정완료
+3. 사용자 권한 (그룹) 상세의 권한 이름이 추가한 권한이 아닌 이름으로 노출
+: 수정중
+4. 사용자 권한 (그룹) 상세에서 - 버튼 동작 안함
+: 수정완료
 
+----------------------------------------------------------------
+6/11 문의 사항 
+1. 아래의 api 에서  groupUserId는 권한 리스트 호출시(샘풀:  http://dabin02272.cafe24.com:8090/api/user-permission/user-permissions/16), users 에 포함되어 나오는 정보인데, 
+수정해서 + 버튼으로 추가했을 때, 상단의 users 가 여러 명이어도 항상 같은 값을 가지고 있나요? 
+만약에 그렇다면 해당 값을 users배열에 넣지 말고, "userPrmssnName": "업데이트_0610", "userPrmssnComment": "업데이트_0610"처럼
+최상위 배열에 위치시키도록 수정 가능한지 문의 드립니다. 
+[문의한 api]
+사용자그룹 권한(그룹) 추가하기   (User그룹 권한 상세에서 + 버튼으로 추가한 항목 저장하기)
+URL: /api/user-permission/user-group-permissions/put-add 
+METHOD: POST
+REQUESTBODY: [
+	{
+        "groupId": 11,
+		"groupUserId" : 24,
+		"prmssnGroupIds" : [{"prmssnGroupId": 3 },{"prmssnGroupId": 4 }]
+	}
+]
+SUCCESS RESPONSE:  {
+  	"status":"ok",
+	"code":200,
+	"message":"good"
+}
+--> 상단으로 뺐습니다.
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":null,
+	"result":{
+		"groupId":14,
+		"groupUserId":24,
+		"userPrmssnName":"업무현황 리포트 권한 222 ",
+		"userPrmssnComment":"업무현황 리포트 권한 222",
+		"users":[
+			"userGroupId":0,"groupUserId":24,"userId":null,"groupId":14,"orders":1,"userGroupName":"IT제품기획팀","userGroupComment":"IT제품기획팀","orgId":null,"orgNm":null,"deptId":null,"userEmpId":null,"membPostion":null,"membPostionCd":0,"membRank":null,"membRankCd":0,"jobYn":null,"useYn":null,"userNm":null,"deptNm":null}
+		],
+		"prmssns":[
+			{"userPrmssnId":21,"isUserGroup":1,"groupUserId":24,"userId":null,"isRoleGroup":0,"rolePrmssnGroupId":0,"isPrmssnGroup":1,"prmssnGroupId":52,"groupId":14,"orders":1,"legacyId":42,"userPrmssnName":"업무현황 리포트 권한 222 ","userPrmssnComment":"업무현황 리포트 권한 222","userNm":"IT제품기획팀","prmssnName":"업무현황 리포트 읽기 권한","prmssnComment":"업무현황 리포트 읽기 권한","roleName":null,"roleComment":null,"legacyName":"업무현황시스템"}
+		]
+	},
+	"error":null}
+}
+----------------------------------------------------------------
+6/11 화면 검토 사항
+1. 사용자 권한 (그룹) 추가에서, 권한 그룹이름 선택했을 떄, 권한의 비고 내용 미노출
+
+--------------------------------------------------------------------------------------------------------------------------------
+6/13 api 문의사항
+1. 상세 화면에서 권한(그룹)이름 나타나지 않는 문제
+권한(그룹) 이름을 표시할 떄, 화면에서 객체는 미리 http://dabin02272.cafe24.com:8090/api/permission/list 를 호출하여 전체 권한 이름과 아이디를 가지고 있는데,
+이 리스트에서 api/user-permission/user-permissions/31 데이터와 연결되는 다르거나 없어서 이름이 나오지 않고 있습니다. 
+현재는 groupId로 연결되어 있는데 이 키가 맞지 않고 있는 것 같습니다. 확인 부탁 드립니다.
+
+http://dabin02272.cafe24.com:8090/api/permission/list groupId 의 의미가 api/user-permission/user-permissions/31 의 "prmssns": [] 안의 groupId와 같은 
+데이터가 아니라면 안내 부탁 드립니다. 
+
+--> http://dabin02272.cafe24.com:8090/api/permission/list groupId는 /api/user-permission/user-permissions/{group-id} 결과중 "prmssns":["prmssnGroupId"] 와 같습니다.
+
+2. I. 사용자, 권한(그룹) 에서 put 이나 post시 order 가 제대로 들어가고 있지 않습니다. 모두 0으로 입력되고 있습니다. 화면에서는 수정하거나 추가시, 숫자를 세팅해서 넘겨주고 있습니다. 
+이 부분 확인 부탁 드립니다. 
+--> api에서는 orders 필드를 확인하지 않고 있는데, 화면에서 계산해서 넣어 주는 거라면 서버 소스를 수정하겠습니다.
+
+3. update 이상작동 확인
+http://dabin02272.cafe24.com:8090/api/user-permission/user-permissions/put-add 에 아래와 같은 요청을 보냈는데, 처음에 아래 권한이 2개 였고,
+제가 추가로 1개의 prmssnGroupId를 추가해서 업데이트 했는데 
+
+[
+	{
+	groupId: 6
+	, userIds: [{userId: "OSSTEM:8102505"}, {userId: "OSSTEM:X1234567”}]
+	, prmssnGroupIds: [{prmssnGroupId: 9}]
+	}
+]
+
+결과 리스트에서는 
+http://dabin02272.cafe24.com:8090/api/user-permission/user-permissions/6
+
+총 6개로 권한이 늘어나 있습니다. 어떤 파라메터 때문에 그런건지 확인 부탁 드립니다. 
+--> 권한을 추가할떄, 객체가 원천시스템 여러개를 걸쳐서 있어서, 중복처럼 보이게 나왔습니다. 향후에 권한에서 객체를 추가할 때 CRM, OW 등 시스템을 여러개 포함 하는 경우는 제외를 시켜야 겠네요.
+==> 아래 API 에 legacyId 추가
+++++
+권한 생성하기 (권한 추가 메뉴)
+URL: /api/permission
+METHOD: POST
+REQUESTBODY: REQUESTBODY: [
+	{"prmssnName": "test 1","objectId": 3,"legacyId" : 40, oprtnId": 1 , "orders" : 1, "prmssntComment": "test 1"},
+	{"prmssnName": "test 2","objectId": 3,"legacyId" : 40, oprtnId": 2 ,"orders" : 2,"prmssntComment": "test 2"}
+]
+++++
+권한 생성하기 (권한 상세 리스트에서 + 버튼으로 추가한 항목)
+URL: /api/permission/put-add
+METHOD: POST
+-- 참고: REQUESTBODY에서 [ {},{} ] 와 같이 [{}] 순서 주의
+REQUESTBODY: [
+	{"prmssnName": "test 1","objectId": 3,"legacyId" : 40,"oprtnId": 1 , "orders" : 1, "groupId": 11,"prmssntComment": "test 1"},
+	{"prmssnName": "test 2","objectId": 3,"legacyId" : 40,"oprtnId": 1 , "orders" : 2,"groupId": 11,"prmssntComment": "test 2"}
+]
+----------------------------------------------------------------
+6/14  검토 사항
+1. I. 사용자, 권한(그룹) 에서 put 이나 post시 order 가 제대로 들어가고 있지 않습니다. 모두 0으로 입력되고 있습니다. 화면에서는 수정하거나 추가시, 숫자를 세팅해서 넘겨주고 있습니다. 
+이 부분 확인 부탁 드립니다. 
+--> api에서는 orders 필드를 확인하지 않고 있는데, 화면에서 계산해서 넣어 주는 거라면 서버 소스를 수정하겠습니다.
+==> 검토를 해보니, 아래 api orders는 화면에서 줄수가 없네요, 아래와 같이 userId와 prmssnGroupId를 조합해서 orders를 생성하고 있습니다.
+    일부는 수정을 했는데, 어떤 api를 호출할때 orders가 0으로 나오는지 재확인 바랍니다.
+	
+{"userId":"OSSTEM:8102505"}{"prmssnGroupId": 1 } : orders 1
+ {"userId":"OSSTEM:8102505"}{"prmssnGroupId": 2 } : orders 2
+ {"userId":"OSSTEM:8102506"}{"prmssnGroupId": 1 } : orders 3
+ {"userId":"OSSTEM:8102506"}{"prmssnGroupId": 2 } : orders 4
+사용자 권한(그룹) 생성하기 (사용자 권한관리 추가 메뉴)
+URL: /api/user-permission/user-permissions
+METHOD: POST
+REQUESTBODY: [
+	{
+        "userPrmssnName": "user permission 1",
+        "userPrmssnComment": "user permission 1",
+		"userIds": [{"userId":"OSSTEM:8102505"},{"userId":"OSSTEM:8102506"}] , 
+		"prmssnGroupIds" : [{"prmssnGroupId": 1 },{"prmssnGroupId": 2 }]
+	}
+]
+2. 사용자 권한(그룹) 현황에서 상세로 갔다가 나오면 빈 화면 노출(사용자 권한(그룹) 현황이 노출 되어야 할듯)
+3. 사용자 권한(그룹) 추가에서 사용자개별 검색화면에 조직도를 통해서 사용자를 찾는 화면 누락
+
+----------------------------------------------------------------
+6/15 api 확인요청
+
+호출시 에러가 나고 있어서 데이터 확인이 어렵습니다. 확인 부탁 드립니다.
+/api/role-permission/all/legacy/list
+/api/role-permission/all/legacy/{legacyId}
+--> 오류 수정
+
+----------------------------------------------------------------
+
+6/14  검토 사항
+4. 사용자그룹 추가에서 조직도에서 선택한 사용자와 개별검색에서 찾은 사용자를 하나의 그룹으로 묶는어서 사용자 그룹을 추가하는 기능 안보임
+5. 사용자그룹 추가에서 조직도에 오스템카디오텍,뷰센,오스템파마가 중복되어 나오는데, 어떤 형태의 데이터를 주어야 중복이 안나오는지, 해당 조직도에 맞는 데이터를 전달해 주세요.
+
+----------------------------------------------------------------
+
+6/16  검토 사항
+1. Role 권한추가(스토리보드 22페이지)에서 선택한 권한그룹이 서버에 0으로 넘어옴(prmssnGroupId : 0)
+역할 권한 생성하기 (Role 권한관리 추가 메뉴)
+-- 참고
+	URL: /api/role-permission
+	METHOD: POST
+	1) Role 그룹이 아닌 경우
+		- "isRoleGroup": 0으로 그룹이 아님을 표현, "roleId": 5 해당 Role ID, "orders": 1 디폴트
+	REQUESTBODY: [
+		{"isRoleGroup": 0 , "groupRoleId" : 0,"roleId": 5 ,"orders": 1,"prmssnGroupId": 1,"rolePrmssnName": "test 111","rolePrmssnComment":"test 111"}
+		{"isRoleGroup": 0 , "groupRoleId" : 0,"roleId": 5 ,"orders": 1,"prmssnGroupId": 3,"rolePrmssnName": "test 111","rolePrmssnComment":"test 111"}
+	]
+==> 이 화면에서 앞에서 legacyId 를 받아서 http://dabin02272.cafe24.com:8090/api/permission/legacy/40 를 호출하여 뒤에 셀렉트 박스 데이터를 생성하고 
+여기에서 나온 prmssnId를 prmssnGroupId로 세팅하여 보내주고 있습니다. 0 값이 오는 것은 위의 api에서 prmssnId값이 모두 0으로 되어 있기 때문입니다. 
+++>  http://dabin02272.cafe24.com:8090/api/permission/legacy/40 응답값 중에서 groupId를 prmssnGroupId로 세팅해서 넘겨 주면 됩니다.
+2. Role 그룹 권한 추가에서 권한추가 + 버튼 누르면 화면 멈춤현상
+==> 수정완료
+
+3. Role 권한추가에서 원천시스템등의 중복 셀랙트를 제거 하기 위하여 api 일부 변경
+   - 스토리보드 16페이지 Role 현황의 api 변경(22 페이지 api는 그대로 사용)
+	/api/role/all/list
+	/api/role-group/all/list
+==> 수정완료
+
+----------------------------------------------------------------
+6/17 api 확인 요청
+1. http://dabin02272.cafe24.com:8090/api/user-permission/user-group-role/39 api 에서 본래 입력 페이지에서 rolePrmssnId 를 키값으로 쓰고 있었는데(롤권한)
+위 api의 roles 부분에 rolePrmssnId 에 값에 해당하는 키가 없습니다. (혹인 이름이 다른 것 같습니다.) 확인 부탁 드립니다. 
+--> userPrmssnId이 키값입니다.
+
+2. 그리고 위와 같은 api 에서 "users":null 이 null로 나오고 있습니다. 그러면 상단 그리드 [사용자(그룸)이름], [비고]의 맵핑이 귾기는데 이 부분 확인 부탁 드립니다.
+--> 사용자 그룹은 하나만 할당이 가능하고 그값은 응답 값중에 다음 값으로 연결이 됩니다.
+	"groupId":14,"groupUserId":24,
+3. http://dabin02272.cafe24.com:8090/api/user-permission/user-role/40 api의 경우 [사용자 권한 (그룹) 상세] 의 상세 api 와 마찬가지로 users 와 role 권한에 대한 상세 데이터가 
+필요합니다. users 와 prmssn 으로 나눠서 던져주실 수 있는지 검토 부탁 드립니다. 
+--> 수정완료.
+----------------------------------------------------------------
+6/17 화면 검토 사항
+1. 사용자 Role 상세/권한 상세에서 소속사 필드 추가
+2. 사번은 userEmpId로 매핑. OSSTEM:X1234567 형태는 내부 처리용
+
+----------------------------------------------------------------
+6/18 화면 검토 사항
+1. Role 권한추가(스토리보드 22페이지)에 서브타이틀인 Role, 권한(그룹) 누락
+2. 권한현황(페이지 13)의 api 변경 /api/permission/all/list 
+3. 중복 오류처리 필요
+	SUCCESS RESPONSE: {
+		"status":"ok",
+		"code":200,
+		"message":"good",
+		"result":null,
+		"error":null}
+	}
+	--> 항목 추가 하는 기능에서 응답 코드가 200이 아니면 오류. 오류 메시지 노출 필요.(오류코드는 ErrorCode.txt 참고)
+	
+----------------------------------------------------------------
+6/19 화면 검토 사항
+1. 사용자그룹 추가 안됨
+사용자 그룹 추가 api인 http://dabin02272.cafe24.com:8090/api/user-group 에 
+[
+	{"userId": "OC:1010801", "userGroupName": "test_0622", "orders": 0, "userGroupComment": "test_0622"},
+{"userId": "OC:11111901", "userGroupName": "test_0622", "orders": 1, "userGroupComment": "test_0622"},
+{"userId": "OSSTEM:X1234567", "userGroupName": "test_0622", "orders": 2, "userGroupComment": "test_0622"}
+]
+이렇게 요청을 보내면 (최초요청입니다.)
+{
+    "status": null,
+    "code": 9013,
+    "message": "이미 해당 사용자 그룹이 등록 되어있습니다.",
+    "results": null,
+    "result": null,
+    "error": null
+}
+이렇게 응답이 오고 있습니다. 하지만 실제로 사용자그룹 조회시에는 (http://dabin02272.cafe24.com:8090/api/user-group/group-id-list) 해당 데이터가 안나오고 있습니다. 
+원래 이미 그룹이 있으면 리스트에 나오는게 정상일거 같은데 그렇지도 않고 계속 중복으로 처리되고 있는 것 같습니다. 
+해당 로직 확인 부탁 드립니다. 
+--> 소스 오류 수정완료
+
+2. Role 권한 추가 안됨
+: 해당 부분은 제가 테스트하느라고 주석으로 막아 놓은 것 때문에 추가가 되지 않았던 부분입니다. 하지만 현재 테스트 결과 리스트에 반환이 안 되고 있어서
+이 부분도 검토 부탁 드립니다. 아래 내용 있습니다. 
+
+Role 권한 추가 api 인 http://dabin02272.cafe24.com:8090/api/role-permission 에 다음과 같이 호출했는데,
+[{
+	"groupRoleId": 0,
+"isRoleGroup": 0,
+"orders": 1,
+"prmssnGroupId": 0,
+"roleId": 12,
+"rolePrmssnComment": "190622",
+"rolePrmssnName": "190622"
+}
+]
+이 경우 응답값 200을 받았으나, 리스트 호출(http://dabin02272.cafe24.com:8090/api/role-permission/item-list )시 입력됬던 값이 반환되지 않고 있습니다.
+확인 부탁 드립니다. 
+--> 요청한 prmssnGroupId : 0으로 매핑되는 권한이 없어서 응답이 나가지 않았고, 수동으로 DB에 42,43,54로 세팅했더니, 잘 보입니다.
+권한이 실제로 있는 값을 보내기 바랍니다.
+
+----------------------------------------------------------------
+6/24일 api 추가 확인 요청
+
+1. 사용자그룹 Role (그룹)권한추가
+http://dabin02272.cafe24.com:8090/api/user-permission/user-group-role 으로 다음과 같이 요청 시 아래와 같은 에러가 나옵니다. 확인 부탁 드립니다.
+
+[
+"groupUserId": 24
+,"roleGroupIds": [{"rolePrmssnId": 80, "isRoleItemGroup": 0, "rolePrmssnGroupId": 30}]
+,"userRolesComment": "탭02_0624"
+,"userRolesName": "탭02_0624"
+]
+
+{
+    "timestamp": 1561340690681,
+    "status": 400,
+    "error": "Bad Request",
+    "exception": "org.springframework.http.converter.HttpMessageNotReadableException",
+    "message": "JSON parse error: Can not construct instance of com.osstem.role.vo.UserRolesVO: no String-argument constructor/factory method to deserialize 
+	from String value ('groupUserId'); nested exception is com.fasterxml.jackson.databind.JsonMappingException: Can not construct instance of 
+	com.osstem.role.vo.UserRolesVO: no String-argument constructor/factory method to deserialize from String value ('groupUserId')\n at 
+	[Source: java.io.PushbackInputStream@2da26154; line: 2, column: 1] (through reference chain: java.util.ArrayList[0])",
+    "path": "/api/user-permission/user-group-role"
+}
+
+2. 사용자 Role (그룹)추가
+http://dabin02272.cafe24.com:8090/api/user-permission/user-role 으로 다음과 같이 요청 시 아래와 같은 에러가 나옵니다. 확인 부탁 드립니다.
+[
+"roleGroupIds": [{"rolePrmssnId": 90, "isRoleItemGroup": 0, "rolePrmssnGroupId": 40}]
+,"userIds": [{"userId": "TP:22102512"}]
+,"userRolesComment": "tab04_0624_02"
+,"userRolesName": "tab04_0624_02"
+]
+
+{
+    "timestamp": 1561341585345,
+    "status": 400,
+    "error": "Bad Request",
+    "exception": "org.springframework.http.converter.HttpMessageNotReadableException",
+    "message": "JSON parse error: Can not construct instance of com.osstem.role.vo.UserRolesVO: no String-argument constructor/factory method to deserialize 
+	from String value ('roleGroupIds'); nested exception is com.fasterxml.jackson.databind.JsonMappingException: Can not construct instance of 
+	com.osstem.role.vo.UserRolesVO: no String-argument constructor/factory method to deserialize from String value ('roleGroupIds')\n at 
+	[Source: java.io.PushbackInputStream@66801814; line: 2, column: 1] (through reference chain: java.util.ArrayList[0])",
+    "path": "/api/user-permission/user-role"
+}

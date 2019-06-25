@@ -29,7 +29,12 @@ import Frame from "../views/Frame.vue";
 import UserPerStatus from "../views/UserPerStatus.vue";
 import UserPerTab01 from "../views/UserPerTab01.vue";
 import UserPerTab05Detail from "../views/UserPerTab05Detail.vue";
+import UserPerTab03Detail from "../views/UserPerTab03Detail.vue";
+import UserPerTab02Detail from "../views/UserPerTab02Detail.vue";
+import UserPerTab04Detail from "../views/UserPerTab04Detail.vue";
 
+import AdminStatus from "../views/AdminStatus.vue";
+import AdminAdd from "../views/AdminAdd.vue";
 
 const routes = [
   {
@@ -256,6 +261,46 @@ const routes = [
         path: '/userPerTab05Detail',
         name: 'userPerTab05Detail',
         component: UserPerTab05Detail,
+        meta: {
+          requiresAuth: false 
+        }
+      },
+      {
+        path: '/userPerTab03Detail',
+        name: 'userPerTab03Detail',
+        component: UserPerTab03Detail,
+        meta: {
+          requiresAuth: false 
+        }
+      },
+      {
+        path: '/userPerTab02Detail',
+        name: 'userPerTab02Detail',
+        component: UserPerTab02Detail,
+        meta: {
+          requiresAuth: false 
+        }
+      },
+      {
+        path: '/userPerTab04Detail',
+        name: 'userPerTab04Detail',
+        component: UserPerTab04Detail,
+        meta: {
+          requiresAuth: false 
+        }
+      },
+      {
+        path: '/adminStatus',
+        name: 'adminStatus',
+        component: AdminStatus,
+        meta: {
+          requiresAuth: false 
+        }
+      },
+      {
+        path: '/adminAdd',
+        name: 'adminAdd',
+        component: AdminAdd,
         meta: {
           requiresAuth: false 
         }

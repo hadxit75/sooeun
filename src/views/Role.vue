@@ -131,7 +131,7 @@ export default {
 
   created() {
     this.$http
-      .get("http://dabin02272.cafe24.com:8090/api/role/list", {
+      .get("http://dabin02272.cafe24.com:8090/api/role/all/list", {
         headers: { "Content-Type": "application/json" }
       })
       .then(response => {
@@ -141,7 +141,7 @@ export default {
 
         var _self = this;
         _self.$http
-          .get("http://dabin02272.cafe24.com:8090/api/role-group/list", {
+          .get("http://dabin02272.cafe24.com:8090/api/role-group/all/list", {
             headers: { "Content-Type": "application/json" }
           })
           .then(response => {

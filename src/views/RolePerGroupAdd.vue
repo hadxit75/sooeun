@@ -122,7 +122,9 @@ export default {
       sorders: null,
       roleComment: null,
       roleGroupComment: null,
-      sroleGroupId: null
+      sroleGroupId: null,
+      roleGroupId: null
+      
     }
   },
   created() {
@@ -166,8 +168,8 @@ export default {
   
       },
        setComment: function(index,selected){
-           console.log("index",index)
-           console.log("selected",selected)
+        //    console.log("index",index)
+        //    console.log("selected",selected)
         this.sroleGroupId = selected
         var _self = this
 
