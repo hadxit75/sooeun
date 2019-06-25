@@ -51,7 +51,7 @@
                               label="원천시스템"
                               width="150">
          <template slot-scope="scope">
-                                <el-select v-model="legacyId"  @change="legacyChange(scope.$index, $event)" placeholder="Select">
+                                <el-select v-model="scope.row.legacyId"  @change="legacyChange(scope.$index, $event)" placeholder="Select">
                                   <el-option
                                     v-for="item in legacySelect"
                                     :key="item.legacyId"
@@ -121,13 +121,17 @@ export default {
   created() {
     APIService.getOrgList().then(data => {
       var _parent = [];
-      
+
       data.forEach(item => {
         if (item.deptDepth == 1) {
-          var _child = this.recursiveDepth(data, 2, (item.orgId + ":" + item.deptId));
-          
+          var _child = this.recursiveDepth(
+            data,
+            2,
+            item.orgId + ":" + item.deptId
+          );
+
           _parent.push({
-            id:  item.orgId + ":" + item.deptId + ":" + item.deptSeq,
+            id: item.orgId + ":" + item.deptId + ":" + item.deptSeq,
             label: item.deptNm,
             children: _child,
             obj: item
@@ -136,10 +140,10 @@ export default {
       });
       this.data = _parent;
 
-      var _self = this
-      APIService.getLegacyList().then((response) => {
+      var _self = this;
+      APIService.getLegacyList().then(response => {
         _self.legacySelect = response;
-      }); 
+      });
     });
   },
   mounted() {},
@@ -229,26 +233,32 @@ export default {
           }
         });
       }
-      console.log("tableData",this.tableData)
+      console.log("tableData", this.tableData);
     },
     recursiveDepth(sdata, i, parentId) {
       var _parent = [];
       var self = this;
-      
+
       sdata.forEach(item => {
-      
-        if (item.deptDepth == i && (item.orgId + ":" + item.deptParent) == parentId) {
-          var _child = self.recursiveDepth(sdata, i + 1, (item.orgId + ":" + item.deptId));
-          
+        if (
+          item.deptDepth == i &&
+          item.orgId + ":" + item.deptParent == parentId
+        ) {
+          var _child = self.recursiveDepth(
+            sdata,
+            i + 1,
+            item.orgId + ":" + item.deptId
+          );
+
           _parent.push({
-            id: item.orgId + ":" + item.deptId  + ":" + item.deptSeq,
+            id: item.orgId + ":" + item.deptId + ":" + item.deptSeq,
             label: item.deptNm,
             children: _child,
             obj: item
           });
         }
       });
-      
+
       return _parent;
     },
     validateStatus() {
@@ -269,20 +279,19 @@ export default {
     cancle: function() {
       this.$router.go(-1);
     },
-    legacyChange: function(index, legacyId){
+    legacyChange: function(index, legacyId) {
       // console.log("index",index)
-      // console.log("legacyId",legacyId)      
-      var _self = this
+      // console.log("legacyId",legacyId)
+      var _self = this;
       var rowCnt = this.tableData.length;
 
       for (var i = 0; i < rowCnt; i++) {
-        if(i == index){
+        if (i == index) {
           _self.tableData[i].legacyId = legacyId;
         }
       }
 
-      console.log("tableData", this.tableData)
-
+      console.log("tableData", this.tableData);
     }
   }
 };
