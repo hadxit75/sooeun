@@ -35,6 +35,9 @@ import UserPerTab04Detail from "../views/UserPerTab04Detail.vue";
 
 import AdminStatus from "../views/AdminStatus.vue";
 import AdminAdd from "../views/AdminAdd.vue";
+import AdminTab01Detail from "../views/AdminTab01Detail.vue";
+import AdminLegacyAdd from "../views/AdminLegacyAdd.vue"
+import AdminTab02Detail from "../views/AdminTab02Detail.vue";
 
 const routes = [
   {
@@ -301,6 +304,30 @@ const routes = [
         path: '/adminAdd',
         name: 'adminAdd',
         component: AdminAdd,
+        meta: {
+          requiresAuth: false 
+        }
+      },
+      {
+        path: '/adminTab01Detail',
+        name: 'adminTab01Detail',
+        component: AdminTab01Detail,
+        meta: {
+          requiresAuth: false 
+        }
+      },
+      {
+        path: '/adminLegacyAdd',
+        name: 'adminLegacyAdd',
+        component: AdminLegacyAdd,
+        meta: {
+          requiresAuth: false 
+        }
+      },
+      {
+        path: '/adminTab02Detail',
+        name: 'adminTab02Detail',
+        component: AdminTab02Detail,
         meta: {
           requiresAuth: false 
         }

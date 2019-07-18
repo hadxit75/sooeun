@@ -263,12 +263,18 @@ export default {
       //console.log(sendItem)
 
       if (sendItem.length > 0) {
-        APIService.postUserPermission(sendItem)
-          .then(result => {
-            this.$message({
-              type: "success",
-              message: "추가가 완료되었습니다."
-            });
+        APIService.postUserPermission(sendItem).then(response => {
+           if(response.code == "200"){
+              this.$message({
+                type: "success",
+                message: "추가가 완료되었습니다."
+              });
+
+              this.$router.go();
+
+           }else if(response.code != "200"){
+              alert(response.message)
+           }
 
             //this.$router.go();
           })

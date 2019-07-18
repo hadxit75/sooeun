@@ -24,7 +24,7 @@
                                 :value="item.legacyId">
                                 </el-option>
                             </el-select></td>
-                            <td><el-select v-model="roleGroupId" @change="setComment(index, $event)" placeholder="Select" clearable>
+                            <td><el-select v-model="roleGroupId" placeholder="Select" @change="setComment(index,$event)" clearable>
                                 <el-option
                                 v-for="item in roleTypeSelect"
                                 :key="item.roleGroupId"
@@ -51,7 +51,7 @@
                         </thead>
                         <tbody>
                             <tr v-for="(sitem,index) in tasks " :index=index>
-                            <td>{{sitem.idx}}</td>
+                            <td>{{sitem.orders}}</td>
                             <td><el-select v-model="sitem.legacyId" placeholder="Select" @change="legacyChange2"  clearable>
                                 <el-option
                                 v-for="item in legacySelect2"
@@ -60,12 +60,12 @@
                                 :value="item.legacyId">
                                 </el-option>
                             </el-select></td>
-                            <td><el-select v-model="sitem.prmssnId" placeholder="Select" clearable>
+                            <td><el-select v-model="sitem.prmssnId" placeholder="Select" @change="setComment2(sitem.orders, sitem.prmssnId)" clearable>
                                 <el-option 
                                 v-for="item in objTypeSelect2"
-                                :key="item.prmssnId"
+                                :key="item.groupId"
                                 :label="item.prmssnName"
-                                :value="item.prmssnId">
+                                :value="item.groupId">
                                 </el-option>
                             </el-select></td>
                             <td><el-input placeholder="" v-model="sitem.prmssnComment"></el-input></td>
@@ -96,6 +96,7 @@
 </template>
 
 <script>
+import APIService from '../util/APIService';
 export default {
   components: {
       name: 'AddItem'
@@ -114,6 +115,7 @@ export default {
       roleTypeSelect: [],
       roleTypeSelectClone: [],
       objTypeSelect2: [],
+      objTypeSelect2Clone: [],
       roleTypeId: null,
       roleId: null,
       sroleId: null,
@@ -128,84 +130,110 @@ export default {
     }
   },
   created() {
-    this.$http.get('http://dabin02272.cafe24.com:8090/api/role-group/list', { headers: { 'Content-Type': 'application/json' } })
-    .then((response) => {
-      this.legacySelect = response.data.results;
+    APIService.getRoleGroupList().then((response) => {
+      this.legacySelect = response;
 
         var _self = this
-        this.$http.get('http://dabin02272.cafe24.com:8090/api/permission/list', { headers: { 'Content-Type': 'application/json' } })
-            .then((response) => {
-            _self.legacySelect2 = response.data.results;
-
+        APIService.getPermissionList().then((response) => {
+            _self.legacySelect2 = response;
         })
-
     });   
   },
    methods: {
     legacyChange: function(selected){
-        this.slegacyId = selected
+        this.slegacyId = selected;
 
         var _self = this;
         _self.roleTypeSelect = [];
 
-        _self.$http.get('http://dabin02272.cafe24.com:8090/api/role-group/legacy/' + selected ,{ headers: { 'Content-Type': 'application/json' } })
-            .then((response) => {
-                _self.roleTypeSelect = response.data.results;
-                _self.roleTypeSelectClone = response.data.results;
+        APIService.getRoleGroupLegacyByLegacyId(this.slegacyId).then((response) => {
+            _self.roleTypeSelect = response;
+            _self.roleTypeSelectClone = response;
         })
-  
-      },
-       legacyChange2: function(selected){
-        //this.slegacyId2 = selected
-
+    },
+    legacyChange2: function(selected){
         var _self = this;
         _self.objTypeSelect2 = [];
 
-        _self.$http.get('http://dabin02272.cafe24.com:8090/api/permission/legacy/' + selected ,{ headers: { 'Content-Type': 'application/json' } })
-            .then((response) => {
-                _self.objTypeSelect2 = response.data.results;
+        APIService.getPermissionLegacyList(selected).then((response) => {
+                _self.objTypeSelect2 = response;
+                _self.objTypeSelect2Clone = response;
         })
   
+    },
+    setComment: function(index,selected){
+
+      this.sroleGroupId = selected;
+      var _self = this
+      var _idx = 0;
+
+      var _a ;
+      this.roleTypeSelect.forEach(item=>{
+          if(_idx == index)
+          {
+              _a = item.roleGroupId
+              _self.sroleId = item.roleId
+          }
+          _idx++;
+      })
+
+      _idx = 0;
+      this.roleTypeSelect = this.roleTypeSelect.filter(item =>{
+  
+         if(item.roleGroupId == _self.sroleGroupId){
+
+          this.roleTypeSelectClone.forEach(sitem=>{
+                if(sitem.roleGroupId == _self.sroleGroupId){	
+                  _self.roleGroupComment = sitem.roleGroupComment;
+                }
+            })
+          }
+          return item
+        })  
       },
-       setComment: function(index,selected){
-        //    console.log("index",index)
-        //    console.log("selected",selected)
-        this.sroleGroupId = selected
+      setComment2: function(index, groupId){
+
+        this.sroleId = groupId;
+        var _a ;
+        var _idx = 1;
+        this.tasks.forEach(item=>{
+            if(_idx == index)
+            {
+                _a = item.groupId
+            }
+            _idx++;
+        })
+
+        _idx = 1;
         var _self = this
 
-        this.roleTypeSelectClone.forEach(sitem=>{
-            if(sitem.roleGroupId = selected){
-                _self.roleGroupComment = sitem.roleGroupComment
-                _self.sroleId = sitem.roleId
-                _self.sorders = sitem.orders
-            }
-         })
-   
-        // this.roleTypeSelect = this.roleTypeSelect.filter(item =>{
-        //     if(item.index == index)
-        //     {
-        //         item.roleGroupId = _self.sroleGroupId;
+        this.tasks = this.tasks.filter(item =>{
+            if(_idx == index)
+            {
+                item.groupId = _a;
 
-        //          this.roleTypeSelectClone.forEach(sitem=>{
-        //                 if(sitem.roleGroupId = _self.sroleGroupId){	
-        //                     console.log("sitem.roleGroupId",sitem.roleGroupId)
-        //                 }
-        //             })
-        //     }
-        //     //console.log(item)
-        //     //onsole.log("this.roleComment",this.roleComment)
-        //     return item
-        // })
+                _self.objTypeSelect2Clone.forEach(sitem=>{
+                    if(sitem.groupId == item.prmssnId){
+                        item.prmssnComment = sitem.prmssnComment
+                    }
+                })
+            }
+            _idx++;
+            // console.log("item", item)
+            return item
+        })
+      // console.log("tasks", this.tasks)
+       
       },
       rowPlus: function () {
           var _index = this.tasks.length+1;
-          this.tasks.push({idx:_index++, legacyId:"", prmssnId:"", prmssnComment:""})
+          this.tasks.push({orders:_index++, legacyId:"", prmssnId:"", prmssnComment:""})
       },
       rowMinus: function (sidx) {
           var _lidx = 1;
           this.tasks = this.tasks.filter(item=>{
             //   console.log(item);
-              if(item.idx != sidx)
+              if(item.orders != sidx)
               {
                   item['idx'] = _lidx;
                   _lidx++;
@@ -217,10 +245,10 @@ export default {
         var self = this
         var _msg = [];
         var sOrders = 2;
-        this.tasks.forEach(sitem=>{
 
-             var _item = {"isRoleGroup": 1 
-                          , "groupRoleId" : 3
+        this.tasks.forEach(sitem=>{
+             var _item = { "isRoleGroup": 1 
+                          , "groupRoleId" : self.sroleGroupId
                           , "roleId": self.sroleId
                           , "orders": sOrders
                           , "prmssnGroupId": sitem.prmssnId 
@@ -230,13 +258,17 @@ export default {
             _msg.push(_item);
             sOrders++;
         })
-        console.log(_msg)
+ 
+        // console.log(_msg)
 
-         this.$http.post('http://dabin02272.cafe24.com:8090/api/role-permission', _msg)
-        .then((response) => {
-            alert('추가가 완료되었습니다.');
-            this.$router.push({name:'rolePer'})  
-                         
+        APIService.postRolePermission(_msg).then((response) => {
+           if(response.code == "200"){
+               alert('추가가 완료되었습니다.');
+               this.$router.push({name:'rolePer'})   
+               
+           }else if(response.code != "200"){
+              alert(response.message)
+           }           
         })
         .catch((error) => {
             alert('에러가 발생하였습니다.');

@@ -69,7 +69,7 @@
                                 :value="item.legacyId">
                                 </el-option>
                             </el-select></td>
-                            <td><el-select v-model="sitem.groupId" placeholder="Select" @change="setComment2(sitem.idx, sitem.groupId)" clearable>
+                            <td><el-select v-model="sitem.groupId" placeholder="Select" @change="setComment2(sitem.orders, sitem.groupId)" clearable>
                                 <el-option 
                                 v-for="item in objTypeSelect2"
                                 :key="item.groupId"
@@ -105,6 +105,7 @@
 </template>
 
 <script>
+import APIService from '../util/APIService';
 export default {
   components: {
       name: 'AddItem'
@@ -134,16 +135,13 @@ export default {
     }
   },
   created() {
-    this.$http.get('http://dabin02272.cafe24.com:8090/api/role/list', { headers: { 'Content-Type': 'application/json' } })
-    .then((response) => {
-      this.legacySelect = response.data.results;
+    APIService.getRoleList().then((response) => {
+        this.legacySelect = response;
 
-      var _self = this
-      this.$http.get('http://dabin02272.cafe24.com:8090/api/permission/list', { headers: { 'Content-Type': 'application/json' } })
-        .then((response) => {
-        _self.legacySelect2 = response.data.results;
-    })
-
+        var _self = this
+        APIService.getPermissionList().then((response) => {
+            _self.legacySelect2 = response;
+        })
     });   
   },
    methods: {
@@ -153,41 +151,31 @@ export default {
         var _self = this;
         _self.objTypeSelect = [];
 
-        _self.$http.get('http://dabin02272.cafe24.com:8090/api/role/legacy/' + selected ,{ headers: { 'Content-Type': 'application/json' } })
-            .then((response) => {
-                _self.roleTypeSelect = response.data.results;
+        APIService.getRoleLegacyByLegacyId(this.slegacyId).then((response) => {
+            _self.roleTypeSelect = response;
         })
-  
-      },
-       legacyChange2: function(selected){
-        //this.slegacyId2 = selected
-
+    },
+    legacyChange2: function(selected){
         var _self = this;
         _self.objTypeSelect2 = [];
 
-        _self.$http.get('http://dabin02272.cafe24.com:8090/api/permission/legacy/' + selected ,{ headers: { 'Content-Type': 'application/json' } })
-            .then((response) => {
-                _self.objTypeSelect2 = response.data.results;
-                _self.objTypeSelect2Clone = response.data.results;
+        APIService.getPermissionLegacyList(selected).then((response) => {
+            _self.objTypeSelect2 = response;
+            _self.objTypeSelect2Clone = response;
         })
   
-      },
-      roletypeChange: function(selected){
-    
+    },
+    roletypeChange: function(selected){
         var _self = this;
         _self.roleSelect = [];
 
-        _self.$http.get('http://dabin02272.cafe24.com:8090/api/role/role-type/legacy/' + this.slegacyId 
-        + '/' + selected ,{ headers: { 'Content-Type': 'application/json' } })
-            .then((response) => {
-                _self.roleSelect = response.data.results;
-                _self.roleSelectClone = response.data.results;
+        APIService.getRoleLegacyByLegacyIdroleTypeId(this.slegacyId, selected).then((response) => {
+            _self.roleSelect = response;
+            _self.roleSelectClone = response;
         })
-  
-      },
-      setComment: function(index,roleId){
-    //   console.log("index",index)
-    //   console.log("roleId",roleId)
+
+    },
+    setComment: function(index,roleId){
 
       this.sroleId = roleId;
       var _self = this
@@ -209,7 +197,7 @@ export default {
             {
                 item.roleId = roleId;
 
-                this.roleSelectClone.forEach(sitem=>{
+                _self.roleSelectClone.forEach(sitem=>{
                       if(sitem.roleId == _self.sroleId){	
                         _self.roleComment = sitem.roleComment;
                         // console.log("_self.userGroupComment",_self.userGroupComment)
@@ -219,10 +207,9 @@ export default {
              _idx++;
             // console.log("item", item)
             return item
-        })  
-      },
-      
-      setComment2: function(index, groupId){
+       })  
+    },
+    setComment2: function(index, groupId){
         var _a ;
         var _idx = 1;
         this.tasks.forEach(item=>{
@@ -234,12 +221,13 @@ export default {
         })
 
         _idx = 1;
-        var _self = this
+        var _self = this;
+        
         this.tasks = this.tasks.filter(item =>{
             if(_idx == index)
             {
                 item.groupId = _a;
-                // console.log("item.groupId",item.groupId)
+                //  console.log("item.groupId",item.groupId)
                 _self.objTypeSelect2Clone.forEach(sitem=>{
                     if(sitem.groupId == item.groupId){
                         item.prmssnComment = sitem.prmssnComment
@@ -287,13 +275,16 @@ export default {
             _msg.push(_item);
            
         })
-        console.log(_msg)
+        // console.log(_msg)
 
-         this.$http.post('http://dabin02272.cafe24.com:8090/api/role-permission', _msg)
-        .then((response) => {
-            alert('추가가 완료되었습니다.');
-            this.$router.push({name:'rolePer'})  
-                         
+        APIService.postRolePermission(_msg).then((response) => {
+           if(response.code == "200"){
+              alert('추가가 완료되었습니다.');
+              this.$router.push({name:'rolePer'})   
+               
+           }else if(response.code != "200"){
+              alert(response.message)
+           }
         })
         .catch((error) => {
             alert('에러가 발생하였습니다.');

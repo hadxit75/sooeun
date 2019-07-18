@@ -149,8 +149,13 @@ export default {
         })
 
         APIService.postPermission(_msg).then((response) => {
-            alert('추가가 완료되었습니다.');
-            this.$router.push({name:'per'})               
+           if(response.code == "200"){
+              alert('추가가 완료되었습니다.');
+              this.$router.push({name:'per'})   
+               
+           }else if(response.code != "200"){
+              alert(response.message)
+           }             
         })
         .catch((error) => {
             alert('에러가 발생하였습니다.');

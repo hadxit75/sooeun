@@ -588,7 +588,18 @@ http://dabin02272.cafe24.com:8090/api/user-permission/user-group-role 으로 다
 	[Source: java.io.PushbackInputStream@2da26154; line: 2, column: 1] (through reference chain: java.util.ArrayList[0])",
     "path": "/api/user-permission/user-group-role"
 }
-
+--> 아래와 같이 [ 다음에 {를 입력해 주세요
+[
+	{
+        "userRolesName": "user role Group 1d144523 ",
+        "userRolesComment": "user role Group 14d42315",
+		"groupUserId" : 11,
+		"roleGroupIds" : [
+		{"rolePrmssnId":14,"isRoleItemGroup":1,"rolePrmssnGroupId":10 },
+		{"rolePrmssnId":11,"isRoleItemGroup":0,"rolePrmssnGroupId":6 }
+						]	
+	}
+]
 2. 사용자 Role (그룹)추가
 http://dabin02272.cafe24.com:8090/api/user-permission/user-role 으로 다음과 같이 요청 시 아래와 같은 에러가 나옵니다. 확인 부탁 드립니다.
 [
@@ -609,3 +620,75 @@ http://dabin02272.cafe24.com:8090/api/user-permission/user-role 으로 다음과
 	[Source: java.io.PushbackInputStream@66801814; line: 2, column: 1] (through reference chain: java.util.ArrayList[0])",
     "path": "/api/user-permission/user-role"
 }
+---> 아래와 같이 [ 다음에 {를 입력해 주세요
+[
+	{
+        "userRolesName": "user role  1 222",
+        "userRolesComment": "user role  1222",
+		"userIds": [{"userId":"OSSTEM:8102505"},{"userId":"OSSTEM:8102506"}] , 
+		"roleGroupIds" : [
+							{"rolePrmssnId":14,"isRoleItemGroup":1,"rolePrmssnGroupId":10 },
+							{"rolePrmssnId":11,"isRoleItemGroup":0,"rolePrmssnGroupId":6 }
+						]	
+	}
+]
+----------------------------------------------------------------
+6/25일 api 추가 확인 요청
+
+1. 관리자 추가 시 중복으로 입력되는 문제 (http://dabin02272.cafe24.com:8090/api/super-admin)
+다음의 api 호출 시, 하나의 사용자를 선택해서 입력해도 여러개의 데이터가(이 경우 2개 생성)) 생성되는 문제가 발생하고 있습니다. 확인 부탁 드립니다. 
+
+[
+	{userId: "CT:20031716", legacyId: 41, adminComment: "22222"}
+]
+--> 추가는 정상적으로 되었는데, 리스트 보여주는게 중복되는 문제가 있었는데 수정했습니다.
+
+----------------------------------------------------------------
+----------------------------------------------------------------
+7/3일 검토사항
+페이지 24에 있는 (2)Role 그룹을 위해서  http://dabin02272.cafe24.com:8090/api/role-group/legacy/42를 호출하는데,
+여기서 (2)Role 그룹대한 ID는 Role 그룹이기 때문에, roleGroupId=66에 해당하는 값을 groupRoleId에 넣어서 보내야 합니다.
+/api/role-permission 
+ Role 그룹인 경우
+	- "isRoleGroup": 1로 그룹임을 표현, "groupRoleId" : 66 해당 Role 그룹 ID, "orders": 2 순서
+REQUESTBODY: [
+	{"isRoleGroup":1,"groupRoleId":66,"roleId":6,"orders":2,"prmssnGroupId":20,"rolePrmssnName":"0529","rolePrmssnComment":"0529"}
+	
+==>> 검토의견 반영 결과 +
+http://dabin02272.cafe24.com:8090/api/role-permission 로 다음과 같이 요청을 보냈고, 200 성공을 받았는데 여전히 리스트에서는 보이지 않고 있는 것 같습니다. 
+확인 부탁 드립니다. 
+
+[
+	{"isRoleGroup": 1, "groupRoleId": 62, "roleId": 59, "orders": 2, "prmssnGroupId": 62, "rolePrmssnComment": "test_0704", "rolePrmssnName": "test_0704"}
+   ,{"isRoleGroup": 1, "groupRoleId": 62, "roleId": 59, "orders": 3, "prmssnGroupId": 59, "rolePrmssnComment": "test_0704", "rolePrmssnName": "test_0704"}
+]
+--> 내가 표현을 잘못 했네요. 아래와 같이 수정합니다.
+
+페이지 24에 있는 (2)Role 그룹을 위해서  [1]http://dabin02272.cafe24.com:8090/api/role-group/legacy/42를 호출하는데,
+{"roleGroupId":62,"roleId":20,"groupId":41,"orders":1,"roleGroupName":"ksn 업무현황 Role 그룹 1","roleGroupComment":"ksn 업무현황 Role 그룹 1","roleName":"ksn 업무현황 Role 1","roleComment":null,"legacyId":42,"legacyName":"업무현황시스템","roleTypeId":2,"roleTypeName":"직무"},
+[2]http://dabin02272.cafe24.com:8090/api/role-permission 요청할 때,
+[1]의 응답에서 "groupId":41에 해당하는 값을 "groupRoleId": 41로 넣어서 보내야 합니다.
+----------------------------------------------------------------
+7/4일 검토사항
+관리자의 원천시스템 관리 추가: 스토리보드 페이지 46 ~ 48 
+=> 확인 완료 되었습니다. 
+----------------------------------------------------------------
+7/5일 검토사항
+전체 기능중, 항목 추가 기능이 있는 곳에서 code가 200이 아닌 것은 오류(특히 중복 오류)가 발생한 것이니 message에 해당 하는 오류 팝업을 노출해 주세요.
+{"status":"fail","code":9019,"message":"이미 해당 아이디는  등록 되어있습니다.","results":null,"result":null,"error":null}
+=> 에러코드 적용 완료 되었습니다. 
+
+----------------------------------------------------------------
+7/9일 검토사항
+
+1. http://dabin02272.cafe24.com:8090/api/user-permission/detail-permissions 호출 시, 현재 userEmpId 필드가 모두 null 이라서
+그리드가 합쳐져서 그려지는 부분이 구현이 잘 안보이고 있습니다. 테스트 데이터를 넣어주실 수 있으면 만들어 주시면 좋을 것 같습니다. 
+--> 누락, 값을 할당 했습니다.
+2. 1번의 api 에서 기획서의 [객체이름]에 들어가야 할 필드명을 알려주세요. 현재는 맵핑할 만한 요소가 보이지 않습니다. 
+--> 누락, 추가했습니다. objectName
+3. 이 화면에서 사용자 개별 검색을 하면, 그 검색 데이터를 계속 누적되는데 사용자가 이 누적된 검색어를 지우고 싶으면 어떤식으로 처리해야 할지
+잘 모르겠습니다. 원래 조직도가 있는 검색화면에서는 자기가 눈으로 보고 뺄 수 있었는데, 현재는 눈으로 검색어를 빼거나 넣을 방법이 없어서 계속 
+화면에서 검색어를 들고 있습니다. 이 부분 기획 고려 부탁 드립니다. 
+--> 의도는 일회성 검색이라서, 한번 하고 나면 다 지우고 새로 검색하는 걸로 하죠.
+
+==> 위의 1~3번 모두 적용완료

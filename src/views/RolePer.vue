@@ -6,7 +6,7 @@
     <div class="p-3 float-right">
         <b-form inline>
             <b-form-input v-model="search" id="inline-form-input-name" class="mb-2 mr-sm-2 mb-sm-0" v-on:keyup="searchHandler"></b-form-input>
-            <el-button plain type="primary" @click="addRole">추가</el-button> 
+            <el-button plain type="primary" @click="addRole">Role권한 추가</el-button> 
         </b-form>
     </div>
     <div> 
@@ -58,7 +58,7 @@
     <div class="p-3 float-right">
         <b-form inline>
             <b-form-input v-model="search" id="inline-form-input-name" class="mb-2 mr-sm-2 mb-sm-0" v-on:keyup="searchHandler2"></b-form-input>
-            <el-button plain type="primary" @click="addRoleGroup">Role 그룹추가</el-button> 
+            <el-button plain type="primary" @click="addRoleGroup">Role권한 그룹추가</el-button> 
         </b-form>
     </div>
     <div> 
@@ -67,7 +67,8 @@
         border
         height="330"
         @current-change="handleCurrentChange2"
-        style="width: 100">
+        style="width: 100"
+        :span-method="objectSpanMethod">
 
     <el-table-column
       type="index"
@@ -108,6 +109,7 @@
 
 
 <script>
+import APIService from '../util/APIService';
 
 export default {
   name: "obj",
@@ -126,39 +128,30 @@ export default {
 
   created() {
 
-    this.$http.get('http://dabin02272.cafe24.com:8090/api/role-permission/item-list', { headers: { 'Content-Type': 'application/json' } })
-    .then((response) => {
-      this.listData = response.data.results;
+    APIService.getRolePermissionItemList().then((response) => {
+      this.listData = response;
       this.displayData = this.listData;
        
-
         var _self = this;
-        _self.$http.get('http://dabin02272.cafe24.com:8090/api/role-permission/group-list', { headers: { 'Content-Type': 'application/json' } })
-            .then((response) => {  
-                _self.roleGroup = response.data.results;
-                _self.roleGroupDisplay = _self.roleGroup;
-                //_self.getSpanArr(this.roleGroupDisplay); 
-         }); 
+        APIService.getRolePermissionGroupList().then((response) => {  
+          _self.roleGroup = response;
+          _self.roleGroupDisplay = _self.roleGroup;
+          _self.getSpanArr(_self.roleGroupDisplay);
+        }); 
     });
   },
   methods: {
-      test()
-      {
-          //console.log(this.listData);
-      },
-       addRole: function () {
+      addRole: function () {
         this.$router.push({name:'rolePerAdd'})   
       },
        addRoleGroup: function () {
         this.$router.push({name:'rolePerGroupAdd'})   
       },
       handleCurrentChange(val) {
-        console.log(val)
         this.$router.push({name:'rolePerDetail',params:{objs:val} })
       },
        handleCurrentChange2(val) {
-         //console.log(val)
-        this.$router.push({name:'rolePerGroupDetail',params:{objs:val} })
+        this.$router.push({name:'roleGroupPerDetail',params:{objs:val} })
       },
       searchHandler(){
         var self =this;
@@ -191,33 +184,33 @@ export default {
         return index + 1;
       },
 
-      // getSpanArr(data) {　
-      //     for (var i = 0; i < data.length; i++) {
-      //       if (i === 0) {
-      //         this.spanArr.push(1);
-      //         this.pos = 0
-      //       } else {
-      //        // Determine if the current element is the same as the previous element
-      //       if (data[i].groupId === data[i - 1].groupId) {
-      //           this.spanArr[this.pos] += 1;
-      //           this.spanArr.push(0);
-      //         } else {
-      //           this.spanArr.push(1);
-      //           this.pos = i;
-      //         }
-      //       }
-      //   }
-      //  },
-      // objectSpanMethod({ row, column, rowIndex, columnIndex }) {
-      //   if (columnIndex === 3 || columnIndex === 4) {
-      //       const _row = this.spanArr[rowIndex];
-      //       const _col = _row > 0 ? 1 : 0;
-      //       return {
-      //             rowspan: _row,
-      //             colspan: _col
-      //       }
-      //     }
-      //   }
+      getSpanArr(data) {　
+          for (var i = 0; i < data.length; i++) {
+            if (i === 0) {
+              this.spanArr.push(1);
+              this.pos = 0
+            } else {
+             // Determine if the current element is the same as the previous element
+            if (data[i].groupId === data[i - 1].groupId) {
+                this.spanArr[this.pos] += 1;
+                this.spanArr.push(0);
+              } else {
+                this.spanArr.push(1);
+                this.pos = i;
+              }
+            }
+        }
+       },
+      objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+        if (columnIndex === 3 || columnIndex === 4) {
+            const _row = this.spanArr[rowIndex];
+            const _col = _row > 0 ? 1 : 0;
+            return {
+                  rowspan: _row,
+                  colspan: _col
+            }
+          }
+      }
     }
     
 };

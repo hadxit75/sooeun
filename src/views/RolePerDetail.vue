@@ -40,7 +40,7 @@
                         <tbody>
                             <tr v-for="(sitem,index) in tasks " :index=index>
                             <td>{{sitem.orders}}</td>
-                            <td><el-select v-model="sitem.legacyId" placeholder="Select" @change="legacyChange"  clearable>
+                            <td><el-select v-model="sitem.legacyId" placeholder="Select" :disabled="sitem.utype != 'I'" @change="legacyChange"  clearable>
                                 <el-option
                                 v-for="item in legacySelect"
                                 :key="item.legacyId"
@@ -48,7 +48,7 @@
                                 :value="item.legacyId">
                                 </el-option>
                             </el-select></td>
-                            <td><el-select v-model="sitem.prmssnGroupId" placeholder="Select" clearable>
+                            <td><el-select v-model="sitem.prmssnGroupId" placeholder="Select" :disabled="sitem.utype != 'I'" clearable>
                                 <el-option 
                                 v-for="item in roleSelect"
                                 :key="item.prmssnGroupId"
@@ -56,7 +56,7 @@
                                 :value="item.prmssnGroupId">
                                 </el-option>
                             </el-select></td>
-                            <td><el-input placeholder="" v-model="sitem.prmssnComment"></el-input></td>
+                            <td><el-input placeholder="" :disabled="sitem.utype != 'I'" v-model="sitem.prmssnComment"></el-input></td>
                             <td><el-button type="warning" v-on:click="rowMinus(sitem.orders, sitem.rolePrmssnId)" plain>-</el-button></td>
                             </tr>
                             <tr>
@@ -85,6 +85,7 @@
 </template>
 
 <script>
+import APIService from '../util/APIService';
 export default {
   components: {
       name: 'AddItem'
@@ -101,38 +102,28 @@ export default {
       rolePrmssnComment: this.$route.params.objs.rolePrmssnComment,
       srolePrmssnName: this.$route.params.objs.rolePrmssnName,
       srolePrmssnComment: this.$route.params.objs.rolePrmssnComment,
-      //selected: null,
       legacySelect: [],
-      //legacySelect2: [],
       roleSelect: [],
       roleSelectClone: [],
       legacyId: null,
-      //legacyId2: null,
       roleTypeSelect: [],
-      //objTypeSelect2: [],
-      //roleTypeId: null,
-      //roleId: null,
       index: 1,
       tasks: []
     }
   },
   created() {
-    this.$http.get('http://dabin02272.cafe24.com:8090/api/role-permission/non-group/' + this.groupId, { headers: { 'Content-Type': 'application/json' } })
-    .then((response) => {
-      this.tasks = response.data.results;
+    APIService.getRolePermissionNonGroupByGroupId(this.groupId).then((response) => {
+        this.tasks = response;
+        this.tasks['utype']='U';
 
         var _self = this
-        this.$http.get('http://dabin02272.cafe24.com:8090/api/legacy/list', { headers: { 'Content-Type': 'application/json' } })
-            .then((response) => {  
-                _self.legacySelect = response.data.results;
-                //this.tasksClone = response.data.results;
-
+        APIService.getLegacyList().then((response) => {  
+            _self.legacySelect = response;
         }) 
-        this.$http.get('http://dabin02272.cafe24.com:8090/api/role-permission/group-list', { headers: { 'Content-Type': 'application/json' } })
-            .then((response) => {  
-                _self.roleSelect = response.data.results;
-                _self.roleSelectClone = response.data.results;
 
+        APIService.getRolePermissionGroupList().then((response) => {  
+            _self.roleSelect = response;
+            _self.roleSelectClone = response;
         }) 
 
     });   
@@ -140,13 +131,12 @@ export default {
    methods: {
     legacyChange: function(selected){
         this.slegacyId = selected
-
         var _self = this;
+        
         _self.objTypeSelect = [];
 
-        _self.$http.get('http://dabin02272.cafe24.com:8090/api/role/legacy/' + selected ,{ headers: { 'Content-Type': 'application/json' } })
-            .then((response) => {
-                _self.roleTypeSelect = response.data.results;
+        APIService.getRoleLegacyByLegacyId(this.slegacyId).then((response) => {
+            _self.roleTypeSelect = response;
         })
   
       },
@@ -160,25 +150,26 @@ export default {
       },
       rowPlus: function () {
           var _index = this.tasks.length+1;
-          this.tasks.push({orders:_index++, legacyId:"", prmssnGroupId:"", prmssnComment:""})
+          this.tasks.push({orders:_index++, legacyId:"", prmssnGroupId:"", prmssnComment:"", utype:"I"})
       },
       rowMinus: function (sidx, rolePrmssnId) {
-        //alert(roleGroupId)
-          if (rolePrmssnId != null) {
-              if(this.tasks.length <= 1){
-                  alert('하단 삭제 버튼을 눌러 주세요.(전체삭제)');
-              }else if(this.tasks.length > 1){
-              this.$confirm('삭제 하시겠습니까?', 'Warning', {
-                confirmButtonText: '확인',
-                cancelButtonText: '취소',
-                type: 'warning'
+        if (rolePrmssnId != null) {
+            if(this.tasks.length <= 1){
+                alert('하단 삭제 버튼을 눌러 주세요.(전체삭제)');
+                
+            }else if(this.tasks.length > 1){
+                    this.$confirm('삭제 하시겠습니까?', 'Warning', {
+                    confirmButtonText: '확인',
+                    cancelButtonText: '취소',
+                    type: 'warning'
+                
                 }).then(() => {
-                    var self = this
-                    this.$http.delete('http://dabin02272.cafe24.com:8090/api/role-permission/permissions', { data: [{rolePrmssnId : rolePrmssnId}] })
-                    .then((response) => {
-                        self.$http.get('http://dabin02272.cafe24.com:8090/api/role-permission/non-group/'+ this.groupId, { headers: { 'Content-Type': 'application/json' } })
-                        .then((response) => {
-                        self.tasks = response.data.results;
+                    var self = this;
+                    var data = { data: [{rolePrmssnId : rolePrmssnId}] };
+
+                    APIService.deleteRolePermissionPermissions(data).then((response) => {
+                        APIService.getRolePermissionNonGroupByGroupId(this.groupId).then((response) => {
+                            self.tasks = response;
                         });
                     })
                     .catch((error) => {
@@ -187,9 +178,9 @@ export default {
                     })
                 }).catch(() => {
                     alert('삭제가 취소되었습니다.');        
-            });
-          }
-          }else{
+                });
+            }
+        }else{
             var _lidx = 1;
             this.tasks = this.tasks.filter(item=>{
                 if(item.orders != sidx)
@@ -201,19 +192,18 @@ export default {
 
                 this.editFlag--;
             }); 
-          } 
+        } 
       },
-       edit: function() {
+      edit: function() {
            //롤그룹 명, 코멘트 변경시
            if(this.rolePrmssnName != this.srolePrmssnName || this.rolePrmssnComment != this.srolePrmssnComment){
-                var self = this
+                var self = this;
+                var data = { rolePrmssnName: self.rolePrmssnName 
+                            , rolePrmssnComment: self.rolePrmssnComment
+                            , groupId: self.groupId
+                            };
 
-                self.$http.put('http://dabin02272.cafe24.com:8090/api/role-permission', { rolePrmssnName: self.rolePrmssnName 
-                                                                                    ,rolePrmssnComment: self.rolePrmssnComment
-                                                                                    ,groupId: self.groupId
-                                                                                    })
-            
-                .then((response) => {
+                APIService.putRolePermission(data).then((response) => {
                     alert('수정이 완료되었습니다.');  
                 })
                 .catch((error) => {
@@ -240,8 +230,7 @@ export default {
                }
             })
 
-            self2.$http.post('http://dabin02272.cafe24.com:8090/api/role-group/put-add', _msg2)
-            .then((response) => {
+            APIService.postRoleGroupPutAdd(_msg2).then((response) => {
                 alert('수정이 완료되었습니다.');  
                 self2.$router.push({name:'rolePer'})  
                             
@@ -262,25 +251,20 @@ export default {
 
         }).then(() => {
             var self = this
-            //console.log("self.groupId:::>>>"+self.groupId)
-            this.$http.delete('http://dabin02272.cafe24.com:8090/api/role-group/group-id', { data: [{ groupId : self.groupId}] })
-            .then((response) => {
+            var data = { data: [{ groupId : self.groupId}] };
+
+            APIService.deleteRoleGroupByGroupId(data).then((response) => {
+                alert('삭제가 완료되었습니다.');  
                 this.$router.push({name:'role'}) 
             })
             .catch((error) => {
                 alert('에러가 발생하였습니다.'); 
                 console.log(error.config)
             })
-             
-            alert('삭제가 완료되었습니다.');  
-
         }).catch(() => {
           alert('삭제가 취소되었습니다.');       
         });
         
-      },
-      cancle: function () {
-        this.$router.go(-1)  
       },
       cancle: function () {
         this.$router.go(-1)  

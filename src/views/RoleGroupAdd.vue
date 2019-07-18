@@ -69,6 +69,7 @@
 </template>
 
 <script>
+import APIService from '../util/APIService';
 export default {
   components: {
       name: 'AddItem'
@@ -95,15 +96,13 @@ export default {
     }
   },
   created() {
-    this.$http.get('http://dabin02272.cafe24.com:8090/api/legacy/list', { headers: { 'Content-Type': 'application/json' } })
-    .then((response) => {
-      this.legacySelect = response.data.results;
+    APIService.getLegacyList().then((response) => {
+      this.legacySelect = response;
     });   
   },
    methods: {
        test(index,event)
        {
-           //console.log(this.tasks)
            var _a 
            this.tasks.forEach(item=>{
                if(item.idx == index+1)
@@ -111,22 +110,20 @@ export default {
                    _a = item.roleId
                }
            })
-           var _d = this.roleSelect.find(item=> item.roleId == _a)
+
            this.tasks = this.tasks.filter(item =>{
                if(item.idx == index+1)
                {
                     item.roleId = _a;
                     this.tasksClone.forEach(sitem=>{
-                        if(sitem.roleId = item.roleId){
+                        if(sitem.roleId == item.roleId){
                             item.roleComment = sitem.roleComment
                         }
                     })
                }
                return item
-
            })
-
-       },
+      },
       add: function() {
         var self = this
         var _msg = [];
@@ -140,15 +137,16 @@ export default {
                          ,"groupId": sitem.groupId};
 
             _msg.push(_item);
-            console.log("_msg", _msg)
-           
         })
 
-        this.$http.post('http://dabin02272.cafe24.com:8090/api/role-group', _msg)
-        .then((response) => {
-            alert('추가가 완료되었습니다.');
-            this.$router.push({name:'role'})  
-                         
+        APIService.postRoleGroup(_msg).then((response) => {
+           if(response.code == "200"){
+              alert('추가가 완료되었습니다.');
+              this.$router.push({name:'role'})   
+               
+           }else if(response.code != "200"){
+              alert(response.message)
+           }         
         })
         .catch((error) => {
             alert('에러가 발생하였습니다.');
@@ -166,7 +164,7 @@ export default {
       rowMinus: function (sidx) {
           var _lidx = 1;
           this.tasks = this.tasks.filter(item=>{
-            //   console.log(item);
+            
               if(item.idx != sidx)
               {
                   item['idx'] = _lidx;
@@ -181,9 +179,8 @@ export default {
             var _self = this;
             _self.roleTypeSelect = [];
 
-            _self.$http.get('http://dabin02272.cafe24.com:8090/api/role/legacy/' + this.slegacyId ,{ headers: { 'Content-Type': 'application/json' } })
-                .then((response) => {
-                    _self.roleTypeSelect = response.data.results;
+            APIService.getRoleLegacyByLegacyId(this.slegacyId).then((response) => {
+                _self.roleTypeSelect = response;
             })
            
       },
@@ -198,24 +195,14 @@ export default {
         })
         
         var _idx = 0;
-
         var _self = this;
 
         _self.roleSelect = [];
-        _self.roleSelect.push("")
 
-        _self.$http.get('http://dabin02272.cafe24.com:8090//api/role/role-type/legacy/'+_self.slegacyId+'/'+ _a.roleTypeId ,{ headers: { 'Content-Type': 'application/json' } })
-            .then((response) => {
-                _self.roleSelect.push(...response.data.results);
-                _self.tasksClone = response.data.results;
-        })
-
-        this.tasks = this.tasks.filter(item=>{
-            if(item.idx == index+1)
-            {
-                item.roleId = ""
-            }
-            return item;
+        APIService.getRoleLegacyByLegacyIdroleTypeId(_self.slegacyId, _a.roleTypeId).then((response) => {
+                // _self.roleSelect.push(...response);
+                _self.roleSelect = response;
+                _self.tasksClone = response;
         })
       }
     }

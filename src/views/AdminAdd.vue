@@ -16,7 +16,7 @@
                       <el-button plain type="danger"  @click="backToStatus()" style="width:100%">취소</el-button> 
                      </div>
                      <div class="col-md-12" style="margin-top:10px;margin-bottom:10px"></div>
-                    <div class="col-md-4">
+                    <div class="col-md-2">
                         <el-card shadow="never">
                            <p>조직도</p>
                         <el-tree
@@ -30,7 +30,7 @@
                         </el-tree>
                         </el-card>
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-md-10">
                        <el-card shadow="never">
                           <p>선택된 사용자</p>
                           <el-table
@@ -80,6 +80,12 @@
                               <el-table-column
                               property="membRank"
                               label="직책">
+                              </el-table-column>
+                              <el-table-column
+                              label="코멘트">
+                              <template slot-scope="scope2">
+                              <el-input placeholder="Please input" v-model="scope2.row.adminComment"></el-input>
+                              </template>
                               </el-table-column>
                           </el-table>
                        </el-card>
@@ -175,22 +181,24 @@ export default {
       this.multipleSelection.forEach(item => {
         var _t = {
           userId: item.orgId + ":" + item.userEmpId,
-          userGroupName: self.groupName,
-          orders: idx++,
-          userGroupComment: self.groupcomment
+          legacyId: item.legacyId,
+          adminComment: item.adminComment
         };
         sendItem.push(_t);
       });
+      // console.log("tableData", this.tableData)
+      // console.log("sendItem", sendItem)
 
       if (sendItem.length > 0) {
-        APIService.setUserGroup(sendItem)
-          .then(result => {
-            this.$message({
-              type: "success",
-              message: "삭제가 완료되었습니다."
-            });
+        APIService.postSuperAdmin(sendItem).then(response => {
+           if(response.code == "200"){
+               alert('추가가 완료되었습니다.');
+               this.$router.push({name:'adminStatus'})   
+               
+           }else if(response.code != "200"){
+              alert(response.message)
+           }
 
-            this.$router.push("/ugstatus");
           })
           .catch(error => {
             this.$message({
@@ -217,7 +225,8 @@ export default {
                 membPostion: item.membPostion,
                 membRank: item.membRank,
                 deptId: item.deptId,
-                legacyId: ""
+                legacyId: "",
+                adminComment: ""
               });
             });
             var _endpoint = this.tableData.length + 1;
@@ -233,7 +242,7 @@ export default {
           }
         });
       }
-      console.log("tableData", this.tableData);
+      // console.log("tableData", this.tableData);
     },
     recursiveDepth(sdata, i, parentId) {
       var _parent = [];
@@ -262,7 +271,7 @@ export default {
       return _parent;
     },
     validateStatus() {
-      return !(this.groupName && this.multipleSelection.length > 0);
+      return !(this.multipleSelection.length > 0);
     },
     toggleSelection(rows) {
       if (rows) {
@@ -291,7 +300,7 @@ export default {
         }
       }
 
-      console.log("tableData", this.tableData);
+      //console.log("tableData", this.tableData);
     }
   }
 };

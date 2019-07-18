@@ -1,18 +1,6 @@
 <template>
   <navbar v-model="showNavbar">
     <div class="navbar-wrapper">
-      
-      <!-- <div class="navbar-minimize">
-        <button id="minimizeSidebar" class="btn btn-icon btn-round" @click="minimizeSidebar">
-          <i class="nc-icon nc-minimal-right text-center visible-on-sidebar-mini"></i>
-          <i class="nc-icon nc-minimal-left text-center visible-on-sidebar-regular"></i>
-        </button>
-      </div> -->
-      <!-- <div class="navbar-toggle">
-        <navbar-toggle-button @click.native="toggleSidebar">
-
-        </navbar-toggle-button>
-      </div> -->
        <router-link to="/" >
        <a class="navbar-brand" href="#"><img src="assets/img/logo.png"/>Role 관리 시스템</a>
        </router-link>
@@ -20,14 +8,6 @@
     <div style="display:block;width:100%">
       <div style="display: inline-block; text-align: right; width: 100%">
         <div style="display:flex;float:right">
-          <!-- <div style="margin-top:5px">
-          <el-breadcrumb separator-class="el-icon-arrow-right">
-          <el-breadcrumb-item >homepage</el-breadcrumb-item>
-          <el-breadcrumb-item>promotion management</el-breadcrumb-item>
-          <el-breadcrumb-item>promotion list</el-breadcrumb-item>
-          <el-breadcrumb-item>promotion detail</el-breadcrumb-item>
-         </el-breadcrumb>
-          </div> -->
           <div style="margin-left:5px">
              <span>홍길동</span>
           </div>
@@ -42,8 +22,7 @@
           <el-menu-item index="1"> <router-link to="/obj" >객체관리</router-link></el-menu-item>
           <el-menu-item index="2"> <router-link to="/opr"> 연산관리</router-link></el-menu-item>
           <el-menu-item index="3"> <router-link to="/per"> 권한관리</router-link></el-menu-item>
-          <!-- <el-menu-item index="4"> <router-link to="/role"> Role관리</router-link></el-menu-item> -->
-
+          
           <el-submenu index="4">
             <template slot="title"><span class="custom-font">Role관리</span></template>
             <el-menu-item index="4-1">

@@ -2,20 +2,20 @@
   <div class="container">
         <div>
             <div class="p-3 float-left">    
-                <h4>연산추가</h4>
+                <h4>원천시스템 추가</h4>
             </div>
             <div class="card-body">
                 <form v-on:submit.prevent="addItem">
                     <table class="table table-bordered">
                         <thead>
                             <th>순번</th>
-                            <th>연산이름</th>
+                            <th>원천시스템</th>
                             <th>비고</th>
                         </thead>
                         <tbody>
                             <tr>
                             <td>1</td>
-                            <td><el-input placeholder="" v-model="oprtnName"></el-input></td>
+                            <td><el-input placeholder="" v-model="legacyName"></el-input></td>
                             <td><el-input placeholder="" v-model="comment"></el-input></td>
                             </tr>
                         </tbody>
@@ -32,42 +32,48 @@
 
 <script>
 import APIService from '../util/APIService';
-
 export default {
   components: {
-      name: 'AddItem'
+    name: "AddItem"
   },
   data() {
     return {
-      oprtnId: null,
-      oprtnName: null,
+      legacyName: null,
       comment: null
-    }
+    };
   },
-   methods: {
-      add: function() {
-        var self = this
-        var _mgs = { oprtnId : self.oprtnId , 
-                     oprtnName : self.oprtnName,
-                     comment : self.comment }
-                     
-       APIService.postOperation(_mgs).then((response) => {
-           if(response.code == "200"){
-               alert('추가가 완료되었습니다.');
-               this.$router.push({name:'opr'})   
-               
+  created() {
+
+  },
+  methods: {
+    add: function() {
+      var self = this;
+      var _msg = { legacyName: self.legacyName
+                  , comment: self.comment
+                 };
+
+      APIService.postLegacy(_msg).then(response => {
+          if(response.code == "200"){
+              this.$message({
+                type: "success",
+                message: "추가가 완료되었습니다."
+              });
+
+               this.$router.push({ name: "adminStatus" });
+
            }else if(response.code != "200"){
               alert(response.message)
            }
+         
         })
-        .catch((error) => {
-         console.log(error)
-            console.log(error.config)
-        })
-      },
-      cancle: function () {
-        this.$router.go(-1)  
-      }
+        .catch(error => {
+          alert('에러가 발생하였습니다.');
+          console.log(error.config);
+        });
+    },
+    cancle: function() {
+      this.$router.go(-1);
     }
-}
+  }
+};
 </script>

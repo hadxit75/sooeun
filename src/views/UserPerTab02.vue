@@ -198,7 +198,7 @@ export default {
             if(_idx == index)
             {
                 item.groupId = _a;
-                 console.log("item.rolePrmssnId",item.rolePrmssnId)
+                //  console.log("item.rolePrmssnId",item.rolePrmssnId)
                 _self.prmssSelectClone.forEach(sitem=>{
                     if(sitem.rolePrmssnId == item.rolePrmssnId){
                         item.roleGroupComment = sitem.roleGroupComment
@@ -206,10 +206,10 @@ export default {
                 })
             }
             _idx++;
-             console.log("item", item)
+            //  console.log("item", item)
             return item
         })
-       console.log("tasks", this.tasks)
+      //  console.log("tasks", this.tasks)
     },
     onClickChild(evt) {
       this.invokeFlag = false;
@@ -267,14 +267,18 @@ export default {
       // console.log(sendItem)
 
       if (sendItem.length > 0) {
-        APIService.postUserPermissionUserGroupRole(sendItem)
-          .then(result => {
+        APIService.postUserPermissionUserGroupRole(sendItem).then(response => {
+          if(response.code == "200"){
             this.$message({
               type: "success",
               message: "추가가 완료되었습니다."
             });
 
             this.$router.go();
+
+           }else if(response.code != "200"){
+              alert(response.message)
+           }
           })
           .catch(error => {
             this.$message({

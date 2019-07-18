@@ -49,6 +49,7 @@
 </template>
 
 <script>
+import APIService from '../util/APIService';
 export default {
   components: {
       name: 'AddItem'
@@ -67,9 +68,8 @@ export default {
     }
   },
   created() {
-    this.$http.get('http://dabin02272.cafe24.com:8090/api/legacy/list', { headers: { 'Content-Type': 'application/json' } })
-    .then((response) => {
-      this.legacySelect = response.data.results;
+    APIService.getLegacyList().then((response) => {
+      this.legacySelect = response;
     });   
   },
    methods: {
@@ -79,22 +79,26 @@ export default {
         var _self = this;
         _self.objTypeSelect = [];
 
-        _self.$http.get('http://dabin02272.cafe24.com:8090/api/role-type/list' ,{ headers: { 'Content-Type': 'application/json' } })
-            .then((response) => {
-                _self.roleTypeSelect = response.data.results;
+        APIService.getRoleTypeList().then((response) => {
+          _self.roleTypeSelect = response;
         })
   
       },
       add: function() {
         var self = this
-        this.$http.post('http://dabin02272.cafe24.com:8090/api/role', { roleTypeId : self.roleTypeId , 
-                                                                          roleName : self.roleName,
-                                                                          comment : self.roleComment,
-                                                                          legacyId : self.legacyId })
-        .then((response) => {
-            alert('추가가 완료되었습니다.');
-            this.$router.push({name:'role'})  
-                         
+        var _msg =  { roleTypeId : self.roleTypeId 
+                      , roleName : self.roleName
+                      , roleComment : self.roleComment
+                      , legacyId : self.legacyId };
+
+        APIService.postRole(_msg).then((response) => {
+          if(response.code == "200"){
+              alert('추가가 완료되었습니다.');
+              this.$router.push({name:'role'})   
+               
+           }else if(response.code != "200"){
+              alert(response.message)
+           }
         })
         .catch((error) => {
             alert('에러가 발생하였습니다.');

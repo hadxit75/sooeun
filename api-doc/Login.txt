@@ -1,0 +1,79 @@
+
+------------------------------
+로그인 관리
+------------------------------
+사용자로 부터 로그인 정보(사번/비밀번호)를 받아서 서버에 로그인 정보에 대하여 인증 받고,
+응답받은 토큰정보를 사용이 허가된 사용자의 api 요청임을 인증하기 위하여,
+요청하는 모든 api의 헤더에 정보를 담아서 요청한다.
+api 인증을 위하여 JWT(Java Web Token) 방식을 사용한다.
+
+로그인이 영향을 미치는 것이 많기 때문에 연습삼아 서버와 연동하는 방법을 별도의 포트(9966)로 제시 할 것이니,
+해당 포트롤 예행 연습을 하기 바랍니다.
+테스트를 위해, 토큰의 유효기간은 1분, 리프레시 토큰의 유효기간은 5분으로 설정 하였음.
+
+1. 로그인 요청
+	.헤더에 아래 값을 설정하고,
+	X-Requested-With: XMLHttpRequest  
+	Content-Type: application/json  
+	Cache-Control: no-cache
+    .바디에 사용자 아이디,비번을 넣는다.
+{
+    "username": "svlada@gmail.com",
+    "password": "test1234"
+}
+
+2. 로그인 요청 응답
+   {"token": "토큰값", "refreshToken":"리프레시 토큰값" }
+3. 일반 API 요청
+   헤더에 아래와 같이 로그인 요청에서 받은 토큰 정보를 헤더에 넣어서 보냄
+   Authorization: Bearer 토큰값
+3. API 요청 성공시
+  바디에 아래와 같은 username이 넘어옴
+  {"username":"svlada@gmail.com","authorities":[{"authority":"ROLE_REFRESH_TOKEN"}]}
+4. API 요청을 했으나, 토큰 유효기간 만료시
+  아래와 같이 401 오류가 나온다.
+  {"status":401,"message":"Token has expired","errorCode":11,"timestamp":1563342902459}
+5. API 요청을 했으나, 토큰 유효기간 만료응답을 받았을때
+   리프레시 토큰값을 요청하면 정상 응답이 온다.
+	Authorization: Bearer  리프레시 토큰값
+6. API 요청을 했으나, 토큰 유효기간 만료응답을 받았을때, 아래와 같이 401오류가 나오면, 로그인 요청을 새로 해야 함.
+	{"status":401,"message":"Token has expired","errorCode":11,"timestamp":1563342902459}
+
+----------------------------------------------------------------------
+예제
+
+1. 로그인 요청
+http://dabin02272.cafe24.com:9966/api/auth/login
+X-Requested-With: XMLHttpRequest  
+Content-Type: application/json  
+Cache-Control: no-cache
+
+{
+    "username": "svlada@gmail.com",
+    "password": "test1234"
+}
+2. 로그인 요청 응답
+{"token":"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdmxhZGFAZ21haWwuY29tIiwic2NvcGVzIjpbIlJPTEVfQURNSU4iLCJST0xFX1BSRU1JVU1fTUVNQkVSIl0sImlzcyI6Imh0dHA6Ly9zdmxhZGEuY29tIiwiaWF0IjoxNTYzMzUxNjg0LCJleHAiOjE1NjMzNTE3NDR9.uHaNvIVaiX6K51qqs-bUL7mzmbjcqbzmvFdUe5vrLCJBJKIVoBjK2CeStev_-XHdDpxvEtnBfyVJeym1QBh2LA",
+"refreshToken":"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdmxhZGFAZ21haWwuY29tIiwic2NvcGVzIjpbIlJPTEVfUkVGUkVTSF9UT0tFTiJdLCJpc3MiOiJodHRwOi8vc3ZsYWRhLmNvbSIsImp0aSI6IjUyZDE5ZTYwLTlhMDYtNGUyMi05YzQ3LWZhN2IyNTNmYTJiYSIsImlhdCI6MTU2MzM1MTY4NCwiZXhwIjoxNTYzMzUxOTg0fQ.uuW84YJ-Rj14iwY4uewQp8HO7bfW8dvwPAzkBYmotcstcEg9mtR6Tfb53nqx_Y_04JjrbpOdGKfwpoFki56qug"}
+
+3. 일반 API 요청
+http://dabin02272.cafe24.com:9966/api/me
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdmxhZGFAZ21haWwuY29tIiwic2NvcGVzIjpbIlJPTEVfQURNSU4iLCJST0xFX1BSRU1JVU1fTUVNQkVSIl0sImlzcyI6Imh0dHA6Ly9zdmxhZGEuY29tIiwiaWF0IjoxNTYzMzUxNjg0LCJleHAiOjE1NjMzNTE3NDR9.uHaNvIVaiX6K51qqs-bUL7mzmbjcqbzmvFdUe5vrLCJBJKIVoBjK2CeStev_-XHdDpxvEtnBfyVJeym1QBh2LA
+{"username":"svlada@gmail.com",
+"authorities":
+	[{"authority":"ROLE_ADMIN"},
+	{"authority":"ROLE_PREMIUM_MEMBER"}]
+}
+4. API 요청을 했으나, 토큰 유효기간 만료시 응답
+http://dabin02272.cafe24.com:9966/api/me
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdmxhZGFAZ21haWwuY29tIiwic2NvcGVzIjpbIlJPTEVfQURNSU4iLCJST0xFX1BSRU1JVU1fTUVNQkVSIl0sImlzcyI6Imh0dHA6Ly9zdmxhZGEuY29tIiwiaWF0IjoxNTYzMzUxNjg0LCJleHAiOjE1NjMzNTE3NDR9.uHaNvIVaiX6K51qqs-bUL7mzmbjcqbzmvFdUe5vrLCJBJKIVoBjK2CeStev_-XHdDpxvEtnBfyVJeym1QBh2LA
+{"status":401,"message":"Token has expired","errorCode":11,"timestamp":1563342902459}
+5. API 요청을 했으나, 토큰 유효기간 만료응답을 받았을때,
+	리프레시 토큰값을 요청하면 정상 응답이 온다.
+http://dabin02272.cafe24.com:9966/api/me
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdmxhZGFAZ21haWwuY29tIiwic2NvcGVzIjpbIlJPTEVfUkVGUkVTSF9UT0tFTiJdLCJpc3MiOiJodHRwOi8vc3ZsYWRhLmNvbSIsImp0aSI6IjUyZDE5ZTYwLTlhMDYtNGUyMi05YzQ3LWZhN2IyNTNmYTJiYSIsImlhdCI6MTU2MzM1MTY4NCwiZXhwIjoxNTYzMzUxOTg0fQ.uuW84YJ-Rj14iwY4uewQp8HO7bfW8dvwPAzkBYmotcstcEg9mtR6Tfb53nqx_Y_04JjrbpOdGKfwpoFki56qug
+
+{"username":"svlada@gmail.com","authorities":[{"authority":"ROLE_REFRESH_TOKEN"}]}
+
+6. API 요청을 했으나, 토큰 유효기간 만료응답을 받았을때, 아래와 같이 401오류가 나오면, 로그인 요청을 새로 해야 함.
+	{"status":401,"message":"Token has expired","errorCode":11,"timestamp":1563342902459}

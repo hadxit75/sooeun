@@ -3,7 +3,7 @@
     <div class="p-3 float-right" style="margin-right:-15px">
         <b-form inline>
             <b-form-input v-model="search" id="inline-form-input-name" class="mb-2 mr-sm-2 mb-sm-0" v-on:keyup="searchHandler"></b-form-input>
-            <el-button plain type="primary" @click="InsertEvent">추가</el-button> 
+            <el-button plain type="primary" @click="InsertEvent">원천시스템 추가</el-button> 
         </b-form>
     </div>
     <div> 
@@ -17,7 +17,7 @@
 
     <el-table-column
       type="index"
-      width="70px"
+      width="100px"
       :index="indexMethod"
       label="순번"
       align="center">
@@ -26,50 +26,14 @@
     <el-table-column
       prop="legacyName"
       label="원천시스템"
-      width="120px"
+      width="300px"
       header-align="center">
     </el-table-column>
     
     <el-table-column
-      width="200px"
-      prop="orgNm"
-      label="소속사"
-      align="center">
-    </el-table-column>
-
-    <el-table-column
-      prop="userEmpId"
-      label="사번"
-      align="center">
-    </el-table-column>
-
-    <el-table-column
-      prop="userNm"
-      label="성명"
-      header-align="center">
-    </el-table-column>
-
-     <el-table-column
-      prop="deptNm"
-      label="조직"
-      header-align="center">
-    </el-table-column>
-
-    <el-table-column
-      prop="membPostion"
-      label="직급"
-      header-align="center">
-    </el-table-column>
-
-    <el-table-column
-      prop="membRank"
-      label="직책"
-      header-align="center">
-    </el-table-column>
-
-    <el-table-column
-      prop="adminComment"
+      prop="comment"
       label="비고"
+      width="300px"
       header-align="center">
     </el-table-column>
      
@@ -97,7 +61,7 @@ export default {
   },
 
   created() {
-    APIService.getSuperAdminList().then(response => {
+    APIService.getAdminLegacyList().then(response => {
         this.listData = response;
         this.displayData = this.listData;
        });
@@ -108,7 +72,7 @@ export default {
     },
     handleCurrentChange(val) {
       //alert("작업중");
-      this.$router.push({ name: "adminTab01Detail", params: { objs: val } });
+      this.$router.push({ name: "adminTab02Detail", params: { objs: val } });
     },
     searchHandler() {
       var self = this;
@@ -117,13 +81,7 @@ export default {
           data =>
             !self.search ||
             data.legacyName.toLowerCase().includes(self.search.toLowerCase()) ||
-            data.orgNm.toLowerCase().includes(self.search.toLowerCase()) ||
-            data.userNm.toLowerCase().includes(self.search.toLowerCase()) ||
-            data.deptNm.toLowerCase().includes(self.search.toLowerCase()) ||
-            data.membPostion.toLowerCase().includes(self.search.toLowerCase()) ||
-            data.membRank.toLowerCase().includes(self.search.toLowerCase()) ||
-            data.adminComment.toLowerCase().includes(self.search.toLowerCase()) ||
-            data.userEmpId.toLowerCase().includes(self.search.toLowerCase())
+            data.orgNm.toLowerCase().includes(self.search.toLowerCase())
         );
       } else {
         this.displayData = this.listData;
@@ -133,7 +91,7 @@ export default {
       return index + 1;
     },
     InsertEvent: function() {
-      this.$router.push({ name: "adminAdd" });
+      this.$router.push({ name: "adminLegacyAdd" });
     },
   }
 };

@@ -80,6 +80,7 @@
 </template>
 
 <script>
+import APIService from '../util/APIService';
 export default {
   components: {
       name: 'AddItem'
@@ -112,41 +113,28 @@ export default {
     }
   },
   created() {
-    this.$http.get('http://dabin02272.cafe24.com:8090/api/permission/'+ this.groupId, { headers: { 'Content-Type': 'application/json' } })
-    .then((response) => {
-      this.tasks = response.data.results;
-        this.tasks['utype']='U'
- 
-        var _self = this;
-         _self.$http.get('http://dabin02272.cafe24.com:8090/api/legacy/list', { headers: { 'Content-Type': 'application/json' } })
-            .then((response) => {  
-                _self.legacySelect = response.data.results;
+        APIService.getPermissionByGroupId(this.groupId).then((response)=>{
+            this.tasks = response;
+            this.tasks['utype']='U'
+    
+            var _self = this;
+            APIService.getLegacyList().then((response) => {  
+                _self.legacySelect = response;
+            })       
 
-        })       
+            APIService.getOperationList().then((response) => {
+                _self.oprSelect = response;
+            })
 
-        
-        this.$http.get('http://dabin02272.cafe24.com:8090/api/operation/list', { headers: { 'Content-Type': 'application/json' } })
-            .then((response) => {
-  
-                _self.oprSelect = response.data.results;
-        })
-
-        
-        this.$http.get('http://dabin02272.cafe24.com:8090/api/object/list', { headers: { 'Content-Type': 'application/json' } })
-            .then((response) => {
-  
-                _self.objSelect = response.data.results;
-                _self.tasksClone = response.data.results;
-        })
-
-        
-        this.$http.get('http://dabin02272.cafe24.com:8090/api/object-type/list', { headers: { 'Content-Type': 'application/json' } })
-            .then((response) => {
-  
-                _self.objTypeSelect = response.data.results;
-        })
-
-    });   
+            APIService.getObjectList().then((response) => {
+                _self.objSelect = response;
+                _self.tasksClone = response;
+            })
+            
+            APIService.getObjectTypeList().then((response) => {
+                _self.objTypeSelect = response;
+            })
+        });   
   },
    methods: {
     test(index,event)
@@ -200,12 +188,17 @@ export default {
             var _msg = [];
 
             this.tasks.forEach(sitem=>{
-                    var _item = {"prmssnName": self.prmssnName,"objectId": sitem.objectId,"oprtnId": sitem.oprtnId , "orders" : sitem.orders, "prmssnComment": self.prmssnComment,"groupId": sitem.groupId, "prmssnId":sitem.prmssnId};
+                    var _item = {"prmssnName": self.prmssnName
+                                ,"objectId": sitem.objectId
+                                ,"oprtnId": sitem.oprtnId 
+                                ,"orders" : sitem.orders
+                                ,"prmssnComment": self.prmssnComment
+                                ,"groupId": sitem.groupId
+                                ,"prmssnId":sitem.prmssnId};
                     _msg.push(_item);
                 })
             
-                this.$http.put('http://dabin02272.cafe24.com:8090/api/permission', _msg)
-                .then((response) => {
+               APIService.postPermission(_msg).then((response) => {
                     alert('수정이 완료되었습니다.');
                     this.$router.push({name:'per'})  
                                 
@@ -221,12 +214,17 @@ export default {
            var _msg2 = [];
            this.tasks.forEach(sitem=>{
                if(sitem.utype=="I"){
-                var _item = {"prmssnName": self2.prmssnName,"objectId": sitem.objectId,"oprtnId": sitem.oprtnId , "orders" : sitem.orders, "groupId": self2.groupId, "prmssnComment": self2.prmssnComment};
+                var _item = {"prmssnName": self2.prmssnName
+                            ,"objectId": sitem.objectId
+                            ,"oprtnId": sitem.oprtnId 
+                            ,"orders" : sitem.orders
+                            ,"groupId": self2.groupId
+                            ,"prmssnComment": self2.prmssnComment};
                 _msg2.push(_item);
                }
             })
-            self2.$http.post('http://dabin02272.cafe24.com:8090/api/permission/put-add', _msg2)
-            .then((response) => {
+
+            APIService.putPermission(_msg2).then((response) => {
                 alert('수정이 완료되었습니다.');
                 self2.$router.push({name:'per'})  
                             
@@ -247,16 +245,16 @@ export default {
 
         }).then(() => {
             var self = this
-            //console.log("self.groupId:::>>>"+self.groupId)
-            this.$http.delete('http://dabin02272.cafe24.com:8090/api/permission/group-id', { data: {groupId : self.groupId} })
-            .then((response) => {
-                this.$router.push({name:'per'}) 
+            var _msg = { groupId : self.groupId };
+           
+            APIService.deleteUserPermissionGroupId(_msg).then((response) => {
+                alert('삭제가 완료되었습니다.');
+                self.$router.push({name:'per'}) 
             })
             .catch((error) => {
                 alert('에러가 발생하였습니다.');
                 console.log(error.config)
             })
-            alert('삭제가 완료되었습니다.');
            
         }).catch(() => {
           alert('삭제가 취소되었습니다.');
@@ -278,17 +276,19 @@ export default {
                   alert('하단 삭제 버튼을 눌러 주세요.(전체삭제)');
 
               }else if(this.tasks.length > 1){
-              this.$confirm('삭제 하시겠습니까?', 'Warning', {
+                this.$confirm('삭제 하시겠습니까?', 'Warning', {
                 confirmButtonText: '확인',
                 cancelButtonText: '취소',
                 type: 'warning'
-                }).then(() => {
+
+              }).then(() => {
                     var self = this
-                    this.$http.delete('http://dabin02272.cafe24.com:8090/api/permission/permission-id', { data: {prmssnId : sPrmssnId} })
-                    .then((response) => {
-                        this.$http.get('http://dabin02272.cafe24.com:8090/api/permission/'+ this.groupId, { headers: { 'Content-Type': 'application/json' } })
-                        .then((response) => {
-                        this.tasks = response.data.results;
+                    var _msg = {prmssnId : sPrmssnId};
+
+                    APIService.deletePermissionById(_msg).then((response) => {
+
+                        APIService.getPermissionByGroupId(self.groupId).then((response)=>{
+                            self.tasks = response;
                         });
                     })
                     .catch((error) => {
@@ -314,30 +314,25 @@ export default {
           } 
       },
       legacyChange: function(selected){
-            this.slegacyId = selected
+        this.slegacyId = selected
 
-            var _self = this;
-            _self.objTypeSelect = [];
+        var _self = this;
+        _self.objTypeSelect = [];
 
-            var _m = new Map();
+        var _m = new Map();
+        
+        APIService.getObjLegacyList(selected).then((response) => {
+            response.forEach(item=>{
+                _m.set(item.objectTypeId, { objectTypeId : item.objectTypeId, objectTypeName : item.objectTypeName})
+            });
 
-            _self.$http.get('http://dabin02272.cafe24.com:8090/api/object/legacy/'+selected ,{ headers: { 'Content-Type': 'application/json' } })
-                .then((response) => {
-                    response.data.results.forEach(item=>{
-                        _m.set(item.objectTypeId, { objectTypeId : item.objectTypeId, objectTypeName : item.objectTypeName})
-                    });
-
-                   _m.forEach(item=>{
-                       _self.objTypeSelect.push(item);
-                   });
-
-            })
-           
+            _m.forEach(item=>{
+                _self.objTypeSelect.push(item);
+            });
+        })
       },
       objTypeChange: function(index, event){
-  
         var _a = []
-
         this.tasks.forEach(item=>{
             if(item.orders == index+1)
             {
@@ -346,21 +341,19 @@ export default {
         })
 
         var _self2 = this;
-        _self2.$http.get('http://dabin02272.cafe24.com:8090/api/operation/list', { headers: { 'Content-Type': 'application/json' } })
-        .then((response) => {
-            _self2.oprSelect = response.data.results;
-            })
+        APIService.getOperationList().then((response) => {
+            _self2.oprSelect = response;
+        })
 
-          var _idx = 1;
-          this.tasks = this.tasks.filter(item=>{
-              if(_idx == index+1)
-              {
-                 item.objectId = ""
-              }
-              _idx++;
-              return item;
-          })
-       
+        var _idx = 1;
+        this.tasks = this.tasks.filter(item=>{
+            if(_idx == index+1)
+            {
+                item.objectId = ""
+            }
+            _idx++;
+            return item;
+        })
       }
     }
 }

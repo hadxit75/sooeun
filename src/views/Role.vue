@@ -7,7 +7,6 @@
     <div class="p-3 float-right" style="margin-right:-15px">
         <b-form inline>
             <b-form-input v-model="search" id="inline-form-input-name" class="mb-2 mr-sm-2 mb-sm-0" v-on:keyup="searchHandler"></b-form-input>
-            <!-- <b-button v-on:click="addRole" variant="warning">Role 추가</b-button> -->
              <el-button plain type="primary" @click="addRole">Role 추가</el-button> 
         </b-form>
     </div>
@@ -17,8 +16,7 @@
         border
         height="330"
         @current-change="handleCurrentChange"
-        style="width: 100"
-        :span-method="objectSpanMethod">
+        style="width: 100">
 
     <el-table-column
       type="index"
@@ -47,7 +45,7 @@
     </el-table-column>
 
      <el-table-column
-      prop="comment"
+      prop="roleComment"
       label="비고"
       header-align="center">
     </el-table-column>
@@ -62,8 +60,7 @@
     <div class="p-3 float-right">
         <b-form inline>
             <b-form-input v-model="search" id="inline-form-input-name" class="mb-2 mr-sm-2 mb-sm-0" v-on:keyup="searchHandler2"></b-form-input>
-            <!-- <b-button v-on:click="addRoleGroup" variant="warning">Role 그룹추가</b-button> -->
-               <el-button plain type="primary" @click="addRoleGroup">Role 그룹추가</el-button> 
+            <el-button plain type="primary" @click="addRoleGroup">Role 그룹추가</el-button> 
         </b-form>
     </div>
     <div> 
@@ -115,6 +112,7 @@
 
 
 <script>
+import APIService from '../util/APIService';
 export default {
   name: "obj",
   data() {
@@ -130,29 +128,19 @@ export default {
   },
 
   created() {
-    this.$http
-      .get("http://dabin02272.cafe24.com:8090/api/role/all/list", {
-        headers: { "Content-Type": "application/json" }
-      })
-      .then(response => {
-        this.listData = response.data.results;
+    APIService.getRoleAllList().then(response => {
+        this.listData = response;
         this.displayData = this.listData;
-        this.getSpanArr(this.displayData);
-
+      
         var _self = this;
-        _self.$http
-          .get("http://dabin02272.cafe24.com:8090/api/role-group/all/list", {
-            headers: { "Content-Type": "application/json" }
-          })
-          .then(response => {
-            _self.roleGroup = response.data.results;
+
+        APIService.getRoleGroupAllList().then(response => {
+            _self.roleGroup = response;
+            _self.getSpanArr(_self.roleGroup );
           });
       });
   },
   methods: {
-    test() {
-      //console.log(this.listData);
-    },
     addRole: function() {
       this.$router.push({ name: "roleAdd" });
     },
@@ -217,7 +205,6 @@ export default {
           this.spanArr.push(1);
           this.pos = 0;
         } else {
-          // Determine if the current element is the same as the previous element
           if (data[i].groupId === data[i - 1].groupId) {
             this.spanArr[this.pos] += 1;
             this.spanArr.push(0);
@@ -229,11 +216,10 @@ export default {
       }
     },
     objectSpanMethod({ row, column, rowIndex, columnIndex }) {
-      if (columnIndex === 5) {
+      if (columnIndex === 3 || columnIndex === 4) {
         const _row = this.spanArr[rowIndex];
         const _col = _row > 0 ? 1 : 0;
-        //alert(_row);
-        //alert(_col);
+        
         return {
           rowspan: _row,
           colspan: _col

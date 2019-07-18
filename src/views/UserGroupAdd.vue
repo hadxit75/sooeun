@@ -179,12 +179,16 @@ export default {
       if (sendItem.length > 0) {
         APIService.setUserGroup(sendItem)
           .then(result => {
-            this.$message({
-              type: "success",
-              message: "삭제가 완료되었습니다."
-            });
-
-            this.$router.push("/ugstatus");
+            if(result.code == "200"){
+              this.$message({
+                type: "success",
+                message: "추가가 완료되었습니다."
+              });
+               this.$router.push("/ugstatus");
+               
+           }else if(result.code != "200"){
+              alert(result.message)
+           }
           })
           .catch(error => {
             this.$message({

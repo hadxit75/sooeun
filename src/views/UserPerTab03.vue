@@ -118,7 +118,6 @@ export default {
       //권한
       tasks: [],
       tasksClone: [],
-      legacySelect: [],
       prmssSelect: [],
       prmssSelectClone: [],
       slegacyId: null,
@@ -131,7 +130,7 @@ export default {
   },
   created() {
 
-      APIService.getRolePermissionLegacyList().then((response) => {
+      APIService.getPermissionList().then((response) => {
         this.legacySelect = response;
 
           var _self = this;
@@ -260,14 +259,18 @@ export default {
       // console.log(sendItem)
 
       if (sendItem.length > 0) {
-        APIService.postUserGroupPermission(sendItem)
-          .then(result => {
+        APIService.postUserGroupPermission(sendItem).then(response => {
+           if(response.code == "200"){
             this.$message({
               type: "success",
               message: "추가가 완료되었습니다."
             });
 
-             this.$router.go();
+            this.$router.go();
+
+           }else if(response.code != "200"){
+              alert(response.message)
+           }
           })
           .catch(error => {
             this.$message({

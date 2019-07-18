@@ -22,6 +22,22 @@ SUCCESS RESPONSE: {
 	"error":null}
 }
 +++++
+특정 관리자 정보 가져오기
+URL: /api/super-admin/{admin-id} 
+METHOD: GET
+REQUESTBODY: { }
+SUCCESS RESPONSE: {
+	"status":"ok",
+	"code":200,
+	"message":"good",
+	"results":":[
+		{"adminId":1,"userId":"OSSTEM:X1234567","legacyId":40,"adminTypeId":1,"adminTypeName":"슈퍼관리자","legacyName":"CRM","orgId":"OSSTEM","orgNm":"오스템임플란트(주)","userEmpId":"X1234567","userNm":"홍길동","deptNm":"정보전략팀","membPostion":"사원","membRank":"팀원","adminComment":"슈퍼관리자"}		
+	],
+	"result":null,
+	"error":null}
+}
+
++++++
 관리자 생성하기 
 URL: /api/super-admin
 METHOD: POST
