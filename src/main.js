@@ -167,14 +167,26 @@ Vue.prototype.$message = Message;
 Vue.prototype.$alert = MessageBox.alert;
 Vue.prototype.$confirm = MessageBox.confirm;
 // configure router
+import store from "./vuex/store";
 const router = new VueRouter({
   routes, // short for routes: routes
   linkActiveClass: "active"
 });
 
 router.beforeEach((to, from, next) => {
-  next();
+  let requiresAuth = to.matched.some(record => record.meta.requiresAuth);
 
+  const loggedIn = store.getters.getIsAuth;
+
+  if (loggedIn && to.path == "/login") {
+    next("/");
+  } else if (requiresAuth && !loggedIn) {
+    next("/login");
+  } else if (requiresAuth && loggedIn) {
+    next();
+  } else {
+    next();
+  }
   // console.log('r',requiresAuth);
   // console.log('c',currentUser);
   // console.log('f',from);
@@ -216,5 +228,6 @@ router.beforeEach((to, from, next) => {
 new Vue({
   el: "#app",
   router,
+  store,
   render: h => h(App)
 });

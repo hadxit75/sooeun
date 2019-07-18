@@ -36,8 +36,9 @@ import UserPerTab04Detail from "../views/UserPerTab04Detail.vue";
 import AdminStatus from "../views/AdminStatus.vue";
 import AdminAdd from "../views/AdminAdd.vue";
 import AdminTab01Detail from "../views/AdminTab01Detail.vue";
-import AdminLegacyAdd from "../views/AdminLegacyAdd.vue"
+import AdminLegacyAdd from "../views/AdminLegacyAdd.vue";
 import AdminTab02Detail from "../views/AdminTab02Detail.vue";
+import Login from "../views/Login.vue";
 
 const routes = [
   {
@@ -45,11 +46,19 @@ const routes = [
     component: Frame,
     children: [
       {
+        path: "/login",
+        name: "login",
+        component: Login,
+        meta: {
+          requiresAuth: false
+        }
+      },
+      {
         path: "/",
         name: "home",
         component: Home,
         meta: {
-          requiresAuth: false
+          requiresAuth: true
         }
       },
       {
@@ -57,7 +66,7 @@ const routes = [
         name: "obj",
         component: Obj,
         meta: {
-          requiresAuth: false
+          requiresAuth: true
         }
       },
       {
@@ -65,7 +74,7 @@ const routes = [
         name: "opr",
         component: Opr,
         meta: {
-          requiresAuth: false
+          requiresAuth: true
         }
       },
       {
@@ -73,7 +82,7 @@ const routes = [
         name: "per",
         component: Per,
         meta: {
-          requiresAuth: false
+          requiresAuth: true
         }
       },
       {
@@ -81,7 +90,7 @@ const routes = [
         name: "role",
         component: Role,
         meta: {
-          requiresAuth: false
+          requiresAuth: true
         }
       },
       {
@@ -89,7 +98,7 @@ const routes = [
         name: "user",
         component: User,
         meta: {
-          requiresAuth: false
+          requiresAuth: true
         }
       },
       {
@@ -97,7 +106,7 @@ const routes = [
         name: "ugAdd",
         component: UserGroupAdd,
         meta: {
-          requiresAuth: false
+          requiresAuth: true
         }
       },
       {
@@ -105,7 +114,7 @@ const routes = [
         name: "ugStatus",
         component: UserGroupStatus,
         meta: {
-          requiresAuth: false
+          requiresAuth: true
         }
       },
       {
@@ -113,7 +122,7 @@ const routes = [
         name: "ugDetail",
         component: UserGroupDetail,
         meta: {
-          requiresAuth: false
+          requiresAuth: true
         }
       },
       {
@@ -121,7 +130,7 @@ const routes = [
         name: "org",
         component: Org,
         meta: {
-          requiresAuth: false
+          requiresAuth: true
         }
       },
       {
@@ -129,7 +138,7 @@ const routes = [
         name: "objDetail",
         component: ObjDetail,
         meta: {
-          requiresAuth: false
+          requiresAuth: true
         }
       },
       {
@@ -137,7 +146,7 @@ const routes = [
         name: "objAdd",
         component: ObjAdd,
         meta: {
-          requiresAuth: false
+          requiresAuth: true
         }
       },
       {
@@ -145,7 +154,7 @@ const routes = [
         name: "oprDetail",
         component: OprDetail,
         meta: {
-          requiresAuth: false
+          requiresAuth: true
         }
       },
       {
@@ -153,7 +162,7 @@ const routes = [
         name: "oprAdd",
         component: OprAdd,
         meta: {
-          requiresAuth: false
+          requiresAuth: true
         }
       },
       {
@@ -161,7 +170,7 @@ const routes = [
         name: "perAdd",
         component: PerAdd,
         meta: {
-          requiresAuth: false
+          requiresAuth: true
         }
       },
       {
@@ -169,7 +178,7 @@ const routes = [
         name: "perDetail",
         component: PerDetail,
         meta: {
-          requiresAuth: false
+          requiresAuth: true
         }
       },
       {
@@ -177,7 +186,7 @@ const routes = [
         name: "roleAdd",
         component: RoleAdd,
         meta: {
-          requiresAuth: false
+          requiresAuth: true
         }
       },
       {
@@ -185,7 +194,7 @@ const routes = [
         name: "roleGroupAdd",
         component: RoleGroupAdd,
         meta: {
-          requiresAuth: false
+          requiresAuth: true
         }
       },
       {
@@ -193,7 +202,7 @@ const routes = [
         name: "roleDetail",
         component: RoleDetail,
         meta: {
-          requiresAuth: false
+          requiresAuth: true
         }
       },
       {
@@ -201,137 +210,137 @@ const routes = [
         name: "roleGroupDetail",
         component: RoleGroupDetail,
         meta: {
-          requiresAuth: false
+          requiresAuth: true
         }
       },
       {
-        path: '/rolePer',
-        name: 'rolePer',
+        path: "/rolePer",
+        name: "rolePer",
         component: RolePer,
         meta: {
-          requiresAuth: false
+          requiresAuth: true
         }
       },
       {
-        path: '/rolePerDetail',
-        name: 'rolePerDetail',
+        path: "/rolePerDetail",
+        name: "rolePerDetail",
         component: RolePerDetail,
         meta: {
-          requiresAuth: false
+          requiresAuth: true
         }
       },
       {
-        path: '/rolePerAdd',
-        name: 'rolePerAdd',
+        path: "/rolePerAdd",
+        name: "rolePerAdd",
         component: RolePerAdd,
         meta: {
-          requiresAuth: false
+          requiresAuth: true
         }
       },
       {
-        path: '/rolePerGroupAdd',
-        name: 'rolePerGroupAdd',
+        path: "/rolePerGroupAdd",
+        name: "rolePerGroupAdd",
         component: RolePerGroupAdd,
         meta: {
-          requiresAuth: false
+          requiresAuth: true
         }
       },
       {
-        path: '/roleGroupPerDetail',
-        name: 'roleGroupPerDetail',
+        path: "/roleGroupPerDetail",
+        name: "roleGroupPerDetail",
         component: RoleGroupPerDetail,
         meta: {
-          requiresAuth: false 
+          requiresAuth: true
         }
       },
       {
-        path: '/userPerStatus',
-        name: 'userPerStatus',
+        path: "/userPerStatus",
+        name: "userPerStatus",
         component: UserPerStatus,
         meta: {
-          requiresAuth: false 
+          requiresAuth: true
         }
       },
       {
-        path: '/userPerTab01',
-        name: 'userPerTab01',
+        path: "/userPerTab01",
+        name: "userPerTab01",
         component: UserPerTab01,
         meta: {
-          requiresAuth: false 
+          requiresAuth: true
         }
       },
       {
-        path: '/userPerTab05Detail',
-        name: 'userPerTab05Detail',
+        path: "/userPerTab05Detail",
+        name: "userPerTab05Detail",
         component: UserPerTab05Detail,
         meta: {
-          requiresAuth: false 
+          requiresAuth: true
         }
       },
       {
-        path: '/userPerTab03Detail',
-        name: 'userPerTab03Detail',
+        path: "/userPerTab03Detail",
+        name: "userPerTab03Detail",
         component: UserPerTab03Detail,
         meta: {
-          requiresAuth: false 
+          requiresAuth: true
         }
       },
       {
-        path: '/userPerTab02Detail',
-        name: 'userPerTab02Detail',
+        path: "/userPerTab02Detail",
+        name: "userPerTab02Detail",
         component: UserPerTab02Detail,
         meta: {
-          requiresAuth: false 
+          requiresAuth: true
         }
       },
       {
-        path: '/userPerTab04Detail',
-        name: 'userPerTab04Detail',
+        path: "/userPerTab04Detail",
+        name: "userPerTab04Detail",
         component: UserPerTab04Detail,
         meta: {
-          requiresAuth: false 
+          requiresAuth: true
         }
       },
       {
-        path: '/adminStatus',
-        name: 'adminStatus',
+        path: "/adminStatus",
+        name: "adminStatus",
         component: AdminStatus,
         meta: {
-          requiresAuth: false 
+          requiresAuth: true
         }
       },
       {
-        path: '/adminAdd',
-        name: 'adminAdd',
+        path: "/adminAdd",
+        name: "adminAdd",
         component: AdminAdd,
         meta: {
-          requiresAuth: false 
+          requiresAuth: true
         }
       },
       {
-        path: '/adminTab01Detail',
-        name: 'adminTab01Detail',
+        path: "/adminTab01Detail",
+        name: "adminTab01Detail",
         component: AdminTab01Detail,
         meta: {
-          requiresAuth: false 
+          requiresAuth: true
         }
       },
       {
-        path: '/adminLegacyAdd',
-        name: 'adminLegacyAdd',
+        path: "/adminLegacyAdd",
+        name: "adminLegacyAdd",
         component: AdminLegacyAdd,
         meta: {
-          requiresAuth: false 
+          requiresAuth: true
         }
       },
       {
-        path: '/adminTab02Detail',
-        name: 'adminTab02Detail',
+        path: "/adminTab02Detail",
+        name: "adminTab02Detail",
         component: AdminTab02Detail,
         meta: {
-          requiresAuth: false 
+          requiresAuth: true
         }
-      },
+      }
     ]
   }
   // { path: "*", component: NotFound }

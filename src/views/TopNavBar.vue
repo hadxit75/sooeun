@@ -9,10 +9,10 @@
       <div style="display: inline-block; text-align: right; width: 100%">
         <div style="display:flex;float:right">
           <div style="margin-left:5px">
-             <span>홍길동</span>
+             <span v-if="this.$store.state.username">{{this.$store.state.username}}</span>
           </div>
-          <div style="margin-left:5px">
-             <el-button size="mini" round>로그아웃</el-button>&nbsp;
+          <div style="margin-left:5px" v-if="this.$store.state.username">
+             <el-button size="mini" round @click="logOut()">로그아웃</el-button>&nbsp;
              <router-link to="/adminStatus" ><i class="fas fa-cog"></i></router-link>
           </div>
         </div>
@@ -65,7 +65,17 @@ export default {
       activeIndex2: ""
     };
   },
+  mounted() {
+    console.log(this.$store.state);
+  },
   methods: {
+    logOut() {
+      // console.log("ff");
+      // commit("IS_AUTH", false);
+      this.$store.commit("USERNAME", null);
+      this.$store.commit("IS_AUTH", false);
+      this.$router.push("/login");
+    },
     capitalizeFirstLetter(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
     },
